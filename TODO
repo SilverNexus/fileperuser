@@ -13,3 +13,4 @@ Future plans:
     some maintenance a lot less work.
     - Add install targets to Makefile, so the program winds
     up executable from the system path
+    - Add support for regular expressions
