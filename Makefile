@@ -1,5 +1,5 @@
 CC     = gcc -std=gnu99
-OBJ    = ErrorLog.o main.o parseArgs.o settings.o
+OBJ    = ErrorLog.o main.o parseArgs.o settings.o dir_list.o
 BIN    = FilePeruser
 CFLAGS = -O3 -Wall -Wextra -Wmain
 RM     = rm -f
@@ -27,3 +27,6 @@ parseArgs.o: parseArgs.c parseArgs.h settings.h ErrorLog.h
 
 settings.o: settings.c settings.h ErrorLog.h
 	$(CC) -c settings.c -o settings.o $(CFLAGS)
+
+dir_list.o: dir_list.c dir_list.h
+	$(CC) -c dir_list.c -o dir_list.o $(CFLAGS)

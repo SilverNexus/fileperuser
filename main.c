@@ -42,7 +42,7 @@ int main(int argc, char *argv[]){
         // Remove the old results file
         remove("searchResults.txt");
         // Begin the search
-        struct dir_list *thisDir = settings.root_dirs;
+        DIR_LIST *thisDir = settings.root_dirs;
         while (thisDir){
             searchFolder(argv[1], thisDir->dir);
             thisDir = thisDir->next;

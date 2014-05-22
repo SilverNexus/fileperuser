@@ -8,8 +8,8 @@
 /***************************************************************************/
 
 #include "settings.h"
-#include <stdlib.h>
 #include "ErrorLog.h"
+#include "dir_list.h"
 
 int init_settings(){
     settings.excluded_directories = 0;
@@ -18,49 +18,25 @@ int init_settings(){
 }
 
 int free_settings(){
-    while (settings.excluded_directories){
-        struct dir_list *tmp = settings.excluded_directories;
-        settings.excluded_directories = settings.excluded_directories->next;
-        free(tmp);
-    }
-    settings.excluded_directories = 0;
-    while (settings.root_dirs){
-        struct dir_list *tmp = settings.root_dirs;
-        settings.root_dirs = settings.root_dirs->next;
-        free(tmp);
-    }
-    settings.root_dirs = 0;
+    free_dir_list(settings.excluded_directories);
+    free_dir_list(settings.root_dirs);
     return 0;
 }
 int add_exclude_dir(char *newDir){
-    struct dir_list *newExclusion = (struct dir_list *)malloc(sizeof(struct dir_list));
+    DIR_LIST *newExclusion = init_dir_node(newDir);
     if (!newExclusion){
-        logError(ERROR, "Could not allocate space for excluded directory %s.", newDir);
+        logError(ERROR, "Excluded directory %s not added to list.", newDir);
         return -1;
     }
-
-    /*
-     * Since newDir is an argument passed into the program, in should stay allocated for
-     * the duration of the program. Thus, just assign the reference in dir_list.
-     */
-    newExclusion->dir = newDir;
-    newExclusion->next = settings.excluded_directories;
-    settings.excluded_directories = newExclusion;
+    link_dir_node(newExclusion, &settings.excluded_directories);
     return 0;
 }
 int add_root_dir(char *newDir){
-    struct dir_list *newRoot = (struct dir_list *)malloc(sizeof(struct dir_list));
+    DIR_LIST *newRoot = init_dir_node(newDir);
     if (!newRoot){
-        logError(ERROR, "Could not allocate space for root directory %s.", newDir);
+        logError(ERROR, "Root directory %s not added to list.", newDir);
         return -1;
     }
-
-    /*
-     * Since newDir is an argument passed into the program, in should stay allocated for
-     * the duration of the program. Thus, just assign the reference in dir_list.
-     */
-    newRoot->dir = newDir;
-    newRoot->next = settings.root_dirs;
-    settings.root_dirs = newRoot;
+    link_dir_node(newRoot, &settings.root_dirs);
     return 0;
 }
