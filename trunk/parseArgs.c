@@ -1,7 +1,7 @@
 /***************************************************************************/
 /*                                                                         */
 /*                              parseArgs.c                                */
-/* Original code written by Daniel Hawkins. Last modified on 2014-05-21.   */
+/* Original code written by Daniel Hawkins. Last modified on 2014-05-22.   */
 /*                                                                         */
 /* The file defines the argument parsing functions.                        */
 /*                                                                         */
@@ -57,7 +57,7 @@ int parseArgs(char **flagArgs, int flagCount){
                     logError(ERROR, "%s flag needs a root directory.", flagArgs[parseCount - 1]);
                     return -1;
                 }
-                settings.root_dir = flagArgs[parseCount];
+                add_root_dir(flagArgs[parseCount]);
         }
         else{
             logError(ERROR, "Invalid flag '%s' detected, skipping.", flagArgs[parseCount]);

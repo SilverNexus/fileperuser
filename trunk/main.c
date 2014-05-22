@@ -1,7 +1,7 @@
 /***************************************************************************/
 /*                                                                         */
 /*                                 main.c                                  */
-/* Original code written by Daniel Hawkins. Last modified on 2014-05-21.   */
+/* Original code written by Daniel Hawkins. Last modified on 2014-05-22.   */
 /*                                                                         */
 /* The file defines the main function and several searching functions.     */
 /*                                                                         */
@@ -34,7 +34,7 @@ int main(int argc, char *argv[]){
             return 0;
         }
         // If no arguments set the root directory, error out
-        if (!settings.root_dir){
+        if (!settings.root_dirs){
             logError(ERROR, "No root directory specified in search.");
             free_settings();
             return 1;
@@ -42,7 +42,11 @@ int main(int argc, char *argv[]){
         // Remove the old results file
         remove("searchResults.txt");
         // Begin the search
-        searchFolder(argv[1], settings.root_dir);
+        struct dir_list *thisDir = settings.root_dirs;
+        while (thisDir){
+            searchFolder(argv[1], thisDir->dir);
+            thisDir = thisDir->next;
+        }
         puts("The matches have been stored in searchResults.txt.\n");
         free_settings();
     }
@@ -78,10 +82,10 @@ int searchFolder(const char *searchFor, const char *dirPath){
             strcpy(currentDir, dirPath);
             strcat(currentDir, directory->d_name);
             if (directory->d_type == DT_DIR){
-                struct exclude_dir *tmp;
+                struct dir_list *tmp;
                 int skip = 0;
                 for (tmp = settings.excluded_directories; tmp; tmp = tmp->next){
-                    if (strcmp(tmp->excludeDir, directory->d_name) == 0){
+                    if (strcmp(tmp->dir, directory->d_name) == 0){
                         skip = 1;
                     }
                 }

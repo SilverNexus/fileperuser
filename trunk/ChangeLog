@@ -1,3 +1,9 @@
+2014-05-22	SilverNexus
+	* settings.h: Changed root_dir to be a linked list.
+	* settings.c: Added function to add to the root_dir linked list.
+	* parseArgs.c: Changed parsing of root_dir to utilize linked list.
+	* main.c: Added parsing of multiple root directories.
+
 2014-05-21	SilverNexus
 	* main.c: Only open output file when needed.
 
