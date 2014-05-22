@@ -1,4 +1,7 @@
 2014-05-22	SilverNexus
+	* main.c: Fix bug in which a folder without a trailing "/" as the search directory would crash the program.
+
+2014-05-22	SilverNexus
 	* dir_list.c,
 	* dir_list.h,
 	* settings.h,
