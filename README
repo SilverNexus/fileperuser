@@ -1,0 +1,25 @@
+-----------------
+Peruse User Guide
+-----------------
+
+1. Usage:
+       ./Peruse [search string] [root directory] [flags]
+   Valid flags:
+       -h or --help: prints help and exits program
+       -x or --exclude: next argument is a directory to exclude
+   Notes:
+       all spaces in [search string], [root directory], and any excluded
+           directories must be properly escaped to function properly
+       -x and --exclude can be used as many times as necessary to exclude
+           multiple directories from the search
+
+2. Requirements:
+       - A C compiler with dirent.h and sys/types.h (probably Linux or Unix [BSD, Mac])
+       
+       Note:
+           I do not know any more of the system requirements for this program.
+           If any more are discovered, add them here.
+
+3. Philosophies:
+       - Code should be robust, yet minimalistic.
+       - A GUI is unnecessary for this little program.
