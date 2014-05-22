@@ -97,16 +97,21 @@ int searchFolder(const char *searchFor, const char *dirPath){
                 if (mapFile){
                     register int lineNum = 0;
                     char linechars[BIG_BUFFER];
-                    FILE *outputFile = fopen("searchResults.txt", "a");
+                    FILE *outputFile = 0;
                     while (fgets(linechars, BIG_BUFFER, mapFile)){
                         lineNum++;
                         int foundAt;
                         if ((foundAt = findIn(linechars, searchFor)) != -1){
+                            if (!outputFile){
+                                // Open the file only if we need it.
+                                outputFile = fopen("searchResults.txt", "a");
+                            }
                             // There is no reason to print it to the screen - you not going to see anything in the swirling mass of text flying by
                             fprintf(outputFile, "Found instance of '%s' in line %i, col %i of %s.\n", searchFor, lineNum, foundAt + 1, currentDir);
                         }
                     }
-                    fclose(outputFile);
+                    if (outputFile)
+                        fclose(outputFile);
                     // Only close if nonzero
                     fclose(mapFile);
                 }
