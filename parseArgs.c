@@ -35,20 +35,29 @@ int parseArgs(char **flagArgs, int flagCount){
         if (strcmp(flagArgs[parseCount], "-h") == 0 ||
             strcmp(flagArgs[parseCount], "--help") == 0){
                 puts("Usage:\n");
-                puts("\t./MapChecker [search string] [directory] <flags>\n\n");
+                puts("\t./MapChecker [search string] -d [directory] <flags>\n\n");
                 puts("Valid Flags:\n");
                 puts("\t-h --help\t\t\t\tPrints this help message.\n");
                 puts("\t-x --exclude [directory name]\tExcludes [directory name] from the search.\n");
+                puts("\t-d --dir [directory name]\t\tSets root directory of the search.\n");
                 // If help, don't actually run the program
                 return 1;
         }
         else if (strcmp(flagArgs[parseCount], "-x") == 0 ||
             strcmp(flagArgs[parseCount], "--exclude") == 0){
                 if (++parseCount == flagCount){
-                    logError(ERROR, "Exclude flag needs a directory to exclude.");
+                    logError(ERROR, "%s flag needs a directory to exclude.", flagArgs[parseCount - 1]);
                     return -1;
                 }
                 add_exclude_dir(flagArgs[parseCount]);
+        }
+        else if (strcmp(flagArgs[parseCount], "-d") == 0 ||
+            strcmp(flagArgs[parseCount], "--dir") == 0){
+                if (++parseCount == flagCount){
+                    logError(ERROR, "%s flag needs a root directory.", flagArgs[parseCount - 1]);
+                    return -1;
+                }
+                settings.root_dir = flagArgs[parseCount];
         }
         else{
             logError(ERROR, "Invalid flag '%s' detected, skipping.", flagArgs[parseCount]);

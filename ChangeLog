@@ -1,4 +1,10 @@
 2014-05-21	SilverNexus
+	* settings.h,
+	* settings.c,
+	* main.c,
+	* parseArgs.c: Made root directory search argument location controlled by -d flag.
+
+2014-05-21	SilverNexus
 	* ErrorLog.c: All messages go to log.txt.
 
 2014-05-21	SilverNexus
