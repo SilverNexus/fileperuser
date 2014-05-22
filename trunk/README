@@ -1,9 +1,9 @@
------------------
-Peruse User Guide
------------------
+----------------------
+FilePeruser User Guide
+----------------------
 
 1. Usage:
-       ./Peruse [search string] [root directory] [flags]
+       ./FilePeruser [search string] [root directory] [flags]
    Valid flags:
        -h or --help: prints help and exits program
        -x or --exclude: next argument is a directory to exclude
