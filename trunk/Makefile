@@ -4,9 +4,11 @@ BIN    = FilePeruser
 CFLAGS = -O3 -Wall -Wextra -Wmain
 RM     = rm -f
 
-.PHONY: all all-before all-after clean clean-custom
+.PHONY: all all-before all-after clean clean-custom cleanall
 
 all: all-before FilePeruser all-after
+
+cleanall: clean
 
 clean: clean-custom
 	${RM} $(OBJ) $(BIN)
