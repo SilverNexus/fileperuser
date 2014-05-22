@@ -26,11 +26,7 @@ int logError(enum errorType err, const char *msg, ...){
        time_t theTime = time(0);
        struct tm *date = localtime(&theTime);
        // Create output file stream object
-       FILE *ErrorFile;
-       if (err == INFO)
-            ErrorFile = fopen("InfoLog.txt", "a");
-       else
-            ErrorFile = fopen("ErrorLog.txt", "a");
+       FILE *ErrorFile = fopen("log.txt", "a");
        if (ErrorFile)
             fprintf(ErrorFile, "%2i %s %4i %02i:%02i:%02i: %s: %s\n", date->tm_mday, MONTH[date->tm_mon], date->tm_year+1900, date->tm_hour, date->tm_min, date->tm_sec, ERROR_TYPE_CHARS[err], fnMsg);
        else{
