@@ -80,6 +80,9 @@ int searchFolder(const char *searchFor, const char *dirPath){
                 continue;
             char currentDir[BIG_BUFFER];
             strcpy(currentDir, dirPath);
+            // If there wasn't already a "/" at the end, add it here.
+            if (currentDir[strlen(dirPath) - 1] != '/')
+                strcat(currentDir, "/");
             strcat(currentDir, directory->d_name);
             if (directory->d_type == DT_DIR){
                 struct dir_list *tmp;
