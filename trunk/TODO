@@ -2,7 +2,7 @@ Known bugs:
     - If the search includes the output file where the search
     results are stored, it will find entries in the file until
     you run out of hard drive space.
-    - The help flag must be preceded by two arguments for searching
+    - The help flag must be preceded by the search string
 
 Future plans:
     - Transfer parsing of all args to parseArgs (rather than

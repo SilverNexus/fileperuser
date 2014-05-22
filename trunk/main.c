@@ -21,24 +21,33 @@
 int main(int argc, char *argv[]){
     if (argc >= 3){
         init_settings();
-        int parse_results = 0;
-        if (argc > 3){
-            parse_results = parseArgs(argv + 3, argc - 3);
-            if (parse_results == -1){
-                logError(ERROR, "Invalid arguments discovered.");
-                free_settings();
-                return 1;
-            }
+        // argv[0] is the executable name, which I don't need.
+        int parse_results = parseArgs(argv + 2, argc - 2);
+        if (parse_results == -1){
+            logError(ERROR, "Invalid arguments discovered.");
+            free_settings();
+            return 1;
+        }
+        // If execution was for usage info, exit here
+        else if (parse_results == 1){
+            free_settings();
+            return 0;
+        }
+        // If no arguments set the root directory, error out
+        if (!settings.root_dir){
+            logError(ERROR, "No root directory specified in search.");
+            free_settings();
+            return 1;
         }
         // Remove the old results file
         remove("searchResults.txt");
         // Begin the search
-        searchFolder(argv[1], argv[2]);
+        searchFolder(argv[1], settings.root_dir);
         puts("The matches have been stored in searchResults.txt.\n");
         free_settings();
     }
     else{
-        logError(ERROR, "MapChecker requires arguments: ./MapChecker <search string> <path to folder to search in> [flags].");
+        logError(ERROR, "MapChecker requires arguments: ./MapChecker <search string> -d <path to folder to search in> [flags].");
         return 1;
     }
     return 0;

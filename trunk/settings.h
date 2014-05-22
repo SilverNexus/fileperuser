@@ -17,6 +17,7 @@ struct exclude_dir{
 
 struct {
     struct exclude_dir *excluded_directories;
+    char *root_dir;
 } settings;
 
 int init_settings();

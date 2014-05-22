@@ -13,6 +13,7 @@
 
 int init_settings(){
     settings.excluded_directories = 0;
+    settings.root_dir = 0;
     return 0;
 }
 
@@ -23,6 +24,7 @@ int free_settings(){
         free(tmp);
     }
     settings.excluded_directories = 0;
+    settings.root_dir = 0;
     return 0;
 }
 int add_exclude_dir(char *dir){
