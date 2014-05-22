@@ -1,4 +1,12 @@
 2014-05-22	SilverNexus
+	* dir_list.c,
+	* dir_list.h,
+	* settings.h,
+	* settings.c: Cleaned up dir_list code by making functions generic to dir_lists.
+	* main.c: updated list iterator to match new typedef.
+	* Makefile: Added dir_list.o to build process.
+
+2014-05-22	SilverNexus
 	* settings.h: Changed root_dir to be a linked list.
 	* settings.c: Added function to add to the root_dir linked list.
 	* parseArgs.c: Changed parsing of root_dir to utilize linked list.

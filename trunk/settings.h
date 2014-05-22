@@ -10,14 +10,11 @@
 #ifndef SETTINGS_H
 #define SETTINGS_H
 
-struct dir_list{
-    char *dir;
-    struct dir_list *next;
-};
+#include "dir_list.h"
 
 struct {
-    struct dir_list *excluded_directories;
-    struct dir_list *root_dirs;
+    DIR_LIST *excluded_directories;
+    DIR_LIST *root_dirs;
 } settings;
 
 int init_settings();
