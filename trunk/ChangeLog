@@ -1,2 +1,5 @@
 2014-05-21	SilverNexus
+	* ErrorLog.c: All messages go to log.txt.
+
+2014-05-21	SilverNexus
 	* Initial commits. Setting up files for later use.
