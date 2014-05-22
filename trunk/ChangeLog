@@ -1,4 +1,7 @@
 2014-05-21	SilverNexus
+	* main.c: Only open output file when needed.
+
+2014-05-21	SilverNexus
 	* settings.h,
 	* settings.c,
 	* main.c,
