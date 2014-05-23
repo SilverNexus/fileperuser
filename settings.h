@@ -15,6 +15,7 @@
 struct {
     DIR_LIST *excluded_directories;
     DIR_LIST *root_dirs;
+    char *search_string;
 } settings;
 
 int init_settings();

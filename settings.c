@@ -14,6 +14,7 @@
 int init_settings(){
     settings.excluded_directories = 0;
     settings.root_dirs = 0;
+    settings.search_string = 0;
     return 0;
 }
 
@@ -22,6 +23,7 @@ int free_settings(){
     free_dir_list(settings.root_dirs);
     return 0;
 }
+
 int add_exclude_dir(char *newDir){
     DIR_LIST *newExclusion = init_dir_node(newDir);
     if (!newExclusion){
@@ -31,6 +33,7 @@ int add_exclude_dir(char *newDir){
     link_dir_node(newExclusion, &settings.excluded_directories);
     return 0;
 }
+
 int add_root_dir(char *newDir){
     DIR_LIST *newRoot = init_dir_node(newDir);
     if (!newRoot){
