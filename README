@@ -8,6 +8,8 @@ FilePeruser User Guide
        -h or --help: prints help and exits program
        -x or --exclude: next argument is a directory to exclude
        -d or --dir: next argument is the root directory of the search
+       -s or --search: next argument is the search string
+       -o or --output: next argument is the output file name
    Notes:
        all spaces in [search string], [root directory], and any excluded
            directories must be properly escaped to function properly

@@ -1,7 +1,7 @@
 /***************************************************************************/
 /*                                                                         */
 /*                               settings.h                                */
-/* Original code written by Daniel Hawkins. Last modified on 2014-05-22.   */
+/* Original code written by Daniel Hawkins. Last modified on 2014-05-23.   */
 /*                                                                         */
 /* The file defines the structures for handling important variables.       */
 /*                                                                         */
@@ -16,6 +16,7 @@ struct {
     DIR_LIST *excluded_directories;
     DIR_LIST *root_dirs;
     char *search_string;
+    char *output_file;
 } settings;
 
 int init_settings();

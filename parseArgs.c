@@ -1,7 +1,7 @@
 /***************************************************************************/
 /*                                                                         */
 /*                              parseArgs.c                                */
-/* Original code written by Daniel Hawkins. Last modified on 2014-05-22.   */
+/* Original code written by Daniel Hawkins. Last modified on 2014-05-23.   */
 /*                                                                         */
 /* The file defines the argument parsing functions.                        */
 /*                                                                         */
@@ -41,6 +41,7 @@ int parseArgs(char **flagArgs, int flagCount){
                 puts("\t-x --exclude [directory name]\tExcludes [directory name] from the search.\n");
                 puts("\t-d --dir [directory name]\t\tSets root directory of the search.\n");
                 puts("\t-s --search [phrase]\t\t\tSets the string to be search.\n");
+                puts("\t-o --output [filename]\t\t\tSets the name of the output file. Default is searchResults.txt.\n");
                 // If help, don't actually run the program
                 return 1;
         }
@@ -73,6 +74,14 @@ int parseArgs(char **flagArgs, int flagCount){
                 else{
                     settings.search_string = flagArgs[parseCount];
                 }
+        }
+        else if (strcmp(flagArgs[parseCount], "-o") == 0 ||
+            strcmp(flagArgs[parseCount], "--output") == 0){
+                if (++parseCount == flagCount){
+                    logError(ERROR, "%s flag needs a file name.", flagArgs[parseCount - 1]);
+                    return -1;
+                }
+                settings.output_file = flagArgs[parseCount];
         }
         else{
             logError(ERROR, "Invalid flag '%s' detected, skipping.", flagArgs[parseCount]);
