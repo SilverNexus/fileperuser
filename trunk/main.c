@@ -1,7 +1,7 @@
 /***************************************************************************/
 /*                                                                         */
 /*                                 main.c                                  */
-/* Original code written by Daniel Hawkins. Last modified on 2014-05-22.   */
+/* Original code written by Daniel Hawkins. Last modified on 2014-05-23.   */
 /*                                                                         */
 /* The file defines the main function and several searching functions.     */
 /*                                                                         */
@@ -39,15 +39,15 @@ int main(int argc, char *argv[]){
             free_settings();
             return 1;
         }
-        // Remove the old results file
-        remove("searchResults.txt");
+        // Remove any existing results file by this name
+        remove(settings.output_file);
         // Begin the search
         DIR_LIST *thisDir = settings.root_dirs;
         while (thisDir){
             searchFolder(thisDir->dir);
             thisDir = thisDir->next;
         }
-        puts("The matches have been stored in searchResults.txt.\n");
+        printf("The matches have been stored in %s.\n", settings.output_file);
         free_settings();
     }
     else{
@@ -111,7 +111,12 @@ int searchFolder(const char *dirPath){
                         if ((foundAt = findIn(linechars)) != -1){
                             if (!outputFile){
                                 // Open the file only if we need it.
-                                outputFile = fopen("searchResults.txt", "a");
+                                outputFile = fopen(settings.output_file, "a");
+                            }
+                            // Error out if load failed
+                            if (!outputFile){
+                                logError(ERROR, "Could not open '%s' for writing.", settings.output_file);
+                                break;
                             }
                             // There is no reason to print it to the screen - you not going to see anything in the swirling mass of text flying by
                             fprintf(outputFile, "Found instance of '%s' in line %i, col %i of %s.\n", settings.search_string, lineNum, foundAt + 1, currentDir);
