@@ -22,7 +22,7 @@ int main(int argc, char *argv[]){
     if (argc >= 3){
         init_settings();
         // argv[0] is the executable name, which I don't need.
-        int parse_results = parseArgs(argv + 2, argc - 2);
+        int parse_results = parseArgs(argv + 1, argc - 1);
         if (parse_results == -1){
             logError(ERROR, "Invalid arguments discovered.");
             free_settings();
@@ -44,26 +44,26 @@ int main(int argc, char *argv[]){
         // Begin the search
         DIR_LIST *thisDir = settings.root_dirs;
         while (thisDir){
-            searchFolder(argv[1], thisDir->dir);
+            searchFolder(thisDir->dir);
             thisDir = thisDir->next;
         }
         puts("The matches have been stored in searchResults.txt.\n");
         free_settings();
     }
     else{
-        logError(ERROR, "MapChecker requires arguments: ./MapChecker <search string> -d <path to folder to search in> [flags].");
+        logError(ERROR, "MapChecker requires arguments: ./MapChecker -s <search string> -d <path to folder to search in> [flags].");
         return 1;
     }
     return 0;
 }
 
-int findIn(const char *searchIn, const char *searchFor){
+int findIn(const char *searchIn){
     register int searchInLen = strlen(searchIn);
-    register int searchForLen = strlen(searchFor);
+    register int searchForLen = strlen(settings.search_string);
     for (register int startAt = 0; startAt <= searchInLen - searchForLen; startAt++){
         // Add condition to speed up searches -- only even try to find if first character matches
-        if (*(searchIn + startAt) == *searchFor){
-            if (strncmp(searchIn + startAt, searchFor, searchForLen) == 0){
+        if (*(searchIn + startAt) == *settings.search_string){
+            if (strncmp(searchIn + startAt, settings.search_string, searchForLen) == 0){
                 return startAt;
             }
         }
@@ -71,7 +71,7 @@ int findIn(const char *searchIn, const char *searchFor){
     return -1;
 }
 
-int searchFolder(const char *searchFor, const char *dirPath){
+int searchFolder(const char *dirPath){
     DIR *mapsDirectory = opendir(dirPath);
     if (mapsDirectory){
         struct dirent *directory;
@@ -94,11 +94,11 @@ int searchFolder(const char *searchFor, const char *dirPath){
                 }
                 if (!skip){
                     strcat(currentDir, "/");
-                    searchFolder(searchFor, currentDir);
+                    searchFolder(currentDir);
                 }
             }
             else{
-                printf("Searching for '%s' in %s.\n", searchFor, currentDir);
+                printf("Searching for '%s' in %s.\n", settings.search_string, currentDir);
                 FILE *mapFile;
                 mapFile = fopen(currentDir, "r");
                 if (mapFile){
@@ -108,13 +108,13 @@ int searchFolder(const char *searchFor, const char *dirPath){
                     while (fgets(linechars, BIG_BUFFER, mapFile)){
                         lineNum++;
                         int foundAt;
-                        if ((foundAt = findIn(linechars, searchFor)) != -1){
+                        if ((foundAt = findIn(linechars)) != -1){
                             if (!outputFile){
                                 // Open the file only if we need it.
                                 outputFile = fopen("searchResults.txt", "a");
                             }
                             // There is no reason to print it to the screen - you not going to see anything in the swirling mass of text flying by
-                            fprintf(outputFile, "Found instance of '%s' in line %i, col %i of %s.\n", searchFor, lineNum, foundAt + 1, currentDir);
+                            fprintf(outputFile, "Found instance of '%s' in line %i, col %i of %s.\n", settings.search_string, lineNum, foundAt + 1, currentDir);
                         }
                     }
                     if (outputFile)

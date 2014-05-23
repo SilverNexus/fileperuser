@@ -35,11 +35,12 @@ int parseArgs(char **flagArgs, int flagCount){
         if (strcmp(flagArgs[parseCount], "-h") == 0 ||
             strcmp(flagArgs[parseCount], "--help") == 0){
                 puts("Usage:\n");
-                puts("\t./MapChecker [search string] -d [directory] <flags>\n\n");
+                puts("\t./MapChecker -s [search string] -d [directory] <flags>\n\n");
                 puts("Valid Flags:\n");
                 puts("\t-h --help\t\t\t\tPrints this help message.\n");
                 puts("\t-x --exclude [directory name]\tExcludes [directory name] from the search.\n");
                 puts("\t-d --dir [directory name]\t\tSets root directory of the search.\n");
+                puts("\t-s --search [phrase]\t\t\tSets the string to be search.\n");
                 // If help, don't actually run the program
                 return 1;
         }
@@ -58,6 +59,20 @@ int parseArgs(char **flagArgs, int flagCount){
                     return -1;
                 }
                 add_root_dir(flagArgs[parseCount]);
+        }
+        else if (strcmp(flagArgs[parseCount], "-s") == 0 ||
+            strcmp(flagArgs[parseCount], "--search") == 0){
+                if (++parseCount == flagCount){
+                    logError(ERROR, "%s flag needs a search string.", flagArgs[parseCount - 1]);
+                    return -1;
+                }
+                if (settings.search_string){
+                    logError(ERROR, "Trying to set search string to '%s' when it is already '%s'.",
+                        flagArgs[parseCount], settings.search_string);
+                }
+                else{
+                    settings.search_string = flagArgs[parseCount];
+                }
         }
         else{
             logError(ERROR, "Invalid flag '%s' detected, skipping.", flagArgs[parseCount]);
