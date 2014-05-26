@@ -84,7 +84,7 @@ int parseArgs(char **flagArgs, int flagCount){
                 settings.output_file = flagArgs[parseCount];
         }
         else{
-            logError(ERROR, "Invalid flag '%s' detected, skipping.", flagArgs[parseCount]);
+            logError(WARNING, "Invalid flag '%s' detected, skipping.", flagArgs[parseCount]);
         }
     }
     return 0;
