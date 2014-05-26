@@ -1,7 +1,7 @@
 /***************************************************************************/
 /*                                                                         */
 /*                               ErrorLog.c                                */
-/* Original code written by Daniel Hawkins. Last modified on 2014-05-21.   */
+/* Original code written by Daniel Hawkins. Last modified on 2014-05-25.   */
 /*                                                                         */
 /* The file defines the functions for logging errors.                      */
 /*                                                                         */
@@ -12,7 +12,7 @@
 #include <time.h>
 #include <stdarg.h>
 
-const char *ERROR_TYPE_CHARS[4] = {"BUG", "DEBUG", "INFO", "ERROR"};
+const char *ERROR_TYPE_CHARS[] = {"DEBUG", "INFO", "WARNING", "ERROR", "FATAL"};
 const char *MONTH[12] = {"January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"};
 
 int logError(enum errorType err, const char *msg, ...){
