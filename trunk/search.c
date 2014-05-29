@@ -17,6 +17,13 @@
 
 #define BIG_BUFFER 9000
 
+/**
+ * Searches a given string (usually a line of text from a file) for the search string.
+ *
+ * @param searchIn the string to search
+ *
+ * @return The postion in the string where the search string was found, or -1 if it wasn't.
+ */
 int findIn(const char *searchIn){
     register int searchInLen = strlen(searchIn);
     register int searchForLen = strlen(settings.search_string);
@@ -31,6 +38,17 @@ int findIn(const char *searchIn){
     return -1;
 }
 
+/**
+ * Traverses through the directory tree of the designated root directory of the search.
+ * Opens files to search along the way and searches them for the desired search string.
+ *
+ * @param dirPath The directory being searched.
+ *
+ * @retval 1 Could not open the directory.
+ * @retval 0 Successfully parsed directory.
+ *
+ * @todo utilize return value or make void
+ */
 int searchFolder(const char *dirPath){
     DIR *mapsDirectory = opendir(dirPath);
     if (mapsDirectory){

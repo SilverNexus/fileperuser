@@ -16,6 +16,19 @@
 const char *ERROR_TYPE_CHARS[] = {"DEBUG", "INFO", "WARNING", "ERROR", "FATAL"};
 const char *MONTH[12] = {"January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"};
 
+/**
+ * Logs a message that is printed and, if urgent enough, printed to the log file.
+ *
+ * @param err The urgency of the message. Referred to as the log level in most cases.
+ *
+ * @param msg The message to be written
+ *
+ * @retval 0 Log operation successful.
+ *
+ * @retval 1 Could not open the log file.
+ *
+ * @todo Make void? I just ignore the returned result anyway.
+ */
 int log_event(enum errorType err, const char *msg, ...){
        char fnMsg[10000];
        va_list ap;
@@ -33,7 +46,7 @@ int log_event(enum errorType err, const char *msg, ...){
            if (ErrorFile)
                 fprintf(ErrorFile, "%2i %s %4i %02i:%02i:%02i: %s: %s\n", date->tm_mday, MONTH[date->tm_mon], date->tm_year+1900, date->tm_hour, date->tm_min, date->tm_sec, ERROR_TYPE_CHARS[err], fnMsg);
            else{
-                puts("ERROR: Could not open log file. Errors will not be logged.");
+                fputs("ERROR: Could not open log file. Errors will not be logged.", stderr);
                 return 1;
            }
            fclose(ErrorFile);
