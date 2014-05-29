@@ -1,7 +1,7 @@
 /***************************************************************************/
 /*                                                                         */
 /*                               dir_list.c                                */
-/* Original code written by Daniel Hawkins. Last modified on 2014-05-22.   */
+/* Original code written by Daniel Hawkins. Last modified on 2014-05-29.   */
 /*                                                                         */
 /* The file defines the functions for handling the dir_list structure.     */
 /*                                                                         */
@@ -21,7 +21,7 @@
 DIR_LIST *init_dir_node(char *directory){
     DIR_LIST *new_node = (DIR_LIST *)malloc(sizeof(DIR_LIST));
     if (!new_node){
-        logError(ERROR, "Could not allocate space for directory %s", directory);
+        log_event(ERROR, "Could not allocate space for directory %s", directory);
         return 0;
     }
     new_node->dir = directory;
@@ -44,7 +44,7 @@ DIR_LIST *init_dir_node(char *directory){
  */
 int link_dir_node(DIR_LIST *toLink, DIR_LIST **current_list){
     if (!toLink){
-        logError(ERROR, "Trying to link nonexistent directory node to current list.");
+        log_event(ERROR, "Trying to link nonexistent directory node to current list.");
         return -1;
     }
     toLink->next = *current_list;
@@ -66,12 +66,12 @@ int link_dir_node(DIR_LIST *toLink, DIR_LIST **current_list){
  */
 DIR_LIST *free_dir_node(DIR_LIST *freeMe, DIR_LIST *before){
     if (!freeMe){
-        logError(ERROR, "Trying to free node that doesn't exist.");
+        log_event(ERROR, "Trying to free node that doesn't exist.");
         return 0;
     }
     DIR_LIST *head = 0;
     if (!before){
-        logError(DEBUG, "No node before node being freed.");
+        log_event(DEBUG, "No node before node being freed.");
         head = freeMe->next;
     }
     else{

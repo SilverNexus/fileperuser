@@ -1,7 +1,7 @@
 /***************************************************************************/
 /*                                                                         */
 /*                                search.c                                 */
-/* Original code written by Daniel Hawkins. Last modified on 2014-05-28.   */
+/* Original code written by Daniel Hawkins. Last modified on 2014-05-29.   */
 /*                                                                         */
 /* The file defines the searching functions.                               */
 /*                                                                         */
@@ -58,7 +58,7 @@ int searchFolder(const char *dirPath){
                 }
             }
             else{
-                printf("Searching for '%s' in %s.\n", settings.search_string, currentDir);
+                log_event(INFO, "Searching for '%s' in %s.", settings.search_string, currentDir);
                 FILE *mapFile;
                 mapFile = fopen(currentDir, "r");
                 if (mapFile){
@@ -75,7 +75,7 @@ int searchFolder(const char *dirPath){
                             }
                             // Error out if load failed
                             if (!outputFile){
-                                logError(ERROR, "Could not open '%s' for writing.", settings.output_file);
+                                log_event(ERROR, "Could not open '%s' for writing.", settings.output_file);
                                 break;
                             }
                             // There is no reason to print it to the screen - you not going to see anything in the swirling mass of text flying by
@@ -88,13 +88,13 @@ int searchFolder(const char *dirPath){
                     fclose(mapFile);
                 }
                 else{
-                    logError(ERROR, "Failed to open file %s.", currentDir);
+                    log_event(ERROR, "Failed to open file %s.", currentDir);
                 }
             }
         }
     }
     else{
-        logError(ERROR, "Could not open directory %s.", dirPath);
+        log_event(ERROR, "Could not open directory %s.", dirPath);
         return 1;
     }
     closedir(mapsDirectory);

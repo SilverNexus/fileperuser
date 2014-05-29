@@ -1,3 +1,11 @@
+2014-05-29	SilverNexus
+	* settings.h: Add field to store minimum log level that writes to file.
+	* settings.c: Set default minimum log level to WARNING.
+	* parseArgs.c: Add -l and --loglevel flags to valid flags.
+	* ErrorLog.c: Add parsing to evaluate log level.
+	* main.c, dir_list.c, ErrorLog.h, search.c: Change name of logging function.
+	* Makefile: Change optimization to -Ofast.
+
 2014-05-23	SilverNexus
 	* settings.h: Add output_file field for custom output file location.
 	* settings.c: Set a default value for output_file.

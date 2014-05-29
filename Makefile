@@ -1,7 +1,7 @@
 CC     = gcc -std=gnu99
 OBJ    = ErrorLog.o main.o parseArgs.o settings.o dir_list.o search.o
 BIN    = FilePeruser
-CFLAGS = -O3 -Wall -Wextra -Wmain
+CFLAGS = -Ofast -Wall -Wextra -Wmain
 RM     = rm -f
 
 .PHONY: all all-before all-after clean clean-custom cleanall
