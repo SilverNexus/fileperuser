@@ -3,13 +3,15 @@ FilePeruser User Guide
 ----------------------
 
 1. Usage:
-       ./FilePeruser [search string] -d [root directory] [flags]
+       ./FilePeruser -s [search string] -d [root directory] [flags]
    Valid flags:
        -h or --help: prints help and exits program
        -x or --exclude: next argument is a directory to exclude
        -d or --dir: next argument is the root directory of the search
        -s or --search: next argument is the search string
        -o or --output: next argument is the output file name
+       -l or --loglevel: next argument is integer representing
+                         minimum log level to be written to file.
    Notes:
        all spaces in [search string], [root directory], and any excluded
            directories must be properly escaped to function properly
@@ -17,6 +19,13 @@ FilePeruser User Guide
            multiple directories from the search
        -d and --dir can be used as many times as necessary to add root
            directories to the search
+       -l and --loglevel should have an integer following. The values
+           are as follows:
+               0: DEBUG
+               1: INFO
+               2: WARNING (default level)
+               3: ERROR
+               4: FATAL
 
 2. Requirements:
        - A C compiler with dirent.h and sys/types.h (something at least partly POSIX-compliant)

@@ -15,7 +15,7 @@
 #include "settings.h"
 #include <ctype.h>
 
-/*
+/**
  * Parses flags that alter program behavior
  *
  * @param flagArgs The flag arguments to parse
@@ -28,12 +28,10 @@
  * @retval 1 Flags are correct, but only show help.
  *
  * @retval -1 Invalid flags detected.
- *
- * @todo Integrate parsing of search directory and search string into this
  */
 int parseArgs(char **flagArgs, int flagCount){
     // Parse each argument that shows up
-    for (int parseCount = 0; parseCount < flagCount; parseCount++){
+    for (register int parseCount = 0; parseCount < flagCount; parseCount++){
         if (strcmp(flagArgs[parseCount], "-h") == 0 ||
             strcmp(flagArgs[parseCount], "--help") == 0){
                 puts("Usage:\n");

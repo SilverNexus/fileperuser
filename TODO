@@ -2,15 +2,12 @@ Known bugs:
     - If the search includes the output file where the search
     results are stored, it will find entries in the file until
     you run out of hard drive space.
-    - The help flag must be preceded by the search string
 
 Future plans:
-    - Transfer parsing of all args to parseArgs (rather than
-    only flags). This should solve the help flag bug above.
     - Add case sensitive and case insensitive searches.
     Right now, all searches are case sensitive.
     - Maybe build the Makefile with autotools. It would make
     some maintenance a lot less work.
-    - Add install targets to Makefile, so the program winds
-    up executable from the system path
+    - Add install targets to Makefile, so the program is
+    executable from the system path
     - Add support for regular expressions
