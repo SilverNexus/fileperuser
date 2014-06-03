@@ -97,6 +97,12 @@ int parseArgs(char **flagArgs, int flagCount){
     return 0;
 }
 
+/**
+ * Prints the help message for the program and exits.
+ *
+ * @warning This function exits the program at the end,
+ * so don't call it if you intend to still continue the program.
+ */
 void help_message(){
     puts("Usage:");
     puts("  ./MapChecker -s [search string] -d [directory] <flags>\n");
@@ -108,6 +114,5 @@ void help_message(){
     puts("  -x --exclude [directory]  Excludes [directory] from the search.");
     puts("  -o --output [filename]    Sets the name of the output file. Default is searchResults.txt.");
     puts("  -l --loglevel [level]     Sets the minimum log level to be recorded to file. Must be an integer. Default is 2 (WARNING).");
-    // If help, don't actually run the program
     exit(0);
 }
