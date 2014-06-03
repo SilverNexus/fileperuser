@@ -1,3 +1,8 @@
+2014-06-03	SilverNexus
+	* parseArgs.h: Add a function prototype for a universal help message.
+	* parseArgs.c: Move the help message to its own function.
+	* main.c: Make improper argument usage cause the program to print help and exit.
+
 2014-05-29	SilverNexus
 	* settings.h: Add field to store minimum log level that writes to file.
 	* settings.c: Set default minimum log level to WARNING.
