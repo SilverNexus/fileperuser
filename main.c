@@ -1,7 +1,7 @@
 /***************************************************************************/
 /*                                                                         */
 /*                                 main.c                                  */
-/* Original code written by Daniel Hawkins. Last modified on 2014-05-29.   */
+/* Original code written by Daniel Hawkins. Last modified on 2014-06-03.   */
 /*                                                                         */
 /* The file defines the main function and several searching functions.     */
 /*                                                                         */
@@ -21,6 +21,7 @@ int main(int argc, char *argv[]){
         if (parse_results == -1){
             log_event(FATAL, "Invalid arguments discovered.");
             free_settings();
+            help_message();
             return 1;
         }
         // If execution was for usage info, exit here
@@ -46,7 +47,7 @@ int main(int argc, char *argv[]){
         free_settings();
     }
     else{
-        log_event(FATAL, "MapChecker requires arguments: ./MapChecker -s <search string> -d <path to folder to search in> [flags].");
+        help_message();
         return 1;
     }
     return 0;

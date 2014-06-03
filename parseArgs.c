@@ -1,7 +1,7 @@
 /***************************************************************************/
 /*                                                                         */
 /*                              parseArgs.c                                */
-/* Original code written by Daniel Hawkins. Last modified on 2014-05-29.   */
+/* Original code written by Daniel Hawkins. Last modified on 2014-06-03.   */
 /*                                                                         */
 /* The file defines the argument parsing functions.                        */
 /*                                                                         */
@@ -34,17 +34,7 @@ int parseArgs(char **flagArgs, int flagCount){
     for (register int parseCount = 0; parseCount < flagCount; parseCount++){
         if (strcmp(flagArgs[parseCount], "-h") == 0 ||
             strcmp(flagArgs[parseCount], "--help") == 0){
-                puts("Usage:\n");
-                puts("\t./MapChecker -s [search string] -d [directory] <flags>\n\n");
-                puts("Valid Flags:\n");
-                puts("\t-h --help\t\t\t\tPrints this help message.\n");
-                puts("\t-x --exclude [directory]\tExcludes [directory] from the search.\n");
-                puts("\t-d --dir [directory]\t\tSets root directory of the search.\n");
-                puts("\t-s --search [phrase]\t\t\tSets the string to be search.\n");
-                puts("\t-o --output [filename]\t\t\tSets the name of the output file. Default is searchResults.txt.\n");
-                puts("\t-l --loglevel [level]\t\t\tSets the minimum log level to be recorded to file. Must be an integer. Default is 2 (WARNING).\n");
-                // If help, don't actually run the program
-                return 1;
+                help_message();
         }
         else if (strcmp(flagArgs[parseCount], "-x") == 0 ||
             strcmp(flagArgs[parseCount], "--exclude") == 0){
@@ -105,4 +95,19 @@ int parseArgs(char **flagArgs, int flagCount){
         }
     }
     return 0;
+}
+
+void help_message(){
+    puts("Usage:");
+    puts("  ./MapChecker -s [search string] -d [directory] <flags>\n");
+    puts("Required Arguments:");
+    puts("  -d --dir [directory]      Sets root directory of the search.");
+    puts("  -s --search [phrase]      Sets the string to be searched.\n");
+    puts("Valid Flags:");
+    puts("  -h --help                 Prints this help message.");
+    puts("  -x --exclude [directory]  Excludes [directory] from the search.");
+    puts("  -o --output [filename]    Sets the name of the output file. Default is searchResults.txt.");
+    puts("  -l --loglevel [level]     Sets the minimum log level to be recorded to file. Must be an integer. Default is 2 (WARNING).");
+    // If help, don't actually run the program
+    exit(0);
 }
