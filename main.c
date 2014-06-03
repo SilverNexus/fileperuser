@@ -22,7 +22,6 @@ int main(int argc, char *argv[]){
             log_event(FATAL, "Invalid arguments discovered.");
             free_settings();
             help_message();
-            return 1;
         }
         // If execution was for usage info, exit here
         else if (parse_results == 1){
@@ -48,7 +47,6 @@ int main(int argc, char *argv[]){
     }
     else{
         help_message();
-        return 1;
     }
     return 0;
 }
