@@ -1,7 +1,7 @@
 /***************************************************************************/
 /*                                                                         */
 /*                               ErrorLog.c                                */
-/* Original code written by Daniel Hawkins. Last modified on 2014-05-29.   */
+/* Original code written by Daniel Hawkins. Last modified on 2014-06-04.   */
 /*                                                                         */
 /* The file defines the functions for logging errors.                      */
 /*                                                                         */
