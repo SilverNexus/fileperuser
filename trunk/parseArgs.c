@@ -1,7 +1,7 @@
 /***************************************************************************/
 /*                                                                         */
 /*                              parseArgs.c                                */
-/* Original code written by Daniel Hawkins. Last modified on 2014-06-03.   */
+/* Original code written by Daniel Hawkins. Last modified on 2014-06-04.   */
 /*                                                                         */
 /* The file defines the argument parsing functions.                        */
 /*                                                                         */
@@ -24,8 +24,6 @@
  * Includes variables for specific flags in the count.
  *
  * @retval 0 Flags are correct and intend execution.
- *
- * @retval 1 Flags are correct, but only show help.
  *
  * @retval -1 Invalid flags detected.
  */

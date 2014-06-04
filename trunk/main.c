@@ -1,7 +1,7 @@
 /***************************************************************************/
 /*                                                                         */
 /*                                 main.c                                  */
-/* Original code written by Daniel Hawkins. Last modified on 2014-06-03.   */
+/* Original code written by Daniel Hawkins. Last modified on 2014-06-04.   */
 /*                                                                         */
 /* The file defines the main function and several searching functions.     */
 /*                                                                         */
@@ -23,11 +23,6 @@ int main(int argc, char *argv[]){
         int parse_results = parseArgs(argv + 1, argc - 1);
         if (parse_results == -1){
             help_message();
-        }
-        // If execution was for usage info, exit here
-        else if (parse_results == 1){
-            free_settings();
-            return 0;
         }
         // If no arguments set the root directory, error out
         if (!settings.root_dirs)
