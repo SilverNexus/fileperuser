@@ -12,15 +12,16 @@
 #include "ErrorLog.h"
 #include "parseArgs.h"
 #include "settings.h"
+#include <stdlib.h>
 
 int main(int argc, char *argv[]){
     if (argc >= 3){
         init_settings();
+        // Register free_settings to clean up at exit
+        atexit((void *)free_settings);
         // argv[0] is the executable name, which I don't need.
         int parse_results = parseArgs(argv + 1, argc - 1);
         if (parse_results == -1){
-            log_event(FATAL, "Invalid arguments discovered.");
-            free_settings();
             help_message();
         }
         // If execution was for usage info, exit here
@@ -29,11 +30,8 @@ int main(int argc, char *argv[]){
             return 0;
         }
         // If no arguments set the root directory, error out
-        if (!settings.root_dirs){
+        if (!settings.root_dirs)
             log_event(FATAL, "No root directory specified in search.");
-            free_settings();
-            return 1;
-        }
         // Remove any existing results file by this name
         remove(settings.output_file);
         // Begin the search
@@ -43,7 +41,7 @@ int main(int argc, char *argv[]){
             thisDir = thisDir->next;
         }
         log_event(INFO, "The matches have been stored in %s.", settings.output_file);
-        free_settings();
+        exit(EXIT_SUCCESS);
     }
     else{
         help_message();

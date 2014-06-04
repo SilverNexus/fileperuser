@@ -114,5 +114,5 @@ void help_message(){
     puts("  -x --exclude [directory]  Excludes [directory] from the search.");
     puts("  -o --output [filename]    Sets the name of the output file. Default is searchResults.txt.");
     puts("  -l --loglevel [level]     Sets the minimum log level to be recorded to file. Must be an integer. Default is 2 (WARNING).");
-    exit(0);
+    exit(EXIT_SUCCESS);
 }
