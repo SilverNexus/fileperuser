@@ -12,6 +12,7 @@
 #include <stdio.h>
 #include <time.h>
 #include <stdarg.h>
+#include <stdlib.h>
 
 const char *ERROR_TYPE_CHARS[] = {"DEBUG", "INFO", "WARNING", "ERROR", "FATAL"};
 const char *MONTH[12] = {"January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"};
@@ -26,6 +27,8 @@ const char *MONTH[12] = {"January", "February", "March", "April", "May", "June",
  * @retval 0 Log operation successful.
  *
  * @retval 1 Could not open the log file.
+ *
+ * @warning If errorType err is FATAL, will exit the program.
  *
  * @todo Make void? I just ignore the returned result anyway.
  */
@@ -51,5 +54,7 @@ int log_event(enum errorType err, const char *msg, ...){
            }
            fclose(ErrorFile);
        }
+       if (err == FATAL)
+           exit(EXIT_FAILURE);
        return 0;
 }

@@ -1,3 +1,8 @@
+2014-06-04	SilverNexus
+	* ErrorLog.c: Make a FATAL error exit the program directly.
+	* main.c: Register free_settings with atexit library function.
+	* parseArgs.c: Change exit(0) to exit(EXIT_SUCCESS).
+
 2014-06-03	SilverNexus
 	* parseArgs.h: Add a function prototype for a universal help message.
 	* parseArgs.c: Move the help message to its own function.
