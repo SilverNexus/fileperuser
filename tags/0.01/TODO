@@ -1,0 +1,13 @@
+Known bugs:
+    - If the search includes the output file where the search
+    results are stored, it will find entries in the file until
+    you run out of hard drive space.
+
+Future plans:
+    - Add case sensitive and case insensitive searches.
+    Right now, all searches are case sensitive.
+    - Maybe build the Makefile with autotools. It would make
+    some maintenance a lot less work.
+    - Add install targets to Makefile, so the program is
+    executable from the system path
+    - Add support for regular expressions

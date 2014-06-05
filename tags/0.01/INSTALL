@@ -1,0 +1,12 @@
+-------------------------------------
+FilePeruser Installation Instructions
+-------------------------------------
+
+1. Verify you meet the requirements in the README.
+2. Follow these steps:
+    a. cd to program directory (an "open terminal here" tool works, too)
+    b. type "make"
+    c. watch the compilation complete
+    d. use the program
+    Note: As of now, the program does not install to any directory.
+        It simply compiles in the source directory.
