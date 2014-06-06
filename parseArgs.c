@@ -103,7 +103,7 @@ int parseArgs(char **flagArgs, int flagCount){
  */
 void help_message(){
     puts("Usage:");
-    puts("  ./MapChecker -s [search string] -d [directory] <flags>\n");
+    puts("  fileperuser -s [search string] -d [directory] <flags>\n");
     puts("Required Arguments:");
     puts("  -d --dir [directory]      Sets root directory of the search.");
     puts("  -s --search [phrase]      Sets the string to be searched.\n");

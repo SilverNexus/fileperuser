@@ -3,7 +3,7 @@ FilePeruser User Guide
 ----------------------
 
 1. Usage:
-       ./FilePeruser -s [search string] -d [root directory] [flags]
+       fileperuser -s [search string] -d [root directory] [flags]
    Valid flags:
        -h or --help: prints help and exits program
        -x or --exclude: next argument is a directory to exclude
