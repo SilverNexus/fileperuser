@@ -6,8 +6,4 @@ Known bugs:
 Future plans:
     - Add case sensitive and case insensitive searches.
     Right now, all searches are case sensitive.
-    - Maybe build the Makefile with autotools. It would make
-    some maintenance a lot less work.
-    - Add install targets to Makefile, so the program is
-    executable from the system path
     - Add support for regular expressions
