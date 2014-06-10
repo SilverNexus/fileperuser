@@ -1,7 +1,7 @@
 /***************************************************************************/
 /*                                                                         */
 /*                               settings.h                                */
-/* Original code written by Daniel Hawkins. Last modified on 2014-06-09.   */
+/* Original code written by Daniel Hawkins. Last modified on 2014-06-10.   */
 /*                                                                         */
 /* The file defines the structures for handling important variables.       */
 /*                                                                         */
@@ -21,7 +21,7 @@ struct {
      * Declare the length out here to reduce calls to strlen
      * in the search. Before it recalculated with every line
      */
-    unsigned int search_string_len;
+    int search_string_len;
 
     char *output_file;
     enum errorType min_log_level;
