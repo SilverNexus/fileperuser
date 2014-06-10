@@ -1,7 +1,7 @@
 /***************************************************************************/
 /*                                                                         */
 /*                                search.c                                 */
-/* Original code written by Daniel Hawkins. Last modified on 2014-05-29.   */
+/* Original code written by Daniel Hawkins. Last modified on 2014-06-09.   */
 /*                                                                         */
 /* The file defines the searching functions.                               */
 /*                                                                         */
@@ -26,11 +26,10 @@
  */
 int findIn(const char *searchIn){
     register int searchInLen = strlen(searchIn);
-    register int searchForLen = strlen(settings.search_string);
-    for (register int startAt = 0; startAt <= searchInLen - searchForLen; startAt++){
+    for (register int startAt = 0; startAt <= searchInLen - settings.search_string_len; startAt++){
         // Add condition to speed up searches -- only even try to find if first character matches
         if (*(searchIn + startAt) == *settings.search_string){
-            if (strncmp(searchIn + startAt, settings.search_string, searchForLen) == 0){
+            if (strncmp(searchIn + startAt, settings.search_string, settings.search_string_len) == 0){
                 return startAt;
             }
         }
