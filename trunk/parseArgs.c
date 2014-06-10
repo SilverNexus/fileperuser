@@ -1,7 +1,7 @@
 /***************************************************************************/
 /*                                                                         */
 /*                              parseArgs.c                                */
-/* Original code written by Daniel Hawkins. Last modified on 2014-06-09.   */
+/* Original code written by Daniel Hawkins. Last modified on 2014-06-10.   */
 /*                                                                         */
 /* The file defines the argument parsing functions.                        */
 /*                                                                         */
@@ -62,7 +62,7 @@ int parseArgs(char **flagArgs, int flagCount){
                 }
                 else{
                     settings.search_string = flagArgs[parseCount];
-                    settings.search_string_len = strlen(flagArgs[parseCount]);
+                    settings.search_string_len = strlen(settings.search_string);
                 }
         }
         else if (strcmp(flagArgs[parseCount], "-o") == 0 ||
