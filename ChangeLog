@@ -1,3 +1,9 @@
+2014-06-09	SilverNexus
+	* settings.h: Add field for length of search string.
+	* settings.c: Initialize search string length.
+	* parseArgs.c: Calculate length at assignment of search string.
+	* search.c: Remove old length calculation in every line searched.
+
 2014-06-05	SilverNexus
 	* Makefile.am,
 	* configure.ac,
