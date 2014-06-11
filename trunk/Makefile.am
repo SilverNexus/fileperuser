@@ -12,4 +12,4 @@ fileperuser_SOURCES =\
 	settings.c\
 	parseArgs.c
 
-AM_CFLAGS = --std=gnu99
+AM_CFLAGS = -std=gnu99
