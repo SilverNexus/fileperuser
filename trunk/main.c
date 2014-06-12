@@ -42,7 +42,7 @@ int main(int argc, char *argv[]){
         time_t end_time = time(0);
         // Don't give the logger a chance to repress this message, so just print from here
         printf("Search completed in %i seconds.\n", (int)(end_time - start_time));
-        log_event(INFO, "The matches have been stored in %s.", settings.output_file);
+        printf("The matches have been stored in %s.\n", settings.output_file);
         exit(EXIT_SUCCESS);
     }
     else{
