@@ -1,7 +1,7 @@
 /***************************************************************************/
 /*                                                                         */
 /*                                 main.c                                  */
-/* Original code written by Daniel Hawkins. Last modified on 2014-06-04.   */
+/* Original code written by Daniel Hawkins. Last modified on 2014-06-11.   */
 /*                                                                         */
 /* The file defines the main function and several searching functions.     */
 /*                                                                         */
@@ -13,6 +13,7 @@
 #include "parseArgs.h"
 #include "settings.h"
 #include <stdlib.h>
+#include <time.h>
 
 int main(int argc, char *argv[]){
     if (argc >= 3){
@@ -29,12 +30,18 @@ int main(int argc, char *argv[]){
             log_event(FATAL, "No root directory specified in search.");
         // Remove any existing results file by this name
         remove(settings.output_file);
+        // Time the search -- start timing
+        time_t start_time = time(0);
         // Begin the search
         DIR_LIST *thisDir = settings.root_dirs;
         while (thisDir){
             searchFolder(thisDir->dir);
             thisDir = thisDir->next;
         }
+        // end timing
+        time_t end_time = time(0);
+        // Don't give the logger a chance to repress this message, so just print from here
+        printf("Search completed in %i seconds.\n", (int)(end_time - start_time));
         log_event(INFO, "The matches have been stored in %s.", settings.output_file);
         exit(EXIT_SUCCESS);
     }
