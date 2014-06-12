@@ -1,7 +1,7 @@
 /***************************************************************************/
 /*                                                                         */
 /*                              parseArgs.c                                */
-/* Original code written by Daniel Hawkins. Last modified on 2014-06-10.   */
+/* Original code written by Daniel Hawkins. Last modified on 2014-06-11.   */
 /*                                                                         */
 /* The file defines the argument parsing functions.                        */
 /*                                                                         */
@@ -88,6 +88,22 @@ int parseArgs(char **flagArgs, int flagCount){
                     }
                 }
                 settings.min_log_level = atoi(flagArgs[parseCount]);
+        }
+        else if (strcmp(flagArgs[parseCount], "-p") == 0 ||
+            strcmp(flagArgs[parseCount], "--printlevel") == 0){
+                if (++parseCount == flagCount){
+                    log_event(ERROR, "%s flag needs a print level.", flagArgs[parseCount - 1]);
+                    return -1;
+                }
+                // Make sure the value is numeric
+                int checkNum = strlen(flagArgs[parseCount]);
+                for (int check = 0; check < checkNum; check++){
+                    if (!isdigit(flagArgs[parseCount][check])){
+                        log_event(ERROR, "%s flag expected numeric print level, got %s.", flagArgs[parseCount - 1], flagArgs[parseCount]);
+                        return -1;
+                    }
+                }
+                settings.min_print_level = atoi(flagArgs[parseCount]);
         }
         else{
             log_event(WARNING, "Invalid flag '%s' detected, skipping.", flagArgs[parseCount]);

@@ -1,7 +1,7 @@
 /***************************************************************************/
 /*                                                                         */
 /*                               settings.h                                */
-/* Original code written by Daniel Hawkins. Last modified on 2014-06-10.   */
+/* Original code written by Daniel Hawkins. Last modified on 2014-06-11.   */
 /*                                                                         */
 /* The file defines the structures for handling important variables.       */
 /*                                                                         */
@@ -25,6 +25,7 @@ struct {
 
     char *output_file;
     enum errorType min_log_level;
+    enum errorType min_print_level;
 } settings;
 
 int init_settings();

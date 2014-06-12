@@ -10,8 +10,10 @@ FilePeruser User Guide
        -d or --dir: next argument is the root directory of the search
        -s or --search: next argument is the search string
        -o or --output: next argument is the output file name
-       -l or --loglevel: next argument is integer representing
+       -l or --loglevel: next argument is an integer representing
                          minimum log level to be written to file.
+       -p or --printlevel: next argument is an integer representing
+                         minimum level of log message to be printed.
    Notes:
        all spaces in [search string], [root directory], and any excluded
            directories must be properly escaped to function properly
@@ -19,11 +21,11 @@ FilePeruser User Guide
            multiple directories from the search
        -d and --dir can be used as many times as necessary to add root
            directories to the search
-       -l and --loglevel should have an integer following. The values
+       -p, --printlevel, -l and --loglevel should have an integer following. The values
            are as follows:
                0: DEBUG
-               1: INFO
-               2: WARNING (default level)
+               1: INFO (default print level)
+               2: WARNING (default log level)
                3: ERROR
                4: FATAL
 
