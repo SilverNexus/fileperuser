@@ -18,6 +18,10 @@
 	* configure.ac,
 	* autogen.sh: use autotools as part of build process
 
+-----------------------------------------------------------------------------------------
+                                      Changes for 0.01
+-----------------------------------------------------------------------------------------
+
 2014-06-04	SilverNexus
 	* ErrorLog.c: Make a FATAL error exit the program directly.
 	* main.c: Register free_settings with atexit library function.
