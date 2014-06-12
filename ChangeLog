@@ -1,3 +1,6 @@
+2014-06-11	SilverNexus
+	* main.c: Add functionality that times the search.
+
 2014-06-09	SilverNexus
 	* settings.h: Add field for length of search string.
 	* settings.c: Initialize search string length.
