@@ -1,4 +1,10 @@
 2014-06-11	SilverNexus
+	* parseArgs.c: Added support for log message suppression.
+	* settings.h: Added setting for log message suppression.
+	* settings.c: Default suppression level is below INFO.
+	* ErrorLog.c: Check minimum print level before printing log message.
+
+2014-06-11	SilverNexus
 	* main.c: Add functionality that times the search.
 
 2014-06-09	SilverNexus
