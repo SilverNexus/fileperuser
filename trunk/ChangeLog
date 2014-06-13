@@ -1,3 +1,6 @@
+2014-06-12	SilverNexus
+	* main.c: Made final message vary for when match are and are not found.
+
 2014-06-11	SilverNexus
 	* parseArgs.c: Added support for log message suppression.
 	* settings.h: Added setting for log message suppression.
