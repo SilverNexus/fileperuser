@@ -1,7 +1,7 @@
 /***************************************************************************/
 /*                                                                         */
 /*                               settings.c                                */
-/* Original code written by Daniel Hawkins. Last modified on 2014-06-11.   */
+/* Original code written by Daniel Hawkins. Last modified on 2014-06-14.   */
 /*                                                                         */
 /* The file defines the functions for handling settings.                   */
 /*                                                                         */
@@ -26,7 +26,7 @@ int init_settings(){
     settings.output_file = "searchResults.txt";
     // Only log warning and higher by default
     settings.min_log_level = WARNING;
-    settings.min_print_level = INFO;
+    settings.min_print_level = WARNING;
     return 0;
 }
 
