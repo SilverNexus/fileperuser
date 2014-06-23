@@ -3,7 +3,7 @@ FilePeruser User Guide
 ----------------------
 
 1. Usage:
-       fileperuser -s [search string] -d [root directory] [flags]
+       fileperuser -s [search string] [flags]
    Valid flags:
        -h or --help: prints help and exits program
        -x or --exclude: next argument is a directory to exclude
@@ -20,7 +20,7 @@ FilePeruser User Guide
        -x and --exclude can be used as many times as necessary to exclude
            multiple directories from the search
        -d and --dir can be used as many times as necessary to add root
-           directories to the search
+           directories to the search, or none at all to search current directory
        -p, --printlevel, -l and --loglevel should have an integer following. The values
            are as follows:
                0: DEBUG

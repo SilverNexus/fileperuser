@@ -25,9 +25,11 @@ int main(int argc, char *argv[]){
         if (parse_results == -1){
             help_message();
         }
-        // If no arguments set the root directory, error out
-        if (!settings.root_dirs)
-            log_event(FATAL, "No root directory specified in search.");
+        // Root directory defaults to current directory, so set if not set in args
+        if (!settings.root_dirs){
+            add_root_dir(".");
+            log_event(INFO, "No root directory specified in search, setting to './'.");
+        }
         // Remove any existing results file by this name
         remove(settings.output_file);
         // Time the search -- start timing
