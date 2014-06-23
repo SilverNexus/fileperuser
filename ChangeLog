@@ -1,3 +1,6 @@
+2014-06-23	SilverNexus
+	* main.c: Make default search directory be current directory.
+
 2014-06-12	SilverNexus
 	* main.c: Made final message vary for when match are and are not found.
 
