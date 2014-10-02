@@ -1,7 +1,7 @@
 /***************************************************************************/
 /*                                                                         */
 /*                               ErrorLog.c                                */
-/* Original code written by Daniel Hawkins. Last modified on 2014-06-11.   */
+/* Original code written by Daniel Hawkins. Last modified on 2014-10-01.   */
 /*                                                                         */
 /* The file defines the functions for logging errors.                      */
 /*                                                                         */
@@ -32,10 +32,10 @@ const char *MONTH[12] = {"January", "February", "March", "April", "May", "June",
  *
  * @todo Make void? I just ignore the returned result anyway.
  */
-int log_event(enum errorType err, const char *msg, ...){
+void log_event(enum errorType err, const char *msg, ...){
        // If message is too low of importance to print or log, just skip it all
        if (err < settings.min_log_level && err < settings.min_print_level)
-           return 0;
+           return;
        char fnMsg[10000];
        va_list ap;
        va_start(ap, msg);
@@ -55,11 +55,11 @@ int log_event(enum errorType err, const char *msg, ...){
                 fprintf(ErrorFile, "%2i %s %4i %02i:%02i:%02i: %s: %s\n", date->tm_mday, MONTH[date->tm_mon], date->tm_year+1900, date->tm_hour, date->tm_min, date->tm_sec, ERROR_TYPE_CHARS[err], fnMsg);
            else{
                 fputs("ERROR: Could not open log file. Errors will not be logged.", stderr);
-                return 1;
+                return;
            }
            fclose(ErrorFile);
        }
        if (err == FATAL)
            exit(EXIT_FAILURE);
-       return 0;
+       return;
 }

@@ -1,3 +1,7 @@
+2014-10-01	SilverNexus
+	* ErrorLog.c,
+	  ErrorLog.h: Make log_event function return void, rather than int.
+
 2014-06-23	SilverNexus
 	* main.c: Make default search directory be current directory.
 
