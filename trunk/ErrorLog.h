@@ -1,7 +1,7 @@
 /***************************************************************************/
 /*                                                                         */
 /*                               ErrorLog.h                                */
-/* Original code written by Daniel Hawkins. Last modified on 2014-05-29.   */
+/* Original code written by Daniel Hawkins. Last modified on 2014-10-01.   */
 /*                                                                         */
 /* The file defines the enumeration for the type of error message, and     */
 /* has the function prototype for the errorlogging function.               */
@@ -31,5 +31,5 @@
  ******************************/
 enum errorType{DEBUG = 0, INFO, WARNING, ERROR, FATAL};
 
-int log_event(enum errorType, const char *, ...);
+void log_event(enum errorType, const char *, ...);
 #endif
