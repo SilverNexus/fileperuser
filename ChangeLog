@@ -1,3 +1,7 @@
+2015-01-31  SilverNexus
+    * settings.c,
+      settings.h: Made initialization and release of settings return no values.
+
 2014-12-04	SilverNexus
 	* parseArgs.c: Added the print level message control flags to the help message.
 

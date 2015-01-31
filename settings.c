@@ -1,7 +1,7 @@
 /***************************************************************************/
 /*                                                                         */
 /*                               settings.c                                */
-/* Original code written by Daniel Hawkins. Last modified on 2014-06-14.   */
+/* Original code written by Daniel Hawkins. Last modified on 2015-01-31.   */
 /*                                                                         */
 /* The file defines the functions for handling settings.                   */
 /*                                                                         */
@@ -12,13 +12,9 @@
 #include "dir_list.h"
 
 /**
- * initializes the settings to their default values.
- *
- * @retval 0 Successful initalization.
- *
- * @todo make void? There is no way to fail as of yet.
+ * Initializes the settings to their default values.
  */
-int init_settings(){
+void init_settings(){
     settings.excluded_directories = 0;
     settings.root_dirs = 0;
     settings.search_string = 0;
@@ -27,21 +23,17 @@ int init_settings(){
     // Only log warning and higher by default
     settings.min_log_level = WARNING;
     settings.min_print_level = WARNING;
-    return 0;
+    return;
 }
 
 /**
  * Frees any dynamically allocated units within settings
  * (e.g. any DIR_LIST varaibles)
- *
- * @retval 0 Successful de-initialization.
- *
- * @todo make void? There is no way to fail, and really no way it should ever fail.
  */
-int free_settings(){
+void free_settings(){
     free_dir_list(settings.excluded_directories);
     free_dir_list(settings.root_dirs);
-    return 0;
+    return;
 }
 
 /**
