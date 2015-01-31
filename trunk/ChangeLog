@@ -1,4 +1,11 @@
 2015-01-31  SilverNexus
+    * settings.h: Added Function pointer to allow for case insensitive searching.
+    * settings.c: Set default search to case sensitive.
+    * parseArgs.c: Added -n and --no-case command-line flags for no case searches.
+    * configure.ac: Added check for strncasecmp.
+    * search.c: Changed search function to use pointer in settings.
+
+2015-01-31  SilverNexus
     * settings.c,
       settings.h: Made initialization and release of settings return no values.
 
