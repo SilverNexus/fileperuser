@@ -4,7 +4,7 @@
 # configure.ac file as reference throughout the constuction of this file.
 # --SilverNexus 2014-06-05
 
-AC_INIT([FilePeruser], [0.01], [silvernexus@sourceforge.net])
+AC_INIT([FilePeruser], [0.01-dev], [silvernexus@users.sourceforge.net])
 AC_CONFIG_HEADERS([config.h])
 AC_CONFIG_SRCDIR([./main.c])
 AC_CONFIG_MACRO_DIR([macros])
@@ -39,7 +39,7 @@ AC_STRUCT_TM
 #
 # Library Function Checks
 #
-AC_CHECK_FUNCS([vsnprintf strncmp])
+AC_CHECK_FUNCS([vsnprintf strncmp strncasecmp])
 
 AS_BOX([Generate Output])
 AC_CONFIG_FILES([Makefile])

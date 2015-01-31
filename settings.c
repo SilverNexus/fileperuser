@@ -10,6 +10,7 @@
 #include "settings.h"
 #include "ErrorLog.h"
 #include "dir_list.h"
+#include <string.h>
 
 /**
  * Initializes the settings to their default values.
@@ -19,6 +20,7 @@ void init_settings(){
     settings.root_dirs = 0;
     settings.search_string = 0;
     settings.search_string_len = 0;
+    settings.comp_func = strncmp;
     settings.output_file = "searchResults.txt";
     // Only log warning and higher by default
     settings.min_log_level = WARNING;

@@ -1,7 +1,7 @@
 /***************************************************************************/
 /*                                                                         */
 /*                              parseArgs.c                                */
-/* Original code written by Daniel Hawkins. Last modified on 2014-12-04.   */
+/* Original code written by Daniel Hawkins. Last modified on 2015-01-31.   */
 /*                                                                         */
 /* The file defines the argument parsing functions.                        */
 /*                                                                         */
@@ -105,6 +105,10 @@ int parseArgs(char **flagArgs, int flagCount){
                 }
                 settings.min_print_level = atoi(flagArgs[parseCount]);
         }
+        else if (strcmp(flagArgs[parseCount], "-n") == 0 ||
+            strcmp(flagArgs[parseCount], "--no-case") == 0){
+                settings.comp_func = strncasecmp;
+        }
         else{
             log_event(WARNING, "Invalid flag '%s' detected, skipping.", flagArgs[parseCount]);
         }
@@ -130,5 +134,6 @@ void help_message(){
     puts("  -o --output [filename]    Sets the name of the output file. Default is searchResults.txt.");
     puts("  -l --loglevel [level]     Sets the minimum log level to be recorded to file. Must be an integer. Default is 2 (WARNING).");
     puts("  -p --printlevel [level]   Sets the minimum log level to be displayed on-screen. Must be an integer. Default is 2 (WARNING).");
+    puts("  -n --no-case              Sets the search to be case insensitive.");
     exit(EXIT_SUCCESS);
 }

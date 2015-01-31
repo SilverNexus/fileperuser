@@ -12,6 +12,7 @@
 
 #include "dir_list.h"
 #include "ErrorLog.h"
+#include <stddef.h>
 
 struct {
     DIR_LIST *excluded_directories;
@@ -22,6 +23,12 @@ struct {
      * in the search. Before it recalculated with every line
      */
     int search_string_len;
+
+    /*
+     * Declare the pointer to strncmp or strncasecmp out here,
+      *so I can easily do case sensitive or case-insensitive searches
+     */
+    int (*comp_func)(const char *, const char *, size_t);
 
     char *output_file;
     enum errorType min_log_level;
