@@ -14,6 +14,7 @@ FilePeruser User Guide
                          minimum log level to be written to file.
        -p or --printlevel: next argument is an integer representing
                          minimum level of log message to be printed.
+       -n or --no-case: perform search without case-sensitivity
    Notes:
        all spaces in [search string], [root directory], and any excluded
            directories must be properly escaped to function properly
@@ -31,7 +32,7 @@ FilePeruser User Guide
 
 2. Requirements:
        - A C compiler with dirent.h and sys/types.h (something at least partly POSIX-compliant)
-       
+       - A C compiler with functions strncmp and strncasecmp.
        Note:
            I do not know any more of the system requirements for this program.
            If any more are discovered, add them here.
