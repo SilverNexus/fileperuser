@@ -20,6 +20,8 @@ FilePeruser User Guide
            directories must be properly escaped to function properly
        -x and --exclude can be used as many times as necessary to exclude
            multiple directories from the search
+       -x and --exclude exclude every instance of that folder name, regardless of where
+           in the search it is encountered
        -d and --dir can be used as many times as necessary to add root
            directories to the search, or none at all to search current directory
        -p, --printlevel, -l and --loglevel should have an integer following. The values
