@@ -1,7 +1,7 @@
 /***************************************************************************/
 /*                                                                         */
 /*                              parseArgs.c                                */
-/* Original code written by Daniel Hawkins. Last modified on 2015-01-31.   */
+/* Original code written by Daniel Hawkins. Last modified on 2015-03-10.   */
 /*                                                                         */
 /* The file defines the argument parsing functions.                        */
 /*                                                                         */
@@ -73,6 +73,14 @@ int parseArgs(char **flagArgs, int flagCount){
                 }
                 settings.output_file = flagArgs[parseCount];
         }
+        else if (strcmp(flagArgs[parseCount], "-f") == 0 ||
+            strcmp(flagArgs[parseCount], "--log-file") == 0){
+                if (++parseCount == flagCount){
+                    log_event(ERROR, "%s flag needs a file name.", flagArgs[parseCount - 1]);
+                    return -1;
+                }
+                settings.log_file = flagArgs[parseCount];
+        }
         else if (strcmp(flagArgs[parseCount], "-l") == 0 ||
             strcmp(flagArgs[parseCount], "--loglevel") == 0){
                 if (++parseCount == flagCount){
@@ -131,7 +139,8 @@ void help_message(){
     puts("Valid Flags:");
     puts("  -h --help                 Prints this help message.");
     puts("  -x --exclude [directory]  Excludes [directory] from the search.");
-    puts("  -o --output [filename]    Sets the name of the output file. Default is searchResults.txt.");
+    puts("  -o --output [filename]    Sets the name (and path) of the output file. Default is searchResults.txt.");
+    puts("  -f --log-file [filename]  Sets the name (and path) of the log file. Default is fileperuser.log.");
     puts("  -l --loglevel [level]     Sets the minimum log level to be recorded to file. Must be an integer. Default is 2 (WARNING).");
     puts("  -p --printlevel [level]   Sets the minimum log level to be displayed on-screen. Must be an integer. Default is 2 (WARNING).");
     puts("  -n --no-case              Sets the search to be case insensitive.");

@@ -1,3 +1,11 @@
+2015-03-10  SilverNexus
+    * settings.h: Added field to allow for custom log file names/paths.
+    * settings.c: Set default log file to fileperuser.log.
+    * ErrorLog.c: Drop hardcoded log file name in favor of settings-set one.
+    * parseArgs.c: Established command-line argument to set log file name: -f.
+    * README: Updated usage guide to include the new flags -f and --log-file
+    * TODO: Removed case sensitivity from the future plans (already implemented).
+
 2015-01-31  SilverNexus
     * settings.h: Added Function pointer to allow for case insensitive searching.
     * settings.c: Set default search to case sensitive.

@@ -4,6 +4,4 @@ Known bugs:
     you run out of hard drive space.
 
 Future plans:
-    - Add case sensitive and case insensitive searches.
-    Right now, all searches are case sensitive.
     - Add support for regular expressions

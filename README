@@ -10,6 +10,7 @@ FilePeruser User Guide
        -d or --dir: next argument is the root directory of the search
        -s or --search: next argument is the search string
        -o or --output: next argument is the output file name
+       -f or --log-file: next argument is the log file name.
        -l or --loglevel: next argument is an integer representing
                          minimum log level to be written to file.
        -p or --printlevel: next argument is an integer representing
@@ -42,3 +43,4 @@ FilePeruser User Guide
 3. Philosophies:
        - Code should be robust, yet minimalistic.
        - A GUI is unnecessary for this little program.
+
