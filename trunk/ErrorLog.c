@@ -1,7 +1,7 @@
 /***************************************************************************/
 /*                                                                         */
 /*                               ErrorLog.c                                */
-/* Original code written by Daniel Hawkins. Last modified on 2014-10-01.   */
+/* Original code written by Daniel Hawkins. Last modified on 2015-03-10.   */
 /*                                                                         */
 /* The file defines the functions for logging errors.                      */
 /*                                                                         */
@@ -50,11 +50,11 @@ void log_event(enum errorType err, const char *msg, ...){
            time_t theTime = time(0);
            struct tm *date = localtime(&theTime);
            // Create output file stream object
-           FILE *ErrorFile = fopen("log.txt", "a");
+           FILE *ErrorFile = fopen(settings.log_file, "a");
            if (ErrorFile)
                 fprintf(ErrorFile, "%2i %s %4i %02i:%02i:%02i: %s: %s\n", date->tm_mday, MONTH[date->tm_mon], date->tm_year+1900, date->tm_hour, date->tm_min, date->tm_sec, ERROR_TYPE_CHARS[err], fnMsg);
            else{
-                fputs("ERROR: Could not open log file. Errors will not be logged.", stderr);
+                fputs("ERROR: Could not open log file. Errors will not be logged.\n", stderr);
                 return;
            }
            fclose(ErrorFile);
