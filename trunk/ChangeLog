@@ -1,22 +1,22 @@
 2015-03-10  SilverNexus
-    * settings.h: Added field to allow for custom log file names/paths.
-    * settings.c: Set default log file to fileperuser.log.
-    * ErrorLog.c: Drop hardcoded log file name in favor of settings-set one.
-    * parseArgs.c: Established command-line argument to set log file name: -f.
-    * README: Updated usage guide to include the new flags -f and --log-file
-    * TODO: Removed case sensitivity from the future plans (already implemented).
+	* settings.h: Added field to allow for custom log file names/paths.
+	* settings.c: Set default log file to fileperuser.log.
+	* ErrorLog.c: Drop hardcoded log file name in favor of settings-set one.
+	* parseArgs.c: Established command-line argument to set log file name: -f.
+	* README: Updated usage guide to include the new flags -f and --log-file
+	* TODO: Removed case sensitivity from the future plans (already implemented).
 
 2015-01-31  SilverNexus
-    * settings.h: Added Function pointer to allow for case insensitive searching.
-    * settings.c: Set default search to case sensitive.
-    * parseArgs.c: Added -n and --no-case command-line flags for no case searches.
-    * configure.ac: Added check for strncasecmp.
-    * search.c: Changed search function to use pointer in settings.
-    * README: Updated usage guide to include the new flags -n and --no-case
+	* settings.h: Added Function pointer to allow for case insensitive searching.
+	* settings.c: Set default search to case sensitive.
+	* parseArgs.c: Added -n and --no-case command-line flags for no case searches.
+	* configure.ac: Added check for strncasecmp.
+	* search.c: Changed search function to use pointer in settings.
+	* README: Updated usage guide to include the new flags -n and --no-case
 
 2015-01-31  SilverNexus
-    * settings.c,
-      settings.h: Made initialization and release of settings return no values.
+	* settings.c,
+	  settings.h: Made initialization and release of settings return no values.
 
 2014-12-04	SilverNexus
 	* parseArgs.c: Added the print level message control flags to the help message.
