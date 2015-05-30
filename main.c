@@ -1,11 +1,13 @@
 /***************************************************************************/
 /*                                                                         */
 /*                                 main.c                                  */
-/* Original code written by Daniel Hawkins. Last modified on 2014-06-12.   */
+/* Original code written by Daniel Hawkins. Last modified on 2015-05-30.   */
 /*                                                                         */
 /* The file defines the main function and several searching functions.     */
 /*                                                                         */
 /***************************************************************************/
+
+#include <ftw.h>
 
 #include <stdio.h>
 #include "search.h"
@@ -37,7 +39,8 @@ int main(int argc, char *argv[]){
         // Begin the search
         DIR_LIST *thisDir = settings.root_dirs;
         while (thisDir){
-            searchFolder(thisDir->dir);
+            if (nftw(thisDir->dir, onWalk, 20, FTW_ACTIONRETVAL | FTW_PHYS) == -1)
+                log_event(FATAL, "Directory walk for %s failed!", thisDir->dir);
             thisDir = thisDir->next;
         }
         // end timing

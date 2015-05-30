@@ -1,3 +1,11 @@
+2015-05-30  SilverNexus
+	* search.c: Refactored search algorithm to use nftw(3).
+	* search.h: Function prototype for function called by nftw(3).
+	* main.c: Change the search function to nftw(3).
+	* Makefile.am: Add a couple defines to make nftw work.
+	* configure.ac: Remove check for dirent, add check for ftw.h
+	  and nftw(3).
+
 2015-03-10  SilverNexus
 	* settings.h: Added field to allow for custom log file names/paths.
 	* settings.c: Set default log file to fileperuser.log.
