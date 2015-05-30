@@ -37,16 +37,16 @@ int findIn(const char *searchIn){
 }
 
 /**
- * Traverses through the directory tree of the designated root directory of the search.
+ * Checks each encountered inode so that it is handled correctly. Called from nftw(3)
  * Opens files to search along the way and searches them for the desired search string.
  *
  * @param fpath The directory being searched.
  * @param sb Contains information about the current inode.
  * @param typeflag The type of inode.
- * @param ftwbuf Contains more info, but I'm not sure. Its needed for nftw() to work
+ * @param ftwbuf Contains more info, but I'm not sure. Its needed for nftw(3) to work.
  *
- * @retval FTW_SKIP_SUBTREE nftw() should skip this folder.
- * @retval 0 nftw() should continue parsing as expected.
+ * @retval FTW_SKIP_SUBTREE nftw(3) should skip this folder.
+ * @retval 0 nftw(3) should continue parsing as expected.
  */
 int onWalk(const char *fpath, const struct stat *sb, int typeflag, struct FTW *ftwbuf){
     switch (typeflag){
