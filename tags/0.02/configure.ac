@@ -1,0 +1,56 @@
+# This file is processed by autoconf to produce a configure script.
+
+# Note: I am not an expert with autotools, so I used Crossfire Server's
+# configure.ac file as reference throughout the constuction of this file.
+# --SilverNexus 2014-06-05
+
+AC_INIT([FilePeruser], [0.02], [silvernexus@users.sourceforge.net])
+AC_CONFIG_HEADERS([config.h])
+AC_CONFIG_SRCDIR([./main.c])
+AC_CONFIG_MACRO_DIR([macros])
+AC_PREFIX_DEFAULT([/usr/local])
+AM_INIT_AUTOMAKE
+
+AM_SILENT_RULES([yes])
+
+#
+# Configuration options
+# Currently none, but they would go here if added
+#
+
+#
+# Program Checks
+#
+AC_PROG_CC_C99
+AC_PROG_LIBTOOL
+
+#
+# Header File, Type, Structure, and Compiler Checks
+#
+
+# Checks for header files.
+AC_HEADER_TIME
+AC_CHECK_HEADERS([sys/types.h stdlib.h ftw.h])
+
+AC_C_CONST
+AC_STRUCT_TM
+
+#
+# Library Function Checks
+#
+AC_CHECK_FUNCS([vsnprintf strncmp strncasecmp nftw])
+
+AS_BOX([Generate Output])
+AC_CONFIG_FILES([Makefile])
+
+AC_OUTPUT
+
+#
+# Configuration Summary
+#
+AC_MSG_NOTICE([Configuration Summary ----------------------------------------------])
+AC_MSG_NOTICE([])
+AC_MSG_NOTICE([  Paths])
+AC_MSG_NOTICE([    Installation prefix                  $prefix])
+AC_MSG_NOTICE([    Will put executables in              $bindir])
+AC_MSG_NOTICE([    Will put resources in                $datadir])

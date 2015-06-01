@@ -1,0 +1,7 @@
+Known bugs:
+    - If the search includes the output file where the search
+    results are stored, it will find entries in the file until
+    you run out of hard drive space.
+
+Future plans:
+    - Add support for regular expressions

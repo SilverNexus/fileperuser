@@ -1,0 +1,137 @@
+
+-----------------------------------------------------------------------------------------
+                                      Changes for 0.02
+-----------------------------------------------------------------------------------------
+
+2015-06-01  SilverNexus
+	* configure.ac: Make sure to check for a C99 compiler,
+	  not just any C compiler.
+	* README: Updated some information to ensure accuracy.
+
+2015-05-30  SilverNexus
+	* search.c: Refactored search algorithm to use nftw(3).
+	* search.h: Function prototype for function called by nftw(3).
+	* main.c: Change the search function to nftw(3).
+	* Makefile.am: Add a couple defines to make nftw work.
+	* configure.ac: Remove check for dirent, add check for ftw.h
+	  and nftw(3).
+
+2015-03-10  SilverNexus
+	* settings.h: Added field to allow for custom log file names/paths.
+	* settings.c: Set default log file to fileperuser.log.
+	* ErrorLog.c: Drop hardcoded log file name in favor of settings-set one.
+	* parseArgs.c: Established command-line argument to set log file name: -f.
+	* README: Updated usage guide to include the new flags -f and --log-file
+	* TODO: Removed case sensitivity from the future plans (already implemented).
+
+2015-01-31  SilverNexus
+	* settings.h: Added Function pointer to allow for case insensitive searching.
+	* settings.c: Set default search to case sensitive.
+	* parseArgs.c: Added -n and --no-case command-line flags for no case searches.
+	* configure.ac: Added check for strncasecmp.
+	* search.c: Changed search function to use pointer in settings.
+	* README: Updated usage guide to include the new flags -n and --no-case
+
+2015-01-31  SilverNexus
+	* settings.c,
+	  settings.h: Made initialization and release of settings return no values.
+
+2014-12-04	SilverNexus
+	* parseArgs.c: Added the print level message control flags to the help message.
+
+2014-10-01	SilverNexus
+	* ErrorLog.c,
+	  ErrorLog.h: Make log_event function return void, rather than int.
+
+2014-06-23	SilverNexus
+	* main.c: Make default search directory be current directory.
+
+2014-06-12	SilverNexus
+	* main.c: Made final message vary for when match are and are not found.
+
+2014-06-11	SilverNexus
+	* parseArgs.c: Added support for log message suppression.
+	* settings.h: Added setting for log message suppression.
+	* settings.c: Default suppression level is below INFO.
+	* ErrorLog.c: Check minimum print level before printing log message.
+
+2014-06-11	SilverNexus
+	* main.c: Add functionality that times the search.
+
+2014-06-09	SilverNexus
+	* settings.h: Add field for length of search string.
+	* settings.c: Initialize search string length.
+	* parseArgs.c: Calculate length at assignment of search string.
+	* search.c: Remove old length calculation in every line searched.
+
+2014-06-05	SilverNexus
+	* Makefile.am,
+	* configure.ac,
+	* autogen.sh: use autotools as part of build process
+
+-----------------------------------------------------------------------------------------
+                                      Changes for 0.01
+-----------------------------------------------------------------------------------------
+
+2014-06-04	SilverNexus
+	* ErrorLog.c: Make a FATAL error exit the program directly.
+	* main.c: Register free_settings with atexit library function.
+	* parseArgs.c: Change exit(0) to exit(EXIT_SUCCESS).
+
+2014-06-03	SilverNexus
+	* parseArgs.h: Add a function prototype for a universal help message.
+	* parseArgs.c: Move the help message to its own function.
+	* main.c: Make improper argument usage cause the program to print help and exit.
+
+2014-05-29	SilverNexus
+	* settings.h: Add field to store minimum log level that writes to file.
+	* settings.c: Set default minimum log level to WARNING.
+	* parseArgs.c: Add -l and --loglevel flags to valid flags.
+	* ErrorLog.c: Add parsing to evaluate log level.
+	* main.c, dir_list.c, ErrorLog.h, search.c: Change name of logging function.
+	* Makefile: Change optimization to -Ofast.
+
+2014-05-23	SilverNexus
+	* settings.h: Add output_file field for custom output file location.
+	* settings.c: Set a default value for output_file.
+	* parseArgs.c: Add information and parsing for -o and --output flags.
+	* main.c: Adjust file handling and output to handle variable output file name.
+
+2014-05-22	SilverNexus
+	* settings.h: Add search_string to settings so fewer variables go on the stack during recursion.
+	* settings.c: Initialized search string to 0 in init_settings().
+	* parseArgs.c: Added parsing for -s and --search flags.
+	* main.h: Update function headers for extraction of search string.
+	* main.c: Update function calls to reflect addition of search string to settings.
+
+2014-05-22	SilverNexus
+	* main.c: Fix bug in which a folder without a trailing "/" as the search directory would crash the program.
+
+2014-05-22	SilverNexus
+	* dir_list.c,
+	* dir_list.h,
+	* settings.h,
+	* settings.c: Cleaned up dir_list code by making functions generic to dir_lists.
+	* main.c: updated list iterator to match new typedef.
+	* Makefile: Added dir_list.o to build process.
+
+2014-05-22	SilverNexus
+	* settings.h: Changed root_dir to be a linked list.
+	* settings.c: Added function to add to the root_dir linked list.
+	* parseArgs.c: Changed parsing of root_dir to utilize linked list.
+	* main.c: Added parsing of multiple root directories.
+
+2014-05-21	SilverNexus
+	* main.c: Only open output file when needed.
+
+2014-05-21	SilverNexus
+	* settings.h,
+	* settings.c,
+	* main.c,
+	* parseArgs.c: Made root directory search argument location controlled by -d flag.
+
+2014-05-21	SilverNexus
+	* ErrorLog.c: All messages go to log.txt.
+
+2014-05-21	SilverNexus
+	* Initial commits. Setting up files for later use.
