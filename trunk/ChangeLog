@@ -1,6 +1,7 @@
 2015-06-01  SilverNexus
 	* configure.ac: Make sure to check for a C99 compiler,
 	  not just any C compiler.
+	* README: Updated some information to ensure accuracy.
 
 2015-05-30  SilverNexus
 	* search.c: Refactored search algorithm to use nftw(3).
