@@ -21,7 +21,7 @@ AM_SILENT_RULES([yes])
 #
 # Program Checks
 #
-AC_PROG_CC
+AC_PROG_CC_C99
 AC_PROG_LIBTOOL
 
 #
