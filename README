@@ -25,17 +25,17 @@ FilePeruser User Guide
            in the search it is encountered
        -d and --dir can be used as many times as necessary to add root
            directories to the search, or none at all to search current directory
-       -p, --printlevel, -l and --loglevel should have an integer following. The values
+       -p, --printlevel, -l and --loglevel should be followed by an integer. The values
            are as follows:
                0: DEBUG
-               1: INFO (default print level)
-               2: WARNING (default log level)
+               1: INFO
+               2: WARNING (default print and log level)
                3: ERROR
                4: FATAL
 
 2. Requirements:
-       - A C compiler with dirent.h and sys/types.h (something at least partly POSIX-compliant)
-       - A C compiler with functions strncmp and strncasecmp.
+       - A C99 compiler with ftw.h (something at least partly POSIX-compliant)
+         and with functions strncmp, strncasecmp, and nftw.
        Note:
            I do not know any more of the system requirements for this program.
            If any more are discovered, add them here.
