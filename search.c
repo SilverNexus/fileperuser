@@ -1,7 +1,7 @@
 /***************************************************************************/
 /*                                                                         */
 /*                                search.c                                 */
-/* Original code written by Daniel Hawkins. Last modified on 2015-05-30.   */
+/* Original code written by Daniel Hawkins. Last modified on 2015-06-01.   */
 /*                                                                         */
 /* The file defines the searching functions.                               */
 /*                                                                         */
@@ -15,26 +15,6 @@
 #include "dir_list.h"
 
 #define BIG_BUFFER 9000
-
-/**
- * Searches a given string (usually a line of text from a file) for the search string.
- *
- * @param searchIn the string to search
- *
- * @return The postion in the string where the search string was found, or -1 if it wasn't.
- */
-int findIn(const char *searchIn){
-    register int searchInLen = strlen(searchIn);
-    for (register int startAt = 0; startAt <= searchInLen - settings.search_string_len; startAt++){
-        // Add condition to speed up searches -- only even try to find if first character matches
-        if (*(searchIn + startAt) == *settings.search_string){
-            if (settings.comp_func(searchIn + startAt, settings.search_string, settings.search_string_len) == 0){
-                return startAt;
-            }
-        }
-    }
-    return -1;
-}
 
 /**
  * Checks each encountered inode so that it is handled correctly. Called from nftw(3)
@@ -71,10 +51,14 @@ int onWalk(const char *fpath, const struct stat *sb, int typeflag, struct FTW *f
             register int lineNum = 0;
             char linechars[BIG_BUFFER];
             FILE *outputFile = 0;
+            char *foundAt;
+            int col;
             while (fgets(linechars, BIG_BUFFER, mapFile)){
-                lineNum++;
-                int foundAt;
-                if ((foundAt = findIn(linechars)) != -1){
+                ++lineNum;
+                col = 0;
+                // Find multiple instances within the same line
+                while ((foundAt = settings.comp_func(linechars + col, settings.search_string)) != 0){
+                    col = (long)foundAt - (long)linechars + 1;
                     if (!outputFile){
                         // Open the file only if we need it.
                         outputFile = fopen(settings.output_file, "a");
@@ -85,7 +69,7 @@ int onWalk(const char *fpath, const struct stat *sb, int typeflag, struct FTW *f
                         break;
                     }
                     // There is no reason to print it to the screen - you not going to see anything in the swirling mass of text flying by
-                    fprintf(outputFile, "Found instance of '%s' in line %i, col %i of %s.\n", settings.search_string, lineNum, foundAt + 1, fpath);
+                    fprintf(outputFile, "Found instance of '%s' in line %i, col %i of %s.\n", settings.search_string, lineNum, col, fpath);
                 }
             }
             if (outputFile)

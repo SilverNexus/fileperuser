@@ -30,7 +30,7 @@ AC_PROG_LIBTOOL
 
 # Checks for header files.
 AC_HEADER_TIME
-AC_CHECK_HEADERS([sys/types.h stdlib.h ftw.h])
+AC_CHECK_HEADERS([ftw.h])
 
 AC_C_CONST
 AC_STRUCT_TM
@@ -38,7 +38,7 @@ AC_STRUCT_TM
 #
 # Library Function Checks
 #
-AC_CHECK_FUNCS([vsnprintf strncmp strncasecmp nftw])
+AC_CHECK_FUNCS([vsnprintf strstr strcasestr nftw])
 
 AS_BOX([Generate Output])
 AC_CONFIG_FILES([Makefile])
