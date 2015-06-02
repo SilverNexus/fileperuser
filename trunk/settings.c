@@ -1,7 +1,7 @@
 /***************************************************************************/
 /*                                                                         */
 /*                               settings.c                                */
-/* Original code written by Daniel Hawkins. Last modified on 2015-03-10.   */
+/* Original code written by Daniel Hawkins. Last modified on 2015-06-01.   */
 /*                                                                         */
 /* The file defines the functions for handling settings.                   */
 /*                                                                         */
@@ -19,8 +19,7 @@ void init_settings(){
     settings.excluded_directories = 0;
     settings.root_dirs = 0;
     settings.search_string = 0;
-    settings.search_string_len = 0;
-    settings.comp_func = strncmp;
+    settings.comp_func = strstr;
     settings.output_file = "searchResults.txt";
     settings.log_file = "fileperuser.log";
     // Only log warning and higher by default

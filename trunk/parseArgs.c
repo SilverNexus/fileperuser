@@ -1,7 +1,7 @@
 /***************************************************************************/
 /*                                                                         */
 /*                              parseArgs.c                                */
-/* Original code written by Daniel Hawkins. Last modified on 2015-03-10.   */
+/* Original code written by Daniel Hawkins. Last modified on 2015-06-01.   */
 /*                                                                         */
 /* The file defines the argument parsing functions.                        */
 /*                                                                         */
@@ -62,7 +62,6 @@ int parseArgs(char **flagArgs, int flagCount){
                 }
                 else{
                     settings.search_string = flagArgs[parseCount];
-                    settings.search_string_len = strlen(settings.search_string);
                 }
         }
         else if (strcmp(flagArgs[parseCount], "-o") == 0 ||
@@ -115,7 +114,7 @@ int parseArgs(char **flagArgs, int flagCount){
         }
         else if (strcmp(flagArgs[parseCount], "-n") == 0 ||
             strcmp(flagArgs[parseCount], "--no-case") == 0){
-                settings.comp_func = strncasecmp;
+                settings.comp_func = strcasestr;
         }
         else{
             log_event(WARNING, "Invalid flag '%s' detected, skipping.", flagArgs[parseCount]);

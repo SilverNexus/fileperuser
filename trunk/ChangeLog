@@ -1,3 +1,15 @@
+2015-06-01  SilverNexus
+	* search.c: Refactored search algorithm to use strstr and strcasestr.
+	  In the process, also made multiple instances of the search string
+	  discoverable by the search.
+	* search.h: Removed obsolete function for searching.
+	* parseArgs.c: Removed obsolete setting for length of search string.
+	  Adjusting --no-case flag to set strstr or strcasestr.
+	* settings.c: Changed default comparison function to strstr.
+	  Removed initialization of search sting length settings value.
+	* settings.h: Removed search string length from settings.
+	* configure.ac: Updated requirements to match the new implementation.
+	* README: Updated Requirements ssection to match the new implementation.
 
 -----------------------------------------------------------------------------------------
                                       Changes for 0.02
