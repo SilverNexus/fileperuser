@@ -1,7 +1,7 @@
 /***************************************************************************/
 /*                                                                         */
 /*                               dir_list.c                                */
-/* Original code written by Daniel Hawkins. Last modified on 2014-05-29.   */
+/* Original code written by Daniel Hawkins. Last modified on 2015-06-02.   */
 /*                                                                         */
 /* The file defines the functions for handling the dir_list structure.     */
 /*                                                                         */
@@ -50,35 +50,6 @@ int link_dir_node(DIR_LIST *toLink, DIR_LIST **current_list){
     toLink->next = *current_list;
     *current_list = toLink;
     return 0;
-}
-
-/**
- * Frees a single node from a list of directories
- *
- * @param freeMe The node to free.
- * @param before The node before the node to be freed. Can be NULL.
- *
- * @return A pointer to the new head of the list, if it changed. Otherwise,
- *         returns 0.
- *
- * @todo Make this not need the before paramter. So, DIR_LIST needs to be
- *       a doubly linked list to be effective here.
- */
-DIR_LIST *free_dir_node(DIR_LIST *freeMe, DIR_LIST *before){
-    if (!freeMe){
-        log_event(ERROR, "Trying to free node that doesn't exist.");
-        return 0;
-    }
-    DIR_LIST *head = 0;
-    if (!before){
-        log_event(DEBUG, "No node before node being freed.");
-        head = freeMe->next;
-    }
-    else{
-        before->next = freeMe->next;
-    }
-    free(freeMe);
-    return head;
 }
 
 /**

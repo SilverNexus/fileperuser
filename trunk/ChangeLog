@@ -1,3 +1,7 @@
+2015-06-02  SilverNexus
+	* dir_list.h,
+	  dir_list.c: Removed unused function free_dir_node().
+
 2015-06-01  SilverNexus
 	* search.c: Refactored search algorithm to use strstr and strcasestr.
 	  In the process, also made multiple instances of the search string
