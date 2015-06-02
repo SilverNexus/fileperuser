@@ -1,7 +1,7 @@
 /***************************************************************************/
 /*                                                                         */
 /*                               dir_list.h                                */
-/* Original code written by Daniel Hawkins. Last modified on 2014-05-28.   */
+/* Original code written by Daniel Hawkins. Last modified on 2015-06-02.   */
 /*                                                                         */
 /* The file defines the structures for handling sets of directories.       */
 /*                                                                         */
@@ -20,7 +20,6 @@ typedef struct dir_list DIR_LIST;
 
 DIR_LIST *init_dir_node(char *);
 int link_dir_node(DIR_LIST *, DIR_LIST **);
-DIR_LIST *free_dir_node(DIR_LIST *, DIR_LIST *);
 void free_dir_list(DIR_LIST *);
 
 #endif
