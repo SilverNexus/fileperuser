@@ -1,7 +1,7 @@
 /***************************************************************************/
 /*                                                                         */
 /*                               ErrorLog.c                                */
-/* Original code written by Daniel Hawkins. Last modified on 2015-03-10.   */
+/* Original code written by Daniel Hawkins. Last modified on 2015-06-03.   */
 /*                                                                         */
 /* The file defines the functions for logging errors.                      */
 /*                                                                         */
@@ -29,8 +29,6 @@ const char *MONTH[12] = {"January", "February", "March", "April", "May", "June",
  * @retval 1 Could not open the log file.
  *
  * @warning If errorType err is FATAL, will exit the program.
- *
- * @todo Make void? I just ignore the returned result anyway.
  */
 void log_event(enum errorType err, const char *msg, ...){
        // If message is too low of importance to print or log, just skip it all

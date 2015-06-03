@@ -1,7 +1,7 @@
 /***************************************************************************/
 /*                                                                         */
 /*                                 main.c                                  */
-/* Original code written by Daniel Hawkins. Last modified on 2015-05-30.   */
+/* Original code written by Daniel Hawkins. Last modified on 2015-06-03.   */
 /*                                                                         */
 /* The file defines the main function and several searching functions.     */
 /*                                                                         */
@@ -47,6 +47,10 @@ int main(int argc, char *argv[]){
         time_t end_time = time(0);
         // Don't give the logger a chance to repress this message, so just print from here
         printf("Search completed in %i seconds.\n", (int)(end_time - start_time));
+        /*
+         * TODO: Make this check for the file in a simpler way.
+         * If this wasn't the end of the program, we'd have a leak.
+         */
         if (fopen(settings.output_file, "r"))
             printf("The matches have been stored in %s.\n", settings.output_file);
         else
