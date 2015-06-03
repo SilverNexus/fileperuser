@@ -13,6 +13,7 @@
 #include "ErrorLog.h"
 #include "settings.h"
 #include "dir_list.h"
+#include "result_list.h"
 
 #define BIG_BUFFER 9000
 
@@ -59,19 +60,9 @@ int onWalk(const char *fpath, const struct stat *sb, int typeflag, struct FTW *f
                 // Find multiple instances within the same line
                 while ((foundAt = settings.comp_func(linechars + col, settings.search_string)) != 0){
                     col = (long)foundAt - (long)linechars + 1;
-                    if (!outputFile){
-                        // Open the file only if we need it.
-                        outputFile = fopen(settings.output_file, "a");
-                        // Error out if load failed
-                        if (!outputFile)
-                            log_event(FATAL, "Could not open '%s' for writing.", settings.output_file);
-                    }
-                    // There is no reason to print it to the screen - you not going to see anything in the swirling mass of text flying by
-                    fprintf(outputFile, "Found instance of '%s' in line %i, col %i of %s.\n", settings.search_string, lineNum, col, fpath);
+                    add_result(lineNum, col, fpath);
                 }
             }
-            if (outputFile)
-                fclose(outputFile);
             // Only close if nonzero
             fclose(mapFile);
         }

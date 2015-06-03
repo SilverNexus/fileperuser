@@ -2,6 +2,13 @@
 	* search.c: Refactor check for failure to load output file to occur
 	  only if the file was just loaded.
 	* configure.ac: Bump version to 0.02-dev.
+	* Makefile.am: Add new file result_list.c.
+	* main.c: Implement delayed recording of results.
+	* search.c: Defer recording of results to after the directory tree is searched.
+	  This solves a bug involving fileperuser writing to the results file while reading from it.
+	* TODO: Removed statement about the bug mentioned above, as it is resolved.
+	* result_list.c: Implemented a linked list of structures for finding search results.
+	* result_list.h: Defines a linked list of structures for finding search results.
 
 2015-06-02  SilverNexus
 	* dir_list.h,

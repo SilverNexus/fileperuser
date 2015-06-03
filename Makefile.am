@@ -10,6 +10,7 @@ fileperuser_SOURCES =\
 	dir_list.c\
 	search.c\
 	settings.c\
-	parseArgs.c
+	parseArgs.c \
+	result_list.c
 
 AM_CFLAGS = -std=gnu99 -D_XOPEN_SOURCE=600 -D_GNU_SOURCE
