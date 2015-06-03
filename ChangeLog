@@ -1,6 +1,7 @@
 2015-06-03  SilverNexus
 	* search.c: Refactor check for failure to load output file to occur
 	  only if the file was just loaded.
+	* configure.ac: Bump version to 0.02-dev.
 
 2015-06-02  SilverNexus
 	* dir_list.h,
