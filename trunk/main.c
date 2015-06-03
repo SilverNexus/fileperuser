@@ -16,12 +16,16 @@
 #include "settings.h"
 #include <stdlib.h>
 #include <time.h>
+#include "result_list.h"
 
 int main(int argc, char *argv[]){
     if (argc >= 3){
         init_settings();
+        init_results();
         // Register free_settings to clean up at exit
         atexit((void *)free_settings);
+        // Register clear_results as a cleanup operation
+        atexit((void *)clear_results);
         // argv[0] is the executable name, which I don't need.
         int parse_results = parseArgs(argv + 1, argc - 1);
         if (parse_results == -1){
@@ -47,12 +51,19 @@ int main(int argc, char *argv[]){
         time_t end_time = time(0);
         // Don't give the logger a chance to repress this message, so just print from here
         printf("Search completed in %i seconds.\n", (int)(end_time - start_time));
-        /*
-         * TODO: Make this check for the file in a simpler way.
-         * If this wasn't the end of the program, we'd have a leak.
-         */
-        if (fopen(settings.output_file, "r"))
+        if (results.first){
+            FILE *results_file = fopen(settings.output_file, "w");
+            if (!results_file)
+                log_event(FATAL, "Failed to open output file %s.", settings.output_file);
+            RESULT_ITEM *res = results.first;
+            // We already know there's at least one: that's how we got here
+            do{
+                fprintf(results_file, "Found instance of '%s' in line %d, col %d of %s.\n",
+                    settings.search_string, res->line_num, res->col_num, res->file_path);
+                res = res->next;
+            } while (res);
             printf("The matches have been stored in %s.\n", settings.output_file);
+        }
         else
             puts("No matches were found.");
         exit(EXIT_SUCCESS);
