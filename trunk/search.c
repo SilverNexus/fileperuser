@@ -51,7 +51,6 @@ int onWalk(const char *fpath, const struct stat *sb, int typeflag, struct FTW *f
         if (mapFile){
             register int lineNum = 0;
             char linechars[BIG_BUFFER];
-            FILE *outputFile = 0;
             char *foundAt;
             int col;
             while (fgets(linechars, BIG_BUFFER, mapFile)){
