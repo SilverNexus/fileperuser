@@ -1,7 +1,7 @@
 /***************************************************************************/
 /*                                                                         */
 /*                                search.c                                 */
-/* Original code written by Daniel Hawkins. Last modified on 2015-06-01.   */
+/* Original code written by Daniel Hawkins. Last modified on 2015-06-03.   */
 /*                                                                         */
 /* The file defines the searching functions.                               */
 /*                                                                         */
@@ -62,11 +62,9 @@ int onWalk(const char *fpath, const struct stat *sb, int typeflag, struct FTW *f
                     if (!outputFile){
                         // Open the file only if we need it.
                         outputFile = fopen(settings.output_file, "a");
-                    }
-                    // Error out if load failed
-                    if (!outputFile){
-                        log_event(ERROR, "Could not open '%s' for writing.", settings.output_file);
-                        break;
+                        // Error out if load failed
+                        if (!outputFile)
+                            log_event(FATAL, "Could not open '%s' for writing.", settings.output_file);
                     }
                     // There is no reason to print it to the screen - you not going to see anything in the swirling mass of text flying by
                     fprintf(outputFile, "Found instance of '%s' in line %i, col %i of %s.\n", settings.search_string, lineNum, col, fpath);
