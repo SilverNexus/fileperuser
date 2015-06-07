@@ -46,8 +46,7 @@ int onWalk(const char *fpath, const struct stat *sb, int typeflag, struct FTW *f
         return 0;
     case FTW_F:
         log_event(INFO, "Searching for '%s' in %s.", settings.search_string, fpath);
-        FILE *mapFile;
-        mapFile = fopen(fpath, "r");
+        FILE *mapFile = fopen(fpath, "r");
         if (mapFile){
             register int lineNum = 0;
             char linechars[BIG_BUFFER];
