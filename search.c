@@ -52,6 +52,7 @@ int onWalk(const char *fpath, const struct stat *sb, int typeflag, struct FTW *f
             char *foundAt;
             int col;
             register int lineNum = 0;
+            // Loop optimization
             if (fgets(linechars, BIG_BUFFER, mapFile)){
                 do{
                     ++lineNum;
