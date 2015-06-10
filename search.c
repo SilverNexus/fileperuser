@@ -48,18 +48,20 @@ int onWalk(const char *fpath, const struct stat *sb, int typeflag, struct FTW *f
         log_event(INFO, "Searching for '%s' in %s.", settings.search_string, fpath);
         FILE *mapFile = fopen(fpath, "r");
         if (mapFile){
-            register int lineNum = 0;
             char linechars[BIG_BUFFER];
             char *foundAt;
             int col;
-            while (fgets(linechars, BIG_BUFFER, mapFile)){
-                ++lineNum;
-                col = 0;
-                // Find multiple instances within the same line
-                while ((foundAt = settings.comp_func(linechars + col, settings.search_string)) != 0){
-                    col = (long)foundAt - (long)linechars + 1;
-                    add_result(lineNum, col, fpath);
-                }
+            register int lineNum = 0;
+            if (fgets(linechars, BIG_BUFFER, mapFile)){
+                do{
+                    ++lineNum;
+                    col = 0;
+                    // Find multiple instances within the same line
+                    while ((foundAt = settings.comp_func(linechars + col, settings.search_string)) != 0){
+                        col = (long)foundAt - (long)linechars + 1;
+                        add_result(lineNum, col, fpath);
+                    }
+                } while (fgets(linechars, BIG_BUFFER, mapFile));
             }
             // Only close if nonzero
             fclose(mapFile);
