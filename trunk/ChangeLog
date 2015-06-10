@@ -1,3 +1,6 @@
+2015-06-08  SilverNexus
+    * search.c: Loop optimization in the file search section.
+
 2015-06-03  SilverNexus
 	* search.c: Refactor check for failure to load output file to occur
 	  only if the file was just loaded.
