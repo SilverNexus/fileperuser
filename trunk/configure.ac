@@ -15,8 +15,13 @@ AM_SILENT_RULES([yes])
 
 #
 # Configuration options
-# Currently none, but they would go here if added
 #
+
+# Check to see if debugging is to be enabled
+AC_ARG_ENABLE(debug, [AS_HELP_STRING([--enable-debug],
+              [Build with debugging enabled])],
+              [enable_debug=yes], [enable_debug=no])
+AM_CONDITIONAL(DEBUG, [test "$enable_debug" = yes])
 
 #
 # Program Checks
@@ -54,3 +59,5 @@ AC_MSG_NOTICE([  Paths])
 AC_MSG_NOTICE([    Installation prefix                  $prefix])
 AC_MSG_NOTICE([    Will put executables in              $bindir])
 AC_MSG_NOTICE([    Will put resources in                $datadir])
+AC_MSG_NOTICE()
+AC_MSG_NOTICE([  Debugging                              $enable_debug])
