@@ -13,4 +13,13 @@ fileperuser_SOURCES =\
 	parseArgs.c \
 	result_list.c
 
-AM_CFLAGS = -std=gnu99 -D_XOPEN_SOURCE=600 -D_GNU_SOURCE
+# Make sure that we generate debugging symbols for debug mode
+# Make sure we optimize otherwise
+
+if DEBUG
+DBG = -g
+else
+DBG = -Ofast -s
+endif
+
+AM_CFLAGS = -std=gnu99 -D_XOPEN_SOURCE=600 -D_GNU_SOURCE $(DBG)
