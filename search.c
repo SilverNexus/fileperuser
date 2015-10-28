@@ -36,10 +36,16 @@ int onWalk(const char *fpath, const struct stat *sb, int typeflag, struct FTW *f
         if (settings.excluded_directories){
             // Find the last instance of '/' in fpath.
             // We want to start at the character after that.
-            char *path = strrchr(fpath, '/') + 1;
-            for (DIR_LIST *tmp = settings.excluded_directories; tmp; tmp = tmp->next){
-                if (strcmp(tmp->dir, path) == 0){
-                    return FTW_SKIP_SUBTREE;
+            char *path = strrchr(fpath, '/');
+
+            if (path){
+                // If we found it, then we take the character after the slash
+                ++path;
+
+                for (DIR_LIST *tmp = settings.excluded_directories; tmp; tmp = tmp->next){
+                    if (strcmp(tmp->dir, path) == 0){
+                        return FTW_SKIP_SUBTREE;
+                    }
                 }
             }
         }

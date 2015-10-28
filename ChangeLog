@@ -1,6 +1,7 @@
 2015-10-27  SilverNexus
 	* configure.ac: Made a configure flag to enable debugging.
 	* Makefile.am: Set up flags for debug and nondebug modes.
+	* search.c: Fix a crash that would occur if directories were excluded.
 
 2015-06-08  SilverNexus
 	* search.c: Loop optimization in the file search section.
