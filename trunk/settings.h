@@ -1,7 +1,7 @@
 /***************************************************************************/
 /*                                                                         */
 /*                               settings.h                                */
-/* Original code written by Daniel Hawkins. Last modified on 2015-06-01.   */
+/* Original code written by Daniel Hawkins. Last modified on 2015-11-02.   */
 /*                                                                         */
 /* The file defines the structures for handling important variables.       */
 /*                                                                         */
@@ -15,7 +15,26 @@
 #include <stddef.h>
 
 struct {
+    /*
+     * List of directory names to skip.
+     * Example: excluding ".svn" here would skip
+     * all instances of ".svn" in the searched
+     * directory tree.
+     */
     DIR_LIST *excluded_directories;
+
+    /*
+     * List of paths in the search tree to skip.
+     * Example: excluding ".svn" here would skip
+     * ".svn" in the root of the searched
+     * directory tree.
+     */
+    DIR_LIST *excluded_paths;
+    /*
+     * Also, store the index of the length of the base search path.
+     */
+    short base_search_path_length;
+
     DIR_LIST *root_dirs;
     char *search_string;
 
@@ -35,5 +54,6 @@ void init_settings();
 void free_settings();
 int add_exclude_dir(char *);
 int add_root_dir(char *);
+int add_exclude_path(char *);
 
 #endif

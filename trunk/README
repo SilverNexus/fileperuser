@@ -7,6 +7,7 @@ FilePeruser User Guide
    Valid flags:
        -h or --help: prints help and exits program
        -x or --exclude: next argument is a directory to exclude
+       -X or --exclude-path: next argument is a path to exclude from the search.
        -d or --dir: next argument is the root directory of the search
        -s or --search: next argument is the search string
        -o or --output: next argument is the output file name
@@ -32,6 +33,10 @@ FilePeruser User Guide
                2: WARNING (default print and log level)
                3: ERROR
                4: FATAL
+       -X and --exclude-path exclude a specific path from the search.
+           This differs from -x, with excludes any instance of a folder name.
+           -X is useful for excluding a folder with the same name as a folder
+           elsewhere in the search tree, but one should be searched and not the other.
 
 2. Requirements:
        - A C99 compiler with ftw.h (something at least partly POSIX-compliant)

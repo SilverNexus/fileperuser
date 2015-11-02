@@ -1,7 +1,7 @@
 /***************************************************************************/
 /*                                                                         */
 /*                                search.c                                 */
-/* Original code written by Daniel Hawkins. Last modified on 2015-06-03.   */
+/* Original code written by Daniel Hawkins. Last modified on 2015-11-02.   */
 /*                                                                         */
 /* The file defines the searching functions.                               */
 /*                                                                         */
@@ -30,8 +30,22 @@
  * @retval 0 nftw(3) should continue parsing as expected.
  */
 int onWalk(const char *fpath, const struct stat *sb, int typeflag, struct FTW *ftwbuf){
+    if (settings.excluded_paths && !settings.base_search_path_length){
+        // If this is the first time into this search tree, get the absolute path of the tree root.
+        // Conveniently, this is fpath on the first run, so use that.
+        // NOTE: We add one to cover the trailing slash.
+        settings.base_search_path_length = strlen(fpath) + 1;
+    }
     switch (typeflag){
     case FTW_D:
+	// Check to see if we are specifically excluding this path from the search
+        if (settings.excluded_paths){
+            for (DIR_LIST *pth = settings.excluded_paths; pth; pth = pth->next){
+                // For each excluded path, see if we are encountering the path we wish to exclude.
+                if (strcmp(pth->dir, fpath + settings.base_search_path_length) == 0)
+                    return FTW_SKIP_SUBTREE;
+            }
+        }
         // No reason to make this check if no directories have been excluded
         if (settings.excluded_directories){
             // Find the last instance of '/' in fpath.

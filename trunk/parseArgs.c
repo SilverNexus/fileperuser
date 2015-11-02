@@ -1,7 +1,7 @@
 /***************************************************************************/
 /*                                                                         */
 /*                              parseArgs.c                                */
-/* Original code written by Daniel Hawkins. Last modified on 2015-06-01.   */
+/* Original code written by Daniel Hawkins. Last modified on 2015-11-01.   */
 /*                                                                         */
 /* The file defines the argument parsing functions.                        */
 /*                                                                         */
@@ -41,6 +41,14 @@ int parseArgs(char **flagArgs, int flagCount){
                     return -1;
                 }
                 add_exclude_dir(flagArgs[parseCount]);
+        }
+        else if (strcmp(flagArgs[parseCount], "-X") == 0 ||
+            strcmp(flagArgs[parseCount], "--exclude-path") == 0){
+                if (++parseCount == flagCount){
+                    log_event(ERROR, "%s flag needs a path to exclude.", flagArgs[parseCount - 1]);
+                    return -1;
+                }
+                add_exclude_path(flagArgs[parseCount]);
         }
         else if (strcmp(flagArgs[parseCount], "-d") == 0 ||
             strcmp(flagArgs[parseCount], "--dir") == 0){
@@ -138,6 +146,7 @@ void help_message(){
     puts("Valid Flags:");
     puts("  -h --help                 Prints this help message.");
     puts("  -x --exclude [directory]  Excludes [directory] from the search.");
+    puts("  -X --exclude-path [path]  Excludes [path] from the search.");
     puts("  -o --output [filename]    Sets the name (and path) of the output file. Default is searchResults.txt.");
     puts("  -f --log-file [filename]  Sets the name (and path) of the log file. Default is fileperuser.log.");
     puts("  -l --loglevel [level]     Sets the minimum log level to be recorded to file. Must be an integer. Default is 2 (WARNING).");

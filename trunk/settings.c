@@ -1,7 +1,7 @@
 /***************************************************************************/
 /*                                                                         */
 /*                               settings.c                                */
-/* Original code written by Daniel Hawkins. Last modified on 2015-06-01.   */
+/* Original code written by Daniel Hawkins. Last modified on 2015-11-02.   */
 /*                                                                         */
 /* The file defines the functions for handling settings.                   */
 /*                                                                         */
@@ -14,9 +14,13 @@
 
 /**
  * Initializes the settings to their default values.
+ *
+ * These are then overridden by command-line flags as defined in parseArgs.
  */
 void init_settings(){
     settings.excluded_directories = 0;
+    settings.excluded_paths = 0;
+    settings.base_search_path_length = 0;
     settings.root_dirs = 0;
     settings.search_string = 0;
     settings.comp_func = strstr;
@@ -25,7 +29,6 @@ void init_settings(){
     // Only log warning and higher by default
     settings.min_log_level = WARNING;
     settings.min_print_level = WARNING;
-    return;
 }
 
 /**
@@ -34,6 +37,7 @@ void init_settings(){
  */
 void free_settings(){
     free_dir_list(settings.excluded_directories);
+    free_dir_list(settings.excluded_paths);
     free_dir_list(settings.root_dirs);
     return;
 }
@@ -54,6 +58,25 @@ int add_exclude_dir(char *newDir){
         return -1;
     }
     link_dir_node(newExclusion, &settings.excluded_directories);
+    return 0;
+}
+
+/**
+ * Adds a path to the excluded paths list
+ *
+ * @param newDir The name of the path to be added.
+ *
+ * @retval 0 Successfully added path to the list.
+ *
+ * @retval -1 The node could not be allocated.
+ */
+int add_exclude_path(char *newDir){
+    DIR_LIST *newExclusion = init_dir_node(newDir);
+    if (!newExclusion){
+        log_event(ERROR, "Excluded path %s not added to list.", newDir);
+        return -1;
+    }
+    link_dir_node(newExclusion, &settings.excluded_paths);
     return 0;
 }
 
