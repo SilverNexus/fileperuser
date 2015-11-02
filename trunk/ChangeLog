@@ -1,9 +1,12 @@
 2015-11-02  SilverNexus
 	* search.c: Implemented support for specific path search exclusions.
+	  Then proceeded to refactor path search to allow for specific files to be excluded.
 	* settings.h: Added a variable to store the length of the base search path.
 	* settings.c: Initialize the search path length to zero.
 	* parseArgs.c: Add support for parsing -X flag.
+	  Added informtion about -X to the help message
 	* main.c: Ensure the base path length is reset between different search root traversals.
+	* README: Added information about -X flag.
 
 2015-10-27  SilverNexus
 	* configure.ac: Made a configure flag to enable debugging.

@@ -1,7 +1,7 @@
 /***************************************************************************/
 /*                                                                         */
 /*                              parseArgs.c                                */
-/* Original code written by Daniel Hawkins. Last modified on 2015-11-01.   */
+/* Original code written by Daniel Hawkins. Last modified on 2015-11-02.   */
 /*                                                                         */
 /* The file defines the argument parsing functions.                        */
 /*                                                                         */
@@ -146,7 +146,7 @@ void help_message(){
     puts("Valid Flags:");
     puts("  -h --help                 Prints this help message.");
     puts("  -x --exclude [directory]  Excludes [directory] from the search.");
-    puts("  -X --exclude-path [path]  Excludes [path] from the search.");
+    puts("  -X --exclude-path [path]  Excludes [path] from the search. Can be a specific file.");
     puts("  -o --output [filename]    Sets the name (and path) of the output file. Default is searchResults.txt.");
     puts("  -f --log-file [filename]  Sets the name (and path) of the log file. Default is fileperuser.log.");
     puts("  -l --loglevel [level]     Sets the minimum log level to be recorded to file. Must be an integer. Default is 2 (WARNING).");
