@@ -37,6 +37,7 @@ FilePeruser User Guide
            This differs from -x, with excludes any instance of a folder name.
            -X is useful for excluding a folder with the same name as a folder
            elsewhere in the search tree, but one should be searched and not the other.
+       -X and --exclude-path can also be used to exclude specific files from the search.
 
 2. Requirements:
        - A C99 compiler with ftw.h (something at least partly POSIX-compliant)
