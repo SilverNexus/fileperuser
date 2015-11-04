@@ -1,7 +1,7 @@
 /***************************************************************************/
 /*                                                                         */
 /*                                 main.c                                  */
-/* Original code written by Daniel Hawkins. Last modified on 2015-11-02.   */
+/* Original code written by Daniel Hawkins. Last modified on 2015-11-04.   */
 /*                                                                         */
 /* The file defines the main function and several searching functions.     */
 /*                                                                         */
@@ -16,12 +16,23 @@
 #include "settings.h"
 #include <stdlib.h>
 #include <time.h>
+#include <signal.h>
 #include "result_list.h"
+#include "output.h"
+
+static void handle_sigint(int sig){
+    puts("\nSIGINT Received. Dumping current results to file.");
+    output_matches();
+    exit(sig);
+}
 
 int main(int argc, char *argv[]){
     if (argc >= 3){
         init_settings();
         init_results();
+        // Add a signal handler for sigint.
+        // When this happens, output what we have.
+        signal(SIGINT, handle_sigint);
         // Register free_settings to clean up at exit
         atexit((void *)free_settings);
         // Register clear_results as a cleanup operation
@@ -53,21 +64,7 @@ int main(int argc, char *argv[]){
         end_time = time(0);
         // Don't give the logger a chance to repress this message, so just print from here
         printf("Search completed in %i seconds.\n", (int)(end_time - start_time));
-        if (results.first){
-            FILE *results_file = fopen(settings.output_file, "w");
-            if (!results_file)
-                log_event(FATAL, "Failed to open output file %s.", settings.output_file);
-            RESULT_ITEM *res = results.first;
-            // We already know there's at least one: that's how we got here
-            do{
-                fprintf(results_file, "Found instance of '%s' in line %d, col %d of %s.\n",
-                    settings.search_string, res->line_num, res->col_num, res->file_path);
-                res = res->next;
-            } while (res);
-            printf("The matches have been stored in %s.\n", settings.output_file);
-        }
-        else
-            puts("No matches were found.");
+        output_matches();
     }
     else{
         help_message();
