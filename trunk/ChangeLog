@@ -1,3 +1,8 @@
+2015-11-04  SilverNexus
+    * main.c: Added signal handling to output results found at SIGINT.
+    * output.*: Moved the result output code to its own function.
+    * Makefile.am: Add output.c to the build.
+
 2015-11-02  SilverNexus
 	* search.c: Implemented support for specific path search exclusions.
 	  Then proceeded to refactor path search to allow for specific files to be excluded.
