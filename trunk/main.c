@@ -1,7 +1,7 @@
 /***************************************************************************/
 /*                                                                         */
 /*                                 main.c                                  */
-/* Original code written by Daniel Hawkins. Last modified on 2015-11-04.   */
+/* Original code written by Daniel Hawkins. Last modified on 2015-12-15.   */
 /*                                                                         */
 /* The file defines the main function and several searching functions.     */
 /*                                                                         */
@@ -63,7 +63,7 @@ int main(int argc, char *argv[]){
         // end timing
         end_time = time(0);
         // Don't give the logger a chance to repress this message, so just print from here
-        printf("Search completed in %i seconds.\n", (int)(end_time - start_time));
+        fprintf(stderr, "Search completed in %i seconds.\n", (int)(end_time - start_time));
         output_matches();
     }
     else{

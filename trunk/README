@@ -11,6 +11,7 @@ FilePeruser User Guide
        -d or --dir: next argument is the root directory of the search
        -s or --search: next argument is the search string
        -o or --output: next argument is the output file name
+       -O or --stdout: output to stdout. Overrides -o and -output.
        -f or --log-file: next argument is the log file name.
        -l or --loglevel: next argument is an integer representing
                          minimum log level to be written to file.
