@@ -1,3 +1,11 @@
+2015-12-15  SilverNexus
+	* main.c: Moved output of messages to stderr to make room for stdout output.
+	* output.c: Added check for printing to stdout.
+	* settings.h: Added flag for printing to stdout.
+	* settings.c: Implemented default value (0) for stdout output.
+	* parseArgs.c: Added parsing for -O and --stdout flags. Also updated help message.
+	* README: Updated usage information.
+
 2015-11-04  SilverNexus
     * main.c: Added signal handling to output results found at SIGINT.
     * output.*: Moved the result output code to its own function.

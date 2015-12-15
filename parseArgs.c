@@ -1,7 +1,7 @@
 /***************************************************************************/
 /*                                                                         */
 /*                              parseArgs.c                                */
-/* Original code written by Daniel Hawkins. Last modified on 2015-11-02.   */
+/* Original code written by Daniel Hawkins. Last modified on 2015-12-15.   */
 /*                                                                         */
 /* The file defines the argument parsing functions.                        */
 /*                                                                         */
@@ -80,6 +80,10 @@ int parseArgs(char **flagArgs, int flagCount){
                 }
                 settings.output_file = flagArgs[parseCount];
         }
+        else if (strcmp(flagArgs[parseCount], "-O") == 0 ||
+            strcmp(flagArgs[parseCount], "--stdout") == 0){
+                settings.output_stdout = 1;
+        }
         else if (strcmp(flagArgs[parseCount], "-f") == 0 ||
             strcmp(flagArgs[parseCount], "--log-file") == 0){
                 if (++parseCount == flagCount){
@@ -148,6 +152,7 @@ void help_message(){
     puts("  -x --exclude [directory]  Excludes [directory] from the search.");
     puts("  -X --exclude-path [path]  Excludes [path] from the search. Can be a specific file.");
     puts("  -o --output [filename]    Sets the name (and path) of the output file. Default is searchResults.txt.");
+    puts("  -O --stdout               Sets the output to stdout. Overrides -o and --output.");
     puts("  -f --log-file [filename]  Sets the name (and path) of the log file. Default is fileperuser.log.");
     puts("  -l --loglevel [level]     Sets the minimum log level to be recorded to file. Must be an integer. Default is 2 (WARNING).");
     puts("  -p --printlevel [level]   Sets the minimum log level to be displayed on-screen. Must be an integer. Default is 2 (WARNING).");
