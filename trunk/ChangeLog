@@ -1,3 +1,6 @@
+2015-12-17  SilverNexus
+	* parseArgs.c: Optimize arg checking andd fix segfault on bad flags and no search string.
+
 2015-12-15  SilverNexus
 	* main.c: Moved output of messages to stderr to make room for stdout output.
 	* output.c: Added check for printing to stdout.
