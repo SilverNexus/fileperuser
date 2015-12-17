@@ -1,7 +1,7 @@
 /***************************************************************************/
 /*                                                                         */
 /*                              parseArgs.c                                */
-/* Original code written by Daniel Hawkins. Last modified on 2015-12-15.   */
+/* Original code written by Daniel Hawkins. Last modified on 2015-12-17.   */
 /*                                                                         */
 /* The file defines the argument parsing functions.                        */
 /*                                                                         */
@@ -28,38 +28,38 @@
  * @retval -1 Invalid flags detected.
  */
 int parseArgs(char **flagArgs, int flagCount){
+    char *cur_flag;
     // Parse each argument that shows up
-    for (register int parseCount = 0; parseCount < flagCount; parseCount++){
-        if (strcmp(flagArgs[parseCount], "-h") == 0 ||
-            strcmp(flagArgs[parseCount], "--help") == 0){
+    for (register int parseCount = 0; parseCount < flagCount; ++parseCount){
+        // Don't check everything if the first letter doesn't match -- we always start w/ a dash
+        if (*flagArgs[parseCount] == '-'){
+            // Optimize out the initial dash -- this reduces the calls to strcmp.
+            cur_flag = flagArgs[parseCount] + 1;
+            if (*cur_flag == 'h' || strcmp(cur_flag, "-help") == 0){
                 help_message();
-        }
-        else if (strcmp(flagArgs[parseCount], "-x") == 0 ||
-            strcmp(flagArgs[parseCount], "--exclude") == 0){
+            }
+            else if (*cur_flag == 'x' || strcmp(cur_flag, "-exclude") == 0){
                 if (++parseCount == flagCount){
                     log_event(ERROR, "%s flag needs a directory to exclude.", flagArgs[parseCount - 1]);
                     return -1;
                 }
                 add_exclude_dir(flagArgs[parseCount]);
-        }
-        else if (strcmp(flagArgs[parseCount], "-X") == 0 ||
-            strcmp(flagArgs[parseCount], "--exclude-path") == 0){
+            }
+            else if (*cur_flag == 'X' || strcmp(cur_flag, "-exclude-path") == 0){
                 if (++parseCount == flagCount){
                     log_event(ERROR, "%s flag needs a path to exclude.", flagArgs[parseCount - 1]);
                     return -1;
                 }
                 add_exclude_path(flagArgs[parseCount]);
-        }
-        else if (strcmp(flagArgs[parseCount], "-d") == 0 ||
-            strcmp(flagArgs[parseCount], "--dir") == 0){
+            }
+            else if (*cur_flag == 'd' || strcmp(cur_flag, "-dir") == 0){
                 if (++parseCount == flagCount){
                     log_event(ERROR, "%s flag needs a root directory.", flagArgs[parseCount - 1]);
                     return -1;
                 }
                 add_root_dir(flagArgs[parseCount]);
-        }
-        else if (strcmp(flagArgs[parseCount], "-s") == 0 ||
-            strcmp(flagArgs[parseCount], "--search") == 0){
+            }
+            else if (*cur_flag == 's' || strcmp(cur_flag, "-search") == 0){
                 if (++parseCount == flagCount){
                     log_event(ERROR, "%s flag needs a search string.", flagArgs[parseCount - 1]);
                     return -1;
@@ -71,68 +71,66 @@ int parseArgs(char **flagArgs, int flagCount){
                 else{
                     settings.search_string = flagArgs[parseCount];
                 }
-        }
-        else if (strcmp(flagArgs[parseCount], "-o") == 0 ||
-            strcmp(flagArgs[parseCount], "--output") == 0){
+            }
+            else if (*cur_flag == 'o' || strcmp(cur_flag, "-output") == 0){
                 if (++parseCount == flagCount){
                     log_event(ERROR, "%s flag needs a file name.", flagArgs[parseCount - 1]);
                     return -1;
                 }
                 settings.output_file = flagArgs[parseCount];
-        }
-        else if (strcmp(flagArgs[parseCount], "-O") == 0 ||
-            strcmp(flagArgs[parseCount], "--stdout") == 0){
+            }
+            else if (*cur_flag == 'O' || strcmp(cur_flag, "-stdout") == 0){
                 settings.output_stdout = 1;
-        }
-        else if (strcmp(flagArgs[parseCount], "-f") == 0 ||
-            strcmp(flagArgs[parseCount], "--log-file") == 0){
+            }
+            else if (*cur_flag == 'f' || strcmp(cur_flag, "-log-file") == 0){
                 if (++parseCount == flagCount){
                     log_event(ERROR, "%s flag needs a file name.", flagArgs[parseCount - 1]);
                     return -1;
                 }
                 settings.log_file = flagArgs[parseCount];
-        }
-        else if (strcmp(flagArgs[parseCount], "-l") == 0 ||
-            strcmp(flagArgs[parseCount], "--loglevel") == 0){
+            }
+            else if (*cur_flag == 'l' || strcmp(cur_flag, "-loglevel") == 0){
                 if (++parseCount == flagCount){
                     log_event(ERROR, "%s flag needs a log level.", flagArgs[parseCount - 1]);
                     return -1;
                 }
                 // Make sure the value is numeric
                 int checkNum = strlen(flagArgs[parseCount]);
-                for (int check = 0; check < checkNum; check++){
+                for (int check = 0; check < checkNum; ++check){
                     if (!isdigit(flagArgs[parseCount][check])){
                         log_event(ERROR, "%s flag expected numeric log level, got %s.", flagArgs[parseCount - 1], flagArgs[parseCount]);
                         return -1;
                     }
                 }
                 settings.min_log_level = atoi(flagArgs[parseCount]);
-        }
-        else if (strcmp(flagArgs[parseCount], "-p") == 0 ||
-            strcmp(flagArgs[parseCount], "--printlevel") == 0){
+            }
+            else if (*cur_flag == 'p' || strcmp(cur_flag, "-printlevel") == 0){
                 if (++parseCount == flagCount){
                     log_event(ERROR, "%s flag needs a print level.", flagArgs[parseCount - 1]);
                     return -1;
                 }
                 // Make sure the value is numeric
                 int checkNum = strlen(flagArgs[parseCount]);
-                for (int check = 0; check < checkNum; check++){
+                for (int check = 0; check < checkNum; ++check){
                     if (!isdigit(flagArgs[parseCount][check])){
                         log_event(ERROR, "%s flag expected numeric print level, got %s.", flagArgs[parseCount - 1], flagArgs[parseCount]);
                         return -1;
                     }
                 }
                 settings.min_print_level = atoi(flagArgs[parseCount]);
-        }
-        else if (strcmp(flagArgs[parseCount], "-n") == 0 ||
-            strcmp(flagArgs[parseCount], "--no-case") == 0){
-                settings.comp_func = strcasestr;
+            }
+            else if (*cur_flag == 'n' || strcmp(cur_flag, "-no-case") == 0){
+                    settings.comp_func = strcasestr;
+            }
+            else{
+                log_event(WARNING, "Invalid flag '%s' detected, skipping.", flagArgs[parseCount]);
+            }
         }
         else{
             log_event(WARNING, "Invalid flag '%s' detected, skipping.", flagArgs[parseCount]);
         }
     }
-    return 0;
+    return settings.search_string ? 0 : -1;
 }
 
 /**
