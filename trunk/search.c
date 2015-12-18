@@ -1,7 +1,7 @@
 /***************************************************************************/
 /*                                                                         */
 /*                                search.c                                 */
-/* Original code written by Daniel Hawkins. Last modified on 2015-11-02.   */
+/* Original code written by Daniel Hawkins. Last modified on 2015-12-18.   */
 /*                                                                         */
 /* The file defines the searching functions.                               */
 /*                                                                         */
@@ -78,10 +78,13 @@ int onWalk(const char *fpath, const struct stat *sb, int typeflag, struct FTW *f
                 do{
                     ++lineNum;
                     col = 0;
-                    // Find multiple instances within the same line
+                    
                     while ((foundAt = settings.comp_func(linechars + col, settings.search_string)) != 0){
                         col = (long)foundAt - (long)linechars + 1;
                         add_result(lineNum, col, fpath);
+			// Find multiple instances within the same line unless we specifically single-match the lines
+                        if (settings.flags & FLAG_SINGLE_MATCH)
+                            break;
                     }
                 } while (fgets(linechars, BIG_BUFFER, mapFile));
             }
