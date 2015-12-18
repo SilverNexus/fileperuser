@@ -1,7 +1,7 @@
 /***************************************************************************/
 /*                                                                         */
 /*                                output.c                                 */
-/* Original code written by Daniel Hawkins. Last modified on 2015-12-15.   */
+/* Original code written by Daniel Hawkins. Last modified on 2015-12-18.   */
 /*                                                                         */
 /* The file implements the output function to be used at termination.      */
 /*                                                                         */
@@ -18,7 +18,7 @@ void output_matches(){
         /*
          * if we want to print to stdout, print to stdout. Otherwise print to the output file.
          */
-        FILE *results_file = (settings.output_stdout ? stdout : fopen(settings.output_file, "w"));
+        FILE *results_file = (settings.flags & FLAG_PRINT_STDOUT ? stdout : fopen(settings.output_file, "w"));
         if (!results_file)
             log_event(FATAL, "Failed to open output file %s.", settings.output_file);
         RESULT_ITEM *res = results.first;
@@ -28,7 +28,7 @@ void output_matches(){
                 settings.search_string, res->line_num, res->col_num, res->file_path);
             res = res->next;
         } while (res);
-        if (!settings.output_stdout)
+        if (!settings.flags & FLAG_PRINT_STDOUT)
             // This can be to stdout because it only prints when we don't print to stdout.
             printf("The matches have been stored in %s.\n", settings.output_file);
         fclose(results_file);

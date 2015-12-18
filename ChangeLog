@@ -1,3 +1,11 @@
+2015-12-18  SilverNexus
+	* parseArgs.c: Added argument pasing for single-line match feature
+	* settings.c: Refactored byte for stdout printing as flags byte
+	* search.c: Added check for single-match mode.
+	* output.c: Refactored stdout printing check to use flags byte.
+	* settings.h: Refactored stdout printing byte as flags byte. Defined flag values.
+	* README: Add information about -1 and --single-match flags.
+
 2015-12-17  SilverNexus
 	* parseArgs.c: Optimize arg checking andd fix segfault on bad flags and no search string.
 
@@ -10,9 +18,9 @@
 	* README: Updated usage information.
 
 2015-11-04  SilverNexus
-    * main.c: Added signal handling to output results found at SIGINT.
-    * output.*: Moved the result output code to its own function.
-    * Makefile.am: Add output.c to the build.
+	* main.c: Added signal handling to output results found at SIGINT.
+	* output.*: Moved the result output code to its own function.
+	* Makefile.am: Add output.c to the build.
 
 2015-11-02  SilverNexus
 	* search.c: Implemented support for specific path search exclusions.

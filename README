@@ -18,6 +18,7 @@ FilePeruser User Guide
        -p or --printlevel: next argument is an integer representing
                          minimum level of log message to be printed.
        -n or --no-case: perform search without case-sensitivity
+       -1 or --single-match: match search string at most once per line.
    Notes:
        all spaces in [search string], [root directory], and any excluded
            directories must be properly escaped to function properly

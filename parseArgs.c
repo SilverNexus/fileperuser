@@ -1,7 +1,7 @@
 /***************************************************************************/
 /*                                                                         */
 /*                              parseArgs.c                                */
-/* Original code written by Daniel Hawkins. Last modified on 2015-12-17.   */
+/* Original code written by Daniel Hawkins. Last modified on 2015-12-18.   */
 /*                                                                         */
 /* The file defines the argument parsing functions.                        */
 /*                                                                         */
@@ -80,7 +80,7 @@ int parseArgs(char **flagArgs, int flagCount){
                 settings.output_file = flagArgs[parseCount];
             }
             else if (*cur_flag == 'O' || strcmp(cur_flag, "-stdout") == 0){
-                settings.output_stdout = 1;
+                settings.flags |= FLAG_PRINT_STDOUT;
             }
             else if (*cur_flag == 'f' || strcmp(cur_flag, "-log-file") == 0){
                 if (++parseCount == flagCount){
@@ -120,8 +120,11 @@ int parseArgs(char **flagArgs, int flagCount){
                 settings.min_print_level = atoi(flagArgs[parseCount]);
             }
             else if (*cur_flag == 'n' || strcmp(cur_flag, "-no-case") == 0){
-                    settings.comp_func = strcasestr;
+                settings.comp_func = strcasestr;
             }
+	    else if (*cur_flag == '1' || strcmp(cur_flag, "-single-match") == 0){
+                settings.flags |= FLAG_SINGLE_MATCH;
+	    }
             else{
                 log_event(WARNING, "Invalid flag '%s' detected, skipping.", flagArgs[parseCount]);
             }
@@ -155,5 +158,6 @@ void help_message(){
     puts("  -l --loglevel [level]     Sets the minimum log level to be recorded to file. Must be an integer. Default is 2 (WARNING).");
     puts("  -p --printlevel [level]   Sets the minimum log level to be displayed on-screen. Must be an integer. Default is 2 (WARNING).");
     puts("  -n --no-case              Sets the search to be case insensitive.");
+    puts("  -1 --single-match         Match the search string at most once per line.");
     exit(EXIT_SUCCESS);
 }
