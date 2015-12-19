@@ -1,3 +1,6 @@
+2015-12-19  SilverNexus
+	* configure.ac: Removed several checks redundant with needing a C99-compliant compiler.
+
 2015-12-18  SilverNexus
 	* parseArgs.c: Added argument pasing for single-line match feature
 	* settings.c: Refactored byte for stdout printing as flags byte

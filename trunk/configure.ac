@@ -1,9 +1,5 @@
 # This file is processed by autoconf to produce a configure script.
 
-# Note: I am not an expert with autotools, so I used Crossfire Server's
-# configure.ac file as reference throughout the constuction of this file.
-# --SilverNexus 2014-06-05
-
 AC_INIT([FilePeruser], [0.02-dev], [silvernexus@users.sourceforge.net])
 AC_CONFIG_HEADERS([config.h])
 AC_CONFIG_SRCDIR([./main.c])
@@ -34,11 +30,7 @@ AC_PROG_LIBTOOL
 #
 
 # Checks for header files.
-AC_HEADER_TIME
 AC_CHECK_HEADERS([ftw.h])
-
-AC_C_CONST
-AC_STRUCT_TM
 
 #
 # Library Function Checks
