@@ -199,10 +199,9 @@ void search_folder(const char *fpath){
 			log_event(ERROR, "Failed to open file %s.", currentDir);
 		    break;
 		case DT_LNK:
-		    return;
+		    break;
 		default:
 		    log_event(WARNING, "Unsupported inode type found, skipping.");
-		    return;
             }
         }
     }
