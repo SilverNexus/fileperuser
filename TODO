@@ -1,6 +1,3 @@
-Known bugs:
-    - dirent-based implemtation misses files in a few edge cases
-      that the nftw implementation hits.
 
 Future plans:
     - Add support for regular expressions

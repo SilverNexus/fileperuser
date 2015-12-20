@@ -9,6 +9,7 @@
 	* settings.c: Implement the single- or multi-search as a functon pointer.
 	* settings.h: Remove single_search flag. Implement as a function pointer.
 	* TODO: Mention difference in output on tested directory as a bug.
+	  Then I found the bug a few commits later and fixed it.
 	* dir_list.c: Change an out of memory error to be fatal.
 
 2015-12-18  SilverNexus
