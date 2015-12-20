@@ -1,7 +1,7 @@
 /***************************************************************************/
 /*                                                                         */
 /*                              parseArgs.c                                */
-/* Original code written by Daniel Hawkins. Last modified on 2015-12-18.   */
+/* Original code written by Daniel Hawkins. Last modified on 2015-12-19.   */
 /*                                                                         */
 /* The file defines the argument parsing functions.                        */
 /*                                                                         */
@@ -13,6 +13,7 @@
 #include <stdlib.h>
 #include "ErrorLog.h"
 #include "settings.h"
+#include "search.h"
 #include <ctype.h>
 
 /**
@@ -123,7 +124,7 @@ int parseArgs(char **flagArgs, int flagCount){
                 settings.comp_func = strcasestr;
             }
 	    else if (*cur_flag == '1' || strcmp(cur_flag, "-single-match") == 0){
-                settings.flags |= FLAG_SINGLE_MATCH;
+                settings.file_parser = parse_file_single_match;
 	    }
             else{
                 log_event(WARNING, "Invalid flag '%s' detected, skipping.", flagArgs[parseCount]);

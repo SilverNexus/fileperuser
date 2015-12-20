@@ -1,13 +1,15 @@
 /***************************************************************************/
 /*                                                                         */
 /*                                 main.c                                  */
-/* Original code written by Daniel Hawkins. Last modified on 2015-12-15.   */
+/* Original code written by Daniel Hawkins. Last modified on 2015-12-19.   */
 /*                                                                         */
 /* The file defines the main function and several searching functions.     */
 /*                                                                         */
 /***************************************************************************/
 
+#if defined HAVE_NFTW
 #include <ftw.h>
+#endif
 
 #include <stdio.h>
 #include "search.h"
@@ -54,8 +56,14 @@ int main(int argc, char *argv[]){
         // Begin the search
         DIR_LIST *thisDir = settings.root_dirs;
         while (thisDir){
+#if defined HAVE_NFTW
             if (nftw(thisDir->dir, onWalk, 20, FTW_ACTIONRETVAL | FTW_PHYS) == -1)
                 log_event(FATAL, "Directory walk for %s failed!", thisDir->dir);
+#elif defined HAVE_DIRENT_H
+	    search_folder(thisDir->dir);
+#else
+#error Could not find a viable directory parsing structure
+#endif
             // Okay, we need to reset the base search path after a search tree is completed.
             settings.base_search_path_length = 0;
             thisDir = thisDir->next;

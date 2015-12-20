@@ -1,7 +1,7 @@
 /***************************************************************************/
 /*                                                                         */
 /*                               settings.c                                */
-/* Original code written by Daniel Hawkins. Last modified on 2015-12-18.   */
+/* Original code written by Daniel Hawkins. Last modified on 2015-12-19.   */
 /*                                                                         */
 /* The file defines the functions for handling settings.                   */
 /*                                                                         */
@@ -10,6 +10,7 @@
 #include "settings.h"
 #include "ErrorLog.h"
 #include "dir_list.h"
+#include "search.h"
 #include <string.h>
 
 /**
@@ -24,6 +25,7 @@ void init_settings(){
     settings.root_dirs = 0;
     settings.search_string = 0;
     settings.comp_func = strstr;
+    settings.file_parser = parse_file;
     settings.output_file = "searchResults.txt";
     settings.log_file = "fileperuser.log";
     settings.flags = 0;
