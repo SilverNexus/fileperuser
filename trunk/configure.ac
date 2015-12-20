@@ -31,6 +31,7 @@ AC_PROG_LIBTOOL
 
 # Checks for header files.
 AC_CHECK_HEADERS([ftw.h])
+AC_CHECK_HEADERS([dirent.h])
 
 #
 # Library Function Checks

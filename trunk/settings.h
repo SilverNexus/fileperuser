@@ -1,7 +1,7 @@
 /***************************************************************************/
 /*                                                                         */
 /*                               settings.h                                */
-/* Original code written by Daniel Hawkins. Last modified on 2015-12-18.   */
+/* Original code written by Daniel Hawkins. Last modified on 2015-12-19.   */
 /*                                                                         */
 /* The file defines the structures for handling important variables.       */
 /*                                                                         */
@@ -13,9 +13,9 @@
 #include "dir_list.h"
 #include "ErrorLog.h"
 #include <stddef.h>
+#include <stdio.h>
 
 #define FLAG_PRINT_STDOUT 0x01
-#define FLAG_SINGLE_MATCH 0x02
 
 struct {
     /*
@@ -46,6 +46,12 @@ struct {
      * so I can easily do case sensitive or case-insensitive searches
      */
     char *(*comp_func)(const char *, const char *);
+    
+    /*
+     * Pointer to the file parsing function
+     * one multi-matches, the other single-matches
+     */
+    void (*file_parser)(FILE *, const char *);
 
     char *output_file;
 

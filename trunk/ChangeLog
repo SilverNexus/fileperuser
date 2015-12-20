@@ -1,5 +1,14 @@
 2015-12-19  SilverNexus
 	* configure.ac: Removed several checks redundant with needing a C99-compliant compiler.
+	  Then added check for dirent.h for alternate implementation for systems w/o nftw(3).
+	* search.c: Abstracted out the search functions.
+	  Reimplemented a dirent-based directory walk.
+	* search.h: Add requisite function declarations.
+	* main.c: Add preprocessor directives to control which directory search function is called.
+	* parseArgs.c: Change the single-match flags to adjust a function pointer instead of a flag.
+	* settings.c: Implement the single- or multi-search as a functon pointer.
+	* settings.h: Remove single_search flag. Implement as a function pointer.
+	* TODO: Mention difference in output on tested directory as a bug.
 
 2015-12-18  SilverNexus
 	* parseArgs.c: Added argument pasing for single-line match feature
