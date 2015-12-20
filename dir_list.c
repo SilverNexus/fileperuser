@@ -1,7 +1,7 @@
 /***************************************************************************/
 /*                                                                         */
 /*                               dir_list.c                                */
-/* Original code written by Daniel Hawkins. Last modified on 2015-06-02.   */
+/* Original code written by Daniel Hawkins. Last modified on 2015-12-19.   */
 /*                                                                         */
 /* The file defines the functions for handling the dir_list structure.     */
 /*                                                                         */
@@ -21,8 +21,7 @@
 DIR_LIST *init_dir_node(char *directory){
     DIR_LIST *new_node = (DIR_LIST *)malloc(sizeof(DIR_LIST));
     if (!new_node){
-        log_event(ERROR, "Could not allocate space for directory %s", directory);
-        return 0;
+        log_event(FATAL, "Could not allocate space for directory %s", directory);
     }
     new_node->dir = directory;
     new_node->next = 0;
