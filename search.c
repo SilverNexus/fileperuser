@@ -23,7 +23,6 @@
 #else
 #include <stdio.h>
 #define BIG_BUFFER 9000
-static char linechars[BIG_BUFFER];
 #endif
 
 /**
@@ -65,20 +64,31 @@ void parse_file(const char *fpath){
     // Find each line in the file
     // Loop optimization
     if ((end_line = strchr(start_line, '\n')) != 0){
+#else
+    static char start_line[BIG_BUFFER];
+    FILE *file = fopen(fpath, "r");
+    if (!file){
+        log_event(ERROR, "Failed to open file %s.", fpath);
+	return;
+    }
+    // Loop optimization
+    if (fgets(start_line, BIG_BUFFER, file)){
+#endif
         char *foundAt;
         int col;
         register int line_num = 0;
         do{
 	    ++line_num;
 	    col = 0;
+#ifdef HAVE_MMAP
 	    // substitute to only get this line
 	    *end_line = '\0';
-        
+#endif
 	    while ((foundAt = settings.comp_func(start_line + col, settings.search_string)) != 0){
 		col = (long)foundAt - (long)start_line + 1;
 		add_result(line_num, col, fpath);
 	    }
-	    
+#ifdef HAVE_MMAP
 	    // Change it back when done
 	    *end_line = '\n';
 	    start_line = end_line + 1;
@@ -87,25 +97,7 @@ void parse_file(const char *fpath){
     munmap(addr, sb.st_size);
     close(fd);
 #else
-    FILE *file = fopen(fpath, "r");
-    if (!file){
-        log_event(ERROR, "Failed to open file %s.", fpath);
-	return;
-    }
-    // Loop optimization
-    if (fgets(linechars, BIG_BUFFER, file)){
-        char *foundAt;
-        int col;
-        register int line_num = 0;
-        do{
-	    ++line_num;
-	    col = 0;
-        
-	    while ((foundAt = settings.comp_func(linechars + col, settings.search_string)) != 0){
-		col = (long)foundAt - (long)linechars + 1;
-		add_result(line_num, col, fpath);
-	    }
-        } while (fgets(linechars, BIG_BUFFER, file));
+        } while (fgets(start_line, BIG_BUFFER, file));
     }
     fclose(file);
 #endif
@@ -151,17 +143,28 @@ void parse_file_single_match(const char *fpath){
     // Find each line in the file
     // Loop optimization
     if ((end_line = strchr(start_line, '\n')) != 0){
+#else
+    static char start_line[BIG_BUFFER];
+    FILE *file = fopen(fpath, "r");
+    if (!file){
+        log_event(ERROR, "Failed to open file %s.", fpath);
+	return;
+    }
+    // Loop optimization
+    if (fgets(start_line, BIG_BUFFER, file)){
+#endif
         char *foundAt;
         register int line_num = 0;
         do{
 	    ++line_num;
+#ifdef HAVE_MMAP
 	    // substitute to only get this line
 	    *end_line = '\0';
-        
+#endif
 	    if ((foundAt = settings.comp_func(start_line, settings.search_string)) != 0){
 		add_result(line_num, (long)foundAt - (long)start_line + 1, fpath);
 	    }
-	    
+#ifdef HAVE_MMAP
 	    // Change it back when done
 	    *end_line = '\n';
 	    start_line = end_line + 1;
@@ -170,22 +173,7 @@ void parse_file_single_match(const char *fpath){
     munmap(addr, sb.st_size);
     close(fd);
 #else
-    FILE *file = fopen(fpath, "r");
-    if (!file){
-        log_event(ERROR, "Failed to open file %s.", fpath);
-	return;
-    }
-    // Loop optimization
-    if (fgets(linechars, BIG_BUFFER, file)){
-        char *foundAt;
-        register int line_num = 0;
-        do{
-	    ++line_num;
-        
-	    if ((foundAt = settings.comp_func(linechars, settings.search_string)) != 0){
-		add_result(line_num, (long)foundAt - (long)linechars + 1, fpath);
-	    }
-        } while (fgets(linechars, BIG_BUFFER, file));
+        } while (fgets(start_line, BIG_BUFFER, file));
     }
     fclose(file);
 #endif	
