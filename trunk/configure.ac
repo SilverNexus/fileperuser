@@ -36,7 +36,7 @@ AC_CHECK_HEADERS([dirent.h])
 #
 # Library Function Checks
 #
-AC_CHECK_FUNCS([vsnprintf strstr strcasestr nftw])
+AC_CHECK_FUNCS([vsnprintf strstr strcasestr nftw mmap])
 
 AS_BOX([Generate Output])
 AC_CONFIG_FILES([Makefile])

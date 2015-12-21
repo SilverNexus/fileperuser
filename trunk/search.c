@@ -9,16 +9,22 @@
 
 #include "search.h"
 #include <string.h>
-#include <stdio.h>
 #include "ErrorLog.h"
 #include "settings.h"
 #include "dir_list.h"
 #include "result_list.h"
-#include <assert.h>
 
+#ifdef HAVE_MMAP
+#include <sys/mman.h>
+#include <sys/stat.h>
+#include <sys/types.h>
+#include <fcntl.h>
+#include <unistd.h>
+#else
+#include <stdio.h>
 #define BIG_BUFFER 9000
-
 static char linechars[BIG_BUFFER];
+#endif
 
 /**
  * Parses a file for a search string, matching any number of occurrences per line.
@@ -27,27 +33,82 @@ static char linechars[BIG_BUFFER];
  * The file path to search.
  */
 void parse_file(const char *fpath){
-    FILE *file = fopen(fpath, "r");
-    if (file){
-	// Loop optimization
-	if (fgets(linechars, BIG_BUFFER, file)){
-	    char *foundAt;
-	    int col;
-	    register int lineNum = 0;
-	    do{
-		++lineNum;
-		col = 0;
-            
-		while ((foundAt = settings.comp_func(linechars + col, settings.search_string)) != 0){
-		    col = (long)foundAt - (long)linechars + 1;
-		    add_result(lineNum, col, fpath);
-		}
-	    } while (fgets(linechars, BIG_BUFFER, file));
-	}
-	fclose(file);
+#ifdef HAVE_MMAP
+    // Open the file and get the file descriptor
+    int fd = open(fpath, O_RDONLY);
+    if (!fd){
+	log_event(ERROR, "Could not open file %s.", fpath);
+	return;
     }
-    else
-        log_event(ERROR, "Failed to open file %s.", fpath);	
+    struct stat sb;
+    // Get the file size (and some other stuff, too)
+    if (fstat(fd, &sb) == -1){
+	close(fd);
+	log_event(ERROR, "Could not fstat file descriptor %d (%s).", fd, fpath);
+	return;
+    }
+    // Also, if an empty file, return here silently.
+    if (sb.st_size == 0){
+	close(fd);
+	return;
+    }
+    char *addr;
+    char *start_line, *end_line;
+    // Map the file to memory
+    // Read and write to the map, so we can substitute a \n with a \0 for searching
+    start_line = addr = mmap(0, sb.st_size, PROT_READ | PROT_WRITE, MAP_PRIVATE, fd, 0);
+    if (addr == MAP_FAILED){
+	close(fd);
+	log_event(ERROR, "Failed to map file descriptor %d (%s).", fd, fpath);
+	return;
+    }
+    // Find each line in the file
+    // Loop optimization
+    if ((end_line = strchr(start_line, '\n')) != 0){
+        char *foundAt;
+        int col;
+        register int line_num = 0;
+        do{
+	    ++line_num;
+	    col = 0;
+	    // substitute to only get this line
+	    *end_line = '\0';
+        
+	    while ((foundAt = settings.comp_func(start_line + col, settings.search_string)) != 0){
+		col = (long)foundAt - (long)start_line + 1;
+		add_result(line_num, col, fpath);
+	    }
+	    
+	    // Change it back when done
+	    *end_line = '\n';
+	    start_line = end_line + 1;
+        } while ((end_line = strchr(start_line, '\n')) != 0);
+    }
+    munmap(addr, sb.st_size);
+    close(fd);
+#else
+    FILE *file = fopen(fpath, "r");
+    if (!file){
+        log_event(ERROR, "Failed to open file %s.", fpath);
+	return;
+    }
+    // Loop optimization
+    if (fgets(linechars, BIG_BUFFER, file)){
+        char *foundAt;
+        int col;
+        register int line_num = 0;
+        do{
+	    ++line_num;
+	    col = 0;
+        
+	    while ((foundAt = settings.comp_func(linechars + col, settings.search_string)) != 0){
+		col = (long)foundAt - (long)linechars + 1;
+		add_result(line_num, col, fpath);
+	    }
+        } while (fgets(linechars, BIG_BUFFER, file));
+    }
+    fclose(file);
+#endif
 }
 
 /**
@@ -58,24 +119,76 @@ void parse_file(const char *fpath){
  * The file path to search.
  */
 void parse_file_single_match(const char *fpath){
-    FILE *file = fopen(fpath, "r");
-    if (file){
-	// Loop optimization
-	if (fgets(linechars, BIG_BUFFER, file)){
-	    char *foundAt;
-	    register int lineNum = 0;
-	    do{
-		++lineNum;
-            
-		if ((foundAt = settings.comp_func(linechars, settings.search_string)) != 0){
-		    add_result(lineNum, (long)foundAt - (long)linechars + 1, fpath);
-		}
-	    } while (fgets(linechars, BIG_BUFFER, file));
-	}
-	fclose(file);
+#ifdef HAVE_MMAP
+    // Open the file and get the file descriptor
+    int fd = open(fpath, O_RDONLY);
+    if (!fd){
+	log_event(ERROR, "Could not open file %s.", fpath);
+	return;
     }
-    else
-        log_event(ERROR, "Failed to open file %s.", fpath);	
+    struct stat sb;
+    // Get the file size (and some other stuff, too)
+    if (fstat(fd, &sb) == -1){
+	close(fd);
+	log_event(ERROR, "Could not fstat file descriptor %d (%s).", fd, fpath);
+	return;
+    }
+    // Also, if an empty file, return here silently.
+    if (sb.st_size == 0){
+	close(fd);
+	return;
+    }
+    char *addr;
+    char *start_line, *end_line;
+    // Map the file to memory
+    // Read and write to the map, so we can substitute a \n with a \0 for searching
+    start_line = addr = mmap(0, sb.st_size, PROT_READ | PROT_WRITE, MAP_PRIVATE, fd, 0);
+    if (addr == MAP_FAILED){
+	close(fd);
+	log_event(ERROR, "Failed to map file descriptor %d (%s).", fd, fpath);
+	return;
+    }
+    // Find each line in the file
+    // Loop optimization
+    if ((end_line = strchr(start_line, '\n')) != 0){
+        char *foundAt;
+        register int line_num = 0;
+        do{
+	    ++line_num;
+	    // substitute to only get this line
+	    *end_line = '\0';
+        
+	    if ((foundAt = settings.comp_func(start_line, settings.search_string)) != 0){
+		add_result(line_num, (long)foundAt - (long)start_line + 1, fpath);
+	    }
+	    
+	    // Change it back when done
+	    *end_line = '\n';
+	    start_line = end_line + 1;
+        } while ((end_line = strchr(start_line, '\n')) != 0);
+    }
+    munmap(addr, sb.st_size);
+    close(fd);
+#else
+    FILE *file = fopen(fpath, "r");
+    if (!file){
+        log_event(ERROR, "Failed to open file %s.", fpath);
+	return;
+    }
+    // Loop optimization
+    if (fgets(linechars, BIG_BUFFER, file)){
+        char *foundAt;
+        register int line_num = 0;
+        do{
+	    ++line_num;
+        
+	    if ((foundAt = settings.comp_func(linechars, settings.search_string)) != 0){
+		add_result(line_num, (long)foundAt - (long)linechars + 1, fpath);
+	    }
+        } while (fgets(linechars, BIG_BUFFER, file));
+    }
+    fclose(file);
+#endif	
 }
     
 
