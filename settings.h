@@ -1,7 +1,7 @@
 /***************************************************************************/
 /*                                                                         */
 /*                               settings.h                                */
-/* Original code written by Daniel Hawkins. Last modified on 2015-12-19.   */
+/* Original code written by Daniel Hawkins. Last modified on 2015-12-20.   */
 /*                                                                         */
 /* The file defines the structures for handling important variables.       */
 /*                                                                         */
@@ -51,7 +51,7 @@ struct {
      * Pointer to the file parsing function
      * one multi-matches, the other single-matches
      */
-    void (*file_parser)(FILE *, const char *);
+    void (*file_parser)(const char *);
 
     char *output_file;
 

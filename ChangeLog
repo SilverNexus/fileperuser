@@ -1,3 +1,9 @@
+2015-12-20  SilverNexus
+	* search.c: Refactor file opening to be inside file search functions. Reduces parameters
+	  passed to the function.
+	* search.h: Adjust the function declarations to match the definition.
+	* settings.h: Adjust the search function pointer declaration to match the definitions.
+
 2015-12-19  SilverNexus
 	* configure.ac: Removed several checks redundant with needing a C99-compliant compiler.
 	  Then added check for dirent.h for alternate implementation for systems w/o nftw(3).
