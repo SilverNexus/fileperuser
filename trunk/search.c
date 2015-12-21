@@ -1,7 +1,7 @@
 /***************************************************************************/
 /*                                                                         */
 /*                                search.c                                 */
-/* Original code written by Daniel Hawkins. Last modified on 2015-12-19.   */
+/* Original code written by Daniel Hawkins. Last modified on 2015-12-20.   */
 /*                                                                         */
 /* The file defines the searching functions.                               */
 /*                                                                         */
@@ -23,55 +23,59 @@ static char linechars[BIG_BUFFER];
 /**
  * Parses a file for a search string, matching any number of occurrences per line.
  *
- * @param file
- * The file to read from. Should not be zero.
- *
- * @warning closes file when done.
+ * @param fpath
+ * The file path to search.
  */
-void parse_file(FILE *file, const char *fpath){
-    assert(file);
-    // Loop optimization
-    if (fgets(linechars, BIG_BUFFER, file)){
-	char *foundAt;
-	int col;
-	register int lineNum = 0;
-        do{
-            ++lineNum;
-            col = 0;
+void parse_file(const char *fpath){
+    FILE *file = fopen(fpath, "r");
+    if (file){
+	// Loop optimization
+	if (fgets(linechars, BIG_BUFFER, file)){
+	    char *foundAt;
+	    int col;
+	    register int lineNum = 0;
+	    do{
+		++lineNum;
+		col = 0;
             
-            while ((foundAt = settings.comp_func(linechars + col, settings.search_string)) != 0){
-                col = (long)foundAt - (long)linechars + 1;
-                add_result(lineNum, col, fpath);
-            }
-        } while (fgets(linechars, BIG_BUFFER, file));
+		while ((foundAt = settings.comp_func(linechars + col, settings.search_string)) != 0){
+		    col = (long)foundAt - (long)linechars + 1;
+		    add_result(lineNum, col, fpath);
+		}
+	    } while (fgets(linechars, BIG_BUFFER, file));
+	}
+	fclose(file);
     }
-    fclose(file);
+    else
+        log_event(ERROR, "Failed to open file %s.", fpath);	
 }
 
 /**
  * Parses a file for the search string, but only matches once per line.
  * Matches are added to the results list.
  *
- * @param file
- * The file to read from. Should not be zero.
- *
- * @warning closes file when done.
+ * @param fpath
+ * The file path to search.
  */
-void parse_file_single_match(FILE *file, const char *fpath){
-    assert(file);
-    // Loop optimization
-    if (fgets(linechars, BIG_BUFFER, file)){
-	char *foundAt;
-	register int lineNum = 0;
-        do{
-            ++lineNum;
+void parse_file_single_match(const char *fpath){
+    FILE *file = fopen(fpath, "r");
+    if (file){
+	// Loop optimization
+	if (fgets(linechars, BIG_BUFFER, file)){
+	    char *foundAt;
+	    register int lineNum = 0;
+	    do{
+		++lineNum;
             
-            if ((foundAt = settings.comp_func(linechars, settings.search_string)) != 0){
-                add_result(lineNum, (long)foundAt - (long)linechars + 1, fpath);
-            }
-        } while (fgets(linechars, BIG_BUFFER, file));
+		if ((foundAt = settings.comp_func(linechars, settings.search_string)) != 0){
+		    add_result(lineNum, (long)foundAt - (long)linechars + 1, fpath);
+		}
+	    } while (fgets(linechars, BIG_BUFFER, file));
+	}
+	fclose(file);
     }
-    fclose(file);
+    else
+        log_event(ERROR, "Failed to open file %s.", fpath);	
 }
     
 
@@ -126,11 +130,7 @@ int onWalk(const char *fpath, const struct stat *sb, int typeflag, struct FTW *f
         return 0;
     case FTW_F:
         log_event(INFO, "Searching for '%s' in %s.", settings.search_string, fpath);
-        FILE *mapFile = fopen(fpath, "r");
-        if (mapFile)
-            settings.file_parser(mapFile, fpath);
-        else
-            log_event(ERROR, "Failed to open file %s.", fpath);
+        settings.file_parser(fpath);
         return 0;
     case FTW_SL:
         return 0;
@@ -192,11 +192,7 @@ void search_folder(const char *fpath){
 		    break;
 		case DT_REG:
 		    log_event(INFO, "Searching for '%s' in %s.", settings.search_string, currentDir);
-		    FILE *mapFile = fopen(currentDir, "r");
-		    if (mapFile)
-			settings.file_parser(mapFile, currentDir);
-		    else
-			log_event(ERROR, "Failed to open file %s.", currentDir);
+		    settings.file_parser(currentDir);
 		    break;
 		case DT_LNK:
 		    break;

@@ -1,7 +1,7 @@
 /***************************************************************************/
 /*                                                                         */
 /*                                search.h                                 */
-/* Original code written by Daniel Hawkins. Last modified on 2015-12-19.   */
+/* Original code written by Daniel Hawkins. Last modified on 2015-12-20.   */
 /*                                                                         */
 /* The file defines several searching functions' prototypes.               */
 /*                                                                         */
@@ -27,7 +27,7 @@ void search_folder(const char *dir_path);
 #error We do not have a directory traversal for your system at this time.
 #endif
 
-void parse_file(FILE *file, const char *fpath);
-void parse_file_single_match(FILE *file, const char *fpath);
+void parse_file(const char *fpath);
+void parse_file_single_match(const char *fpath);
 
 #endif
