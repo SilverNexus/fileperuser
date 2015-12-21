@@ -1,3 +1,7 @@
+2015-12-21  SilverNexus
+	* search.c: Add implemetation to use mmap() if available, otherwise use stdio.
+	* configure.ac: Add check for function mmap().
+
 2015-12-20  SilverNexus
 	* search.c: Refactor file opening to be inside file search functions. Reduces parameters
 	  passed to the function.
