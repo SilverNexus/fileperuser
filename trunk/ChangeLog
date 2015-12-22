@@ -1,3 +1,7 @@
+2015-12-22  SilverNexus
+	* search.c: Refactor mmap()ed search to only find the line number when a match
+	  is found.
+
 2015-12-21  SilverNexus
 	* search.c: Add implemetation to use mmap() if available, otherwise use stdio.
 	* configure.ac: Add check for function mmap().

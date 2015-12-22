@@ -52,18 +52,40 @@ void parse_file(const char *fpath){
 	return;
     }
     char *addr;
-    char *start_line, *end_line;
+    char *start_line, *end_line, *in_line;
     // Map the file to memory
     // Read and write to the map, so we can substitute a \n with a \0 for searching
-    start_line = addr = mmap(0, sb.st_size, PROT_READ | PROT_WRITE, MAP_PRIVATE, fd, 0);
+    in_line = start_line = addr = mmap(0, sb.st_size, PROT_READ | PROT_WRITE, MAP_PRIVATE, fd, 0);
     if (addr == MAP_FAILED){
 	close(fd);
 	log_event(ERROR, "Failed to map file descriptor %d (%s).", fd, fpath);
 	return;
     }
-    // Find each line in the file
-    // Loop optimization
-    if ((end_line = strchr(start_line, '\n')) != 0){
+    char *foundAt;
+    // Only count file lines if we find a match.
+    if ((foundAt = strstr(in_line, "alt")) != 0){
+	char tmp;
+	register int line_num = 1;
+	do{
+	    // Substitute foundAt to make searching for lines easy
+	    tmp = *foundAt;
+	    *foundAt = '\0';
+	    // Find the line num.
+	    while ((end_line = strchr(start_line, '\n')) != 0){
+		++line_num;
+		start_line = end_line + 1;
+	    }
+	    // Substitute back *foundAt.
+	    *foundAt = tmp;
+	    add_result(line_num, (long)foundAt - (long)start_line + 1, fpath);
+
+	    // Continue search within the line
+	    in_line = foundAt + 1;
+	} while ((foundAt = strstr(in_line, "alt")) != 0);
+    }
+    
+    munmap(addr, sb.st_size);
+    close(fd);
 #else
     static char start_line[BIG_BUFFER];
     FILE *file = fopen(fpath, "r");
@@ -73,30 +95,16 @@ void parse_file(const char *fpath){
     }
     // Loop optimization
     if (fgets(start_line, BIG_BUFFER, file)){
-#endif
         char *foundAt;
         int col;
         register int line_num = 0;
         do{
 	    ++line_num;
 	    col = 0;
-#ifdef HAVE_MMAP
-	    // substitute to only get this line
-	    *end_line = '\0';
-#endif
 	    while ((foundAt = settings.comp_func(start_line + col, settings.search_string)) != 0){
 		col = (long)foundAt - (long)start_line + 1;
 		add_result(line_num, col, fpath);
 	    }
-#ifdef HAVE_MMAP
-	    // Change it back when done
-	    *end_line = '\n';
-	    start_line = end_line + 1;
-        } while ((end_line = strchr(start_line, '\n')) != 0);
-    }
-    munmap(addr, sb.st_size);
-    close(fd);
-#else
         } while (fgets(start_line, BIG_BUFFER, file));
     }
     fclose(file);
@@ -140,9 +148,35 @@ void parse_file_single_match(const char *fpath){
 	log_event(ERROR, "Failed to map file descriptor %d (%s).", fd, fpath);
 	return;
     }
-    // Find each line in the file
-    // Loop optimization
-    if ((end_line = strchr(start_line, '\n')) != 0){
+    char *foundAt;
+    // Only count file lines if we find a match.
+    if ((foundAt = strstr(start_line, "alt")) != 0){
+	char tmp;
+	register int line_num = 1;
+	do{
+	    // Substitute foundAt to make searching for lines easy
+	    tmp = *foundAt;
+	    *foundAt = '\0';
+	    // Find the line num.
+	    while ((end_line = strchr(start_line, '\n')) != 0){
+		++line_num;
+		start_line = end_line + 1;
+	    }
+	    // Substitute back *foundAt.
+	    *foundAt = tmp;
+	    add_result(line_num, (long)foundAt - (long)start_line + 1, fpath);
+	    // Go to the start of the next line to continue the search
+	    end_line = strchr(foundAt, '\n');
+	    if (!end_line)
+		break;
+	    // Make sure we account for moving to a new line.
+	    ++line_num;
+	    start_line = end_line + 1;
+	} while ((foundAt = strstr(start_line, "alt")) != 0);
+    }
+    
+    munmap(addr, sb.st_size);
+    close(fd);
 #else
     static char start_line[BIG_BUFFER];
     FILE *file = fopen(fpath, "r");
@@ -152,31 +186,17 @@ void parse_file_single_match(const char *fpath){
     }
     // Loop optimization
     if (fgets(start_line, BIG_BUFFER, file)){
-#endif
         char *foundAt;
         register int line_num = 0;
         do{
 	    ++line_num;
-#ifdef HAVE_MMAP
-	    // substitute to only get this line
-	    *end_line = '\0';
-#endif
 	    if ((foundAt = settings.comp_func(start_line, settings.search_string)) != 0){
 		add_result(line_num, (long)foundAt - (long)start_line + 1, fpath);
 	    }
-#ifdef HAVE_MMAP
-	    // Change it back when done
-	    *end_line = '\n';
-	    start_line = end_line + 1;
-        } while ((end_line = strchr(start_line, '\n')) != 0);
-    }
-    munmap(addr, sb.st_size);
-    close(fd);
-#else
         } while (fgets(start_line, BIG_BUFFER, file));
     }
     fclose(file);
-#endif	
+#endif
 }
     
 
