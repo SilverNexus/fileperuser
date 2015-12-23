@@ -1,7 +1,7 @@
 /***************************************************************************/
 /*                                                                         */
 /*                             result_list.c                               */
-/* Original code written by Daniel Hawkins. Last modified on 2015-06-03.   */
+/* Original code written by Daniel Hawkins. Last modified on 2015-12-22.   */
 /*                                                                         */
 /* Implements the routines for storing results in a linked list.           */
 /*                                                                         */
@@ -11,6 +11,7 @@
 #include <stdlib.h>
 #include "ErrorLog.h"
 #include <string.h>
+#include "config.h"
 
 /**
  * Initializes the results list to an empty list.
@@ -41,10 +42,14 @@ int add_result(int line, int col, const char *file){
     RESULT_ITEM *item = (RESULT_ITEM *)malloc(sizeof(RESULT_ITEM));
     if (!item)
         log_event(FATAL, "No memory to allocate result in file %s, line %d, col %d.", file, line, col);
+#ifdef HAVE_STRDUP
+    item->file_path = strdup(file);
+#else
     item->file_path = (char *)malloc(sizeof(char) * (strlen(file) + 1));
     if (!item->file_path)
         log_event(FATAL, "No memory to allocate file name in result for file %s, line %d, col %d.", file, line, col);
     strcpy(item->file_path, file);
+#endif
     item->line_num = line;
     item->col_num = col;
     item->next = 0;

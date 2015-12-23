@@ -3,7 +3,9 @@
 	  is found.
 	  Also, fixed a bug introduced from the refactor that caused it to always search for "alt".
 	* configure.ac: Removed redundant check for strstr(). It is part of C99.
+	  Add check for strdup().
 	* main.c: Fixed a bug where searchResults.txt was deleted when output is routed to stdout.
+	* result_list.c: Use strdup() if we have it.
 
 2015-12-21  SilverNexus
 	* search.c: Add implemetation to use mmap() if available, otherwise use stdio.
