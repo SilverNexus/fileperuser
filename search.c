@@ -81,7 +81,7 @@ void parse_file(const char *fpath){
 
 	    // Continue search within the line
 	    in_line = foundAt + 1;
-	} while ((foundAt = strstr(in_line, "alt")) != 0);
+	} while ((foundAt = strstr(in_line, settings.search_string)) != 0);
     }
     
     munmap(addr, sb.st_size);
@@ -172,7 +172,7 @@ void parse_file_single_match(const char *fpath){
 	    // Make sure we account for moving to a new line.
 	    ++line_num;
 	    start_line = end_line + 1;
-	} while ((foundAt = strstr(start_line, "alt")) != 0);
+	} while ((foundAt = strstr(start_line, settings.search_string)) != 0);
     }
     
     munmap(addr, sb.st_size);
