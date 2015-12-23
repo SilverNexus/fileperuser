@@ -290,7 +290,9 @@ void search_folder(const char *fpath){
 			return;
 		}
 	    }
-            char currentDir[BIG_BUFFER];
+	    // We add two to the length of the two pieces so we
+	    // have enough for both a null terminator and a slash if necessary.
+            char *currentDir = malloc(sizeof(char) * (strlen(fpath) + strlen(directory->d_name) + 2));
             strcpy(currentDir, fpath);
             // If there wasn't already a "/" at the end, add it here.
             if (currentDir[strlen(fpath) - 1] != '/')
@@ -320,6 +322,8 @@ void search_folder(const char *fpath){
 		default:
 		    log_event(WARNING, "Unsupported inode type found, skipping.");
             }
+	    // We're done with it, so free it.
+	    free(currentDir);
         }
     }
     else
