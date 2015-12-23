@@ -1,7 +1,7 @@
 /***************************************************************************/
 /*                                                                         */
 /*                                 main.c                                  */
-/* Original code written by Daniel Hawkins. Last modified on 2015-12-19.   */
+/* Original code written by Daniel Hawkins. Last modified on 2015-12-22.   */
 /*                                                                         */
 /* The file defines the main function and several searching functions.     */
 /*                                                                         */
@@ -50,7 +50,9 @@ int main(int argc, char *argv[]){
             log_event(INFO, "No root directory specified in search, setting to './'.");
         }
         // Remove any existing results file by this name
-        remove(settings.output_file);
+	// but only do that if we are writing to it.
+	if (!(settings.flags & FLAG_PRINT_STDOUT))
+	    remove(settings.output_file);
         // Time the search -- start timing
         time_t start_time = time(0), end_time;
         // Begin the search
