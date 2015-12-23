@@ -1,6 +1,12 @@
 2015-12-23  SilverNexus
 	* output.c: Reduce severity of failed load of output file. If it fails, print to stdout.
 	  Then shortened the file output phrase to reduce output size.
+	  Alter check for stdout printing to match new design.
+	* settings.c: Change default behavior to print to stdout.
+	* parseArgs.c: Retired -O and --stdout flags. Replaced by default behavior.
+	* settings.h: Remove flags field; it is no longer used.
+	* main.c: Alter check for stdout printing to match new design.
+	* README: Remove usage on the -O and --stdout flags.
 
 2015-12-22  SilverNexus
 	* search.c: Refactor mmap()ed search to only find the line number when a match

@@ -1,7 +1,7 @@
 /***************************************************************************/
 /*                                                                         */
 /*                                 main.c                                  */
-/* Original code written by Daniel Hawkins. Last modified on 2015-12-22.   */
+/* Original code written by Daniel Hawkins. Last modified on 2015-12-23.   */
 /*                                                                         */
 /* The file defines the main function and several searching functions.     */
 /*                                                                         */
@@ -51,7 +51,7 @@ int main(int argc, char *argv[]){
         }
         // Remove any existing results file by this name
 	// but only do that if we are writing to it.
-	if (!(settings.flags & FLAG_PRINT_STDOUT))
+	if (settings.output_file)
 	    remove(settings.output_file);
         // Time the search -- start timing
         time_t start_time = time(0), end_time;
