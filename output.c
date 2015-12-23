@@ -1,7 +1,7 @@
 /***************************************************************************/
 /*                                                                         */
 /*                                output.c                                 */
-/* Original code written by Daniel Hawkins. Last modified on 2015-12-18.   */
+/* Original code written by Daniel Hawkins. Last modified on 2015-12-23.   */
 /*                                                                         */
 /* The file implements the output function to be used at termination.      */
 /*                                                                         */
@@ -19,8 +19,10 @@ void output_matches(){
          * if we want to print to stdout, print to stdout. Otherwise print to the output file.
          */
         FILE *results_file = (settings.flags & FLAG_PRINT_STDOUT ? stdout : fopen(settings.output_file, "w"));
-        if (!results_file)
-            log_event(FATAL, "Failed to open output file %s.", settings.output_file);
+        if (!results_file){
+            log_event(ERROR, "Failed to open output file %s, using stdout.", settings.output_file);
+	    results_file = stdout;
+	}
         RESULT_ITEM *res = results.first;
         // We already know there's at least one: that's how we got here
         do{
