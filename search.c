@@ -290,9 +290,13 @@ void search_folder(const char *fpath){
 			return;
 		}
 	    }
-	    // We add two to the length of the two pieces so we
-	    // have enough for both a null terminator and a slash if necessary.
-            char *currentDir = malloc(sizeof(char) * (strlen(fpath) + strlen(directory->d_name) + 2));
+	    /*
+	     * We add three to the length of the two pieces so we have enough
+	     * for both a null terminator and both slashes if necessary.
+	     *
+	     * The second slash is concatenated if we have a dir.
+	     */
+            char *currentDir = malloc(sizeof(char) * (strlen(fpath) + strlen(directory->d_name) + 3));
             strcpy(currentDir, fpath);
             // If there wasn't already a "/" at the end, add it here.
             if (currentDir[strlen(fpath) - 1] != '/')
