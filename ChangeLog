@@ -2,6 +2,7 @@
 	* search.c: Refactor mmap()ed search to only find the line number when a match
 	  is found.
 	* configure.ac: Removed redundant check for strstr(). It is part of C99.
+	* main.c: Fixed a bug where searchResults.txt was deleted when output is routed to stdout.
 
 2015-12-21  SilverNexus
 	* search.c: Add implemetation to use mmap() if available, otherwise use stdio.
