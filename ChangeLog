@@ -1,6 +1,7 @@
 2015-12-22  SilverNexus
 	* search.c: Refactor mmap()ed search to only find the line number when a match
 	  is found.
+	  Also, fixed a bug introduced from the refactor that caused it to always search for "alt".
 	* configure.ac: Removed redundant check for strstr(). It is part of C99.
 	* main.c: Fixed a bug where searchResults.txt was deleted when output is routed to stdout.
 

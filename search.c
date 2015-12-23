@@ -63,7 +63,7 @@ void parse_file(const char *fpath){
     }
     char *foundAt;
     // Only count file lines if we find a match.
-    if ((foundAt = strstr(in_line, "alt")) != 0){
+    if ((foundAt = strstr(in_line, settings.search_string)) != 0){
 	char tmp;
 	register int line_num = 1;
 	do{
@@ -150,7 +150,7 @@ void parse_file_single_match(const char *fpath){
     }
     char *foundAt;
     // Only count file lines if we find a match.
-    if ((foundAt = strstr(start_line, "alt")) != 0){
+    if ((foundAt = strstr(start_line, settings.search_string)) != 0){
 	char tmp;
 	register int line_num = 1;
 	do{
