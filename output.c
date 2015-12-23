@@ -26,7 +26,7 @@ void output_matches(){
         RESULT_ITEM *res = results.first;
         // We already know there's at least one: that's how we got here
         do{
-            fprintf(results_file, "Found instance of '%s' in line %d, col %d of %s.\n",
+            fprintf(results_file, "Found '%s' in line %d, col %d of %s.\n",
                 settings.search_string, res->line_num, res->col_num, res->file_path);
             res = res->next;
         } while (res);

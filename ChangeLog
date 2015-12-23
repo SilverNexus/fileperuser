@@ -1,5 +1,6 @@
 2015-12-23  SilverNexus
 	* output.c: Reduce severity of failed load of output file. If it fails, print to stdout.
+	  Then shortened the file output phrase to reduce output size.
 
 2015-12-22  SilverNexus
 	* search.c: Refactor mmap()ed search to only find the line number when a match
