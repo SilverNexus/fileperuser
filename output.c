@@ -30,7 +30,7 @@ void output_matches(){
                 settings.search_string, res->line_num, res->col_num, res->file_path);
             res = res->next;
         } while (res);
-        if (!settings.flags & FLAG_PRINT_STDOUT)
+        if (results_file != stdout)
             // This can be to stdout because it only prints when we don't print to stdout.
             printf("The matches have been stored in %s.\n", settings.output_file);
         fclose(results_file);
