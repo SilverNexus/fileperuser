@@ -18,11 +18,16 @@ void output_matches(){
         /*
          * if we want to print to stdout, print to stdout. Otherwise print to the output file.
          */
-        FILE *results_file = (settings.flags & FLAG_PRINT_STDOUT ? stdout : fopen(settings.output_file, "w"));
-        if (!results_file){
-            log_event(ERROR, "Failed to open output file %s, using stdout.", settings.output_file);
-	    results_file = stdout;
+        FILE *results_file;
+	if (settings.output_file){
+	    results_file = fopen(settings.output_file, "w");
+	    if (!results_file){
+		log_event(ERROR, "Failed to open output file %s, using stdout.", settings.output_file);
+		results_file = stdout;
+	    }
 	}
+	else
+	    results_file = stdout;
         RESULT_ITEM *res = results.first;
         // We already know there's at least one: that's how we got here
         do{

@@ -1,7 +1,7 @@
 /***************************************************************************/
 /*                                                                         */
 /*                               settings.h                                */
-/* Original code written by Daniel Hawkins. Last modified on 2015-12-20.   */
+/* Original code written by Daniel Hawkins. Last modified on 2015-12-23.   */
 /*                                                                         */
 /* The file defines the structures for handling important variables.       */
 /*                                                                         */
@@ -14,8 +14,6 @@
 #include "ErrorLog.h"
 #include <stddef.h>
 #include <stdio.h>
-
-#define FLAG_PRINT_STDOUT 0x01
 
 struct {
     /*
@@ -54,11 +52,6 @@ struct {
     void (*file_parser)(const char *);
 
     char *output_file;
-
-    /*
-     * Flags for various behavior changes.
-     */
-    unsigned char flags;
 
     char *log_file;
     enum errorType min_log_level;
