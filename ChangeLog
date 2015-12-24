@@ -3,10 +3,13 @@
 	  Then shortened the file output phrase to reduce output size.
 	  Alter check for stdout printing to match new design.
 	* settings.c: Change default behavior to print to stdout.
+	  Make case insensitive searches only exist if strcasestr does.
 	* parseArgs.c: Retired -O and --stdout flags. Replaced by default behavior.
+	  Only parse -n and --no-case if strcasestr exists.
 	* settings.h: Remove flags field; it is no longer used.
 	* main.c: Alter check for stdout printing to match new design.
 	* README: Remove usage on the -O and --stdout flags.
+	  Added a note to -n and --no-case indicating they only exist if strcasestr is present.
 
 2015-12-22  SilverNexus
 	* search.c: Refactor mmap()ed search to only find the line number when a match

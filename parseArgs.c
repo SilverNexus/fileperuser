@@ -15,6 +15,7 @@
 #include "settings.h"
 #include "search.h"
 #include <ctype.h>
+#include "config.h"
 
 /**
  * Parses flags that alter program behavior
@@ -117,9 +118,11 @@ int parseArgs(char **flagArgs, int flagCount){
                 }
                 settings.min_print_level = atoi(flagArgs[parseCount]);
             }
+#ifdef HAVE_STRCASESTR
             else if (*cur_flag == 'n' || strcmp(cur_flag, "-no-case") == 0){
                 settings.comp_func = strcasestr;
             }
+#endif
 	    else if (*cur_flag == '1' || strcmp(cur_flag, "-single-match") == 0){
                 settings.file_parser = parse_file_single_match;
 	    }
@@ -154,7 +157,9 @@ void help_message(){
     puts("  -f --log-file [filename]  Sets the name (and path) of the log file. Default is fileperuser.log.");
     puts("  -l --loglevel [level]     Sets the minimum log level to be recorded to file. Must be an integer. Default is 2 (WARNING).");
     puts("  -p --printlevel [level]   Sets the minimum log level to be displayed on-screen. Must be an integer. Default is 2 (WARNING).");
+#ifdef HAVE_STRCASESTR
     puts("  -n --no-case              Sets the search to be case insensitive.");
+#endif
     puts("  -1 --single-match         Match the search string at most once per line.");
     exit(EXIT_SUCCESS);
 }
