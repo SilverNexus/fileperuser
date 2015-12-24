@@ -10,6 +10,7 @@
 	* main.c: Alter check for stdout printing to match new design.
 	* README: Remove usage on the -O and --stdout flags.
 	  Added a note to -n and --no-case indicating they only exist if strcasestr is present.
+	* configure.ac: Removed check for vsnprintf. It is part of C99.
 
 2015-12-22  SilverNexus
 	* search.c: Refactor mmap()ed search to only find the line number when a match
