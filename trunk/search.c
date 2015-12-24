@@ -1,7 +1,7 @@
 /***************************************************************************/
 /*                                                                         */
 /*                                search.c                                 */
-/* Original code written by Daniel Hawkins. Last modified on 2015-12-20.   */
+/* Original code written by Daniel Hawkins. Last modified on 2015-12-23.   */
 /*                                                                         */
 /* The file defines the searching functions.                               */
 /*                                                                         */
@@ -63,7 +63,12 @@ void parse_file(const char *fpath){
     }
     char *foundAt;
     // Only count file lines if we find a match.
+#ifdef HAVE_STRCASESTR
+    if ((foundAt = settings.comp_func(in_line, settings.search_string)) != 0){
+#else
+    // We don't have to worry about alternate search functions, so there may be better optimizations this way.
     if ((foundAt = strstr(in_line, settings.search_string)) != 0){
+#endif
 	char tmp;
 	register int line_num = 1;
 	do{
@@ -81,7 +86,11 @@ void parse_file(const char *fpath){
 
 	    // Continue search within the line
 	    in_line = foundAt + 1;
+#ifdef HAVE_STRCASESTR
+	} while ((foundAt = settings.comp_func(in_line, settings.search_string)) != 0);
+#else
 	} while ((foundAt = strstr(in_line, settings.search_string)) != 0);
+#endif
     }
     
     munmap(addr, sb.st_size);
@@ -150,7 +159,12 @@ void parse_file_single_match(const char *fpath){
     }
     char *foundAt;
     // Only count file lines if we find a match.
+#ifdef HAVE_STRCASESTR
+    if ((foundAt = settings.comp_func(start_line, settings.search_string)) != 0){
+#else
+    // We don't have to worry about alternate search functions, so there may be better optimizations this way.
     if ((foundAt = strstr(start_line, settings.search_string)) != 0){
+#endif
 	char tmp;
 	register int line_num = 1;
 	do{
@@ -172,7 +186,11 @@ void parse_file_single_match(const char *fpath){
 	    // Make sure we account for moving to a new line.
 	    ++line_num;
 	    start_line = end_line + 1;
+#ifdef HAVE_STRCASESTR
+	} while ((foundAt = settings.comp_func(start_line, settings.search_string)) != 0);
+#else
 	} while ((foundAt = strstr(start_line, settings.search_string)) != 0);
+#endif
     }
     
     munmap(addr, sb.st_size);
