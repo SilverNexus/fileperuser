@@ -1,7 +1,7 @@
 /***************************************************************************/
 /*                                                                         */
 /*                                search.h                                 */
-/* Original code written by Daniel Hawkins. Last modified on 2015-12-20.   */
+/* Original code written by Daniel Hawkins. Last modified on 2016-01-10.   */
 /*                                                                         */
 /* The file defines several searching functions' prototypes.               */
 /*                                                                         */
@@ -11,7 +11,9 @@
 #define SEARCH_H
 
 #include "config.h"
+#ifndef HAVE_MMAP
 #include <stdio.h>
+#endif
 
 // Implement different functions if we have different tools available.
 #if defined HAVE_NFTW
@@ -27,7 +29,12 @@ void search_folder(const char *dir_path);
 #error We do not have a directory traversal for your system at this time.
 #endif
 
-void parse_file(const char *fpath);
-void parse_file_single_match(const char *fpath);
+#ifdef HAVE_MMAP
+void search_file_multi_match(char * const addr, const char * const fpath);
+void search_file_single_match(char * const addr, const char * const fpath);
+#else
+void search_file_multi_match(FILE *file, const char * const fpath);
+void search_file_single_match(FILE *file, const char * const fpath);
+#endif
 
 #endif

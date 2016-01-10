@@ -1,7 +1,7 @@
 /***************************************************************************/
 /*                                                                         */
 /*                              parseArgs.c                                */
-/* Original code written by Daniel Hawkins. Last modified on 2015-12-23.   */
+/* Original code written by Daniel Hawkins. Last modified on 2016-01-10.   */
 /*                                                                         */
 /* The file defines the argument parsing functions.                        */
 /*                                                                         */
@@ -124,7 +124,7 @@ int parseArgs(char **flagArgs, int flagCount){
             }
 #endif
 	    else if (*cur_flag == '1' || strcmp(cur_flag, "-single-match") == 0){
-                settings.file_parser = parse_file_single_match;
+                settings.file_parser = search_file_single_match;
 	    }
             else{
                 log_event(WARNING, "Invalid flag '%s' detected, skipping.", flagArgs[parseCount]);

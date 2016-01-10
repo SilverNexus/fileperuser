@@ -1,3 +1,10 @@
+2016-01-10  SilverNexus
+	* search.c: Refactored search code to reduce duplication of code.
+	* search.h: Add decarations for new functions from the refactor.
+	* parseArgs.c: Alter the single-match flags to assign to the new search functions.
+	* settings.h: Alter the function pointer to the search function to match the new parameter list.
+	* settings.c: Changed default search function to be refactored version.
+
 2015-12-23  SilverNexus
 	* output.c: Reduce severity of failed load of output file. If it fails, print to stdout.
 	  Then shortened the file output phrase to reduce output size.

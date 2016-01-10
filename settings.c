@@ -1,7 +1,7 @@
 /***************************************************************************/
 /*                                                                         */
 /*                               settings.c                                */
-/* Original code written by Daniel Hawkins. Last modified on 2015-12-23.   */
+/* Original code written by Daniel Hawkins. Last modified on 2016-01-10.   */
 /*                                                                         */
 /* The file defines the functions for handling settings.                   */
 /*                                                                         */
@@ -28,7 +28,7 @@ void init_settings(){
 #ifdef HAVE_STRCASESTR
     settings.comp_func = strstr;
 #endif
-    settings.file_parser = parse_file;
+    settings.file_parser = search_file_multi_match;
     settings.output_file = 0;
     settings.log_file = "fileperuser.log";
     // Only log warning and higher by default
