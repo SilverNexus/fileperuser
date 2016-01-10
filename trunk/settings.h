@@ -1,7 +1,7 @@
 /***************************************************************************/
 /*                                                                         */
 /*                               settings.h                                */
-/* Original code written by Daniel Hawkins. Last modified on 2015-12-23.   */
+/* Original code written by Daniel Hawkins. Last modified on 2016-01-10.   */
 /*                                                                         */
 /* The file defines the structures for handling important variables.       */
 /*                                                                         */
@@ -12,6 +12,7 @@
 
 #include "dir_list.h"
 #include "ErrorLog.h"
+#include "config.h"
 #include <stddef.h>
 #include <stdio.h>
 
@@ -43,13 +44,19 @@ struct {
      * Declare the pointer to strstr or strcasestr out here,
      * so I can easily do case sensitive or case-insensitive searches
      */
+#ifdef HAVE_STRCASESTR
     char *(*comp_func)(const char *, const char *);
+#endif
     
     /*
      * Pointer to the file parsing function
      * one multi-matches, the other single-matches
      */
-    void (*file_parser)(const char *);
+#ifdef HAVE_MMAP
+    void (*file_parser)(char * const, const char * const);
+#else
+    void (*file_parser)(FILE *, const char * const);
+#endif
 
     char *output_file;
 

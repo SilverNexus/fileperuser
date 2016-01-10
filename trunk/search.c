@@ -1,7 +1,7 @@
 /***************************************************************************/
 /*                                                                         */
 /*                                search.c                                 */
-/* Original code written by Daniel Hawkins. Last modified on 2015-12-23.   */
+/* Original code written by Daniel Hawkins. Last modified on 2016-01-10.   */
 /*                                                                         */
 /* The file defines the searching functions.                               */
 /*                                                                         */
@@ -26,12 +26,13 @@
 #endif
 
 /**
- * Parses a file for a search string, matching any number of occurrences per line.
+ * Parses a file for a search string, calling the appropriate matching
+ * function based on user selection.
  *
  * @param fpath
  * The file path to search.
  */
-void parse_file(const char *fpath){
+inline void parse_file(const char *fpath){
 #ifdef HAVE_MMAP
     // Open the file and get the file descriptor
     int fd = open(fpath, O_RDONLY);
@@ -51,17 +52,41 @@ void parse_file(const char *fpath){
 	close(fd);
 	return;
     }
-    char *addr;
-    char *start_line, *end_line, *in_line;
     // Map the file to memory
     // Read and write to the map, so we can substitute a \n with a \0 for searching
-    in_line = start_line = addr = mmap(0, sb.st_size, PROT_READ | PROT_WRITE, MAP_PRIVATE, fd, 0);
+    char *addr = mmap(0, sb.st_size, PROT_READ | PROT_WRITE, MAP_PRIVATE, fd, 0);
     if (addr == MAP_FAILED){
 	close(fd);
 	log_event(ERROR, "Failed to map file descriptor %d (%s).", fd, fpath);
 	return;
     }
-    char *foundAt;
+    settings.file_parser(addr, fpath);
+    munmap(addr, sb.st_size);
+    close(fd);
+#else
+    FILE *file = fopen(fpath, "r");
+    if (!file){
+        log_event(ERROR, "Failed to open file %s.", fpath);
+	return;
+    }
+    settings.file_parser(file, fpath);
+    fclose(file);
+#endif
+}
+
+#ifdef HAVE_MMAP
+/**
+ * Searches the given memory-mapped file for the search string.
+ * Matches multiple times per line.
+ *
+ * @param addr
+ * Where the file is mapped to.
+ *
+ * @param fpath
+ * The path of the file being read from.
+ */
+void search_file_multi_match(char * const addr, const char * const fpath){
+    char *start_line = addr, *end_line, *in_line = addr, *foundAt;
     // Only count file lines if we find a match.
 #ifdef HAVE_STRCASESTR
     if ((foundAt = settings.comp_func(in_line, settings.search_string)) != 0){
@@ -92,16 +117,19 @@ void parse_file(const char *fpath){
 	} while ((foundAt = strstr(in_line, settings.search_string)) != 0);
 #endif
     }
-    
-    munmap(addr, sb.st_size);
-    close(fd);
 #else
+/**
+ * Searches the given file for the search string.
+ * Matches multiple times per line.
+ *
+ * @param file
+ * The file read from.
+ *
+ * @param fpath
+ * The path of the file being read from.
+ */
+void search_file_multi_match(FILE *file, const char * const fpath){
     static char start_line[BIG_BUFFER];
-    FILE *file = fopen(fpath, "r");
-    if (!file){
-        log_event(ERROR, "Failed to open file %s.", fpath);
-	return;
-    }
     // Loop optimization
     if (fgets(start_line, BIG_BUFFER, file)){
         char *foundAt;
@@ -110,54 +138,32 @@ void parse_file(const char *fpath){
         do{
 	    ++line_num;
 	    col = 0;
+#ifdef HAVE_STRCASESTR
 	    while ((foundAt = settings.comp_func(start_line + col, settings.search_string)) != 0){
+#else
+	    while ((foundAt = strstr(start_line + col, settings.search_string)) != 0){
+#endif
 		col = (long)foundAt - (long)start_line + 1;
 		add_result(line_num, col, fpath);
 	    }
         } while (fgets(start_line, BIG_BUFFER, file));
     }
-    fclose(file);
 #endif
 }
 
+#ifdef HAVE_MMAP
 /**
  * Parses a file for the search string, but only matches once per line.
  * Matches are added to the results list.
  *
+ * @param addr
+ * The address of the memory-mapped file to search.
+ *
  * @param fpath
- * The file path to search.
+ * The path of the file being read from.
  */
-void parse_file_single_match(const char *fpath){
-#ifdef HAVE_MMAP
-    // Open the file and get the file descriptor
-    int fd = open(fpath, O_RDONLY);
-    if (!fd){
-	log_event(ERROR, "Could not open file %s.", fpath);
-	return;
-    }
-    struct stat sb;
-    // Get the file size (and some other stuff, too)
-    if (fstat(fd, &sb) == -1){
-	close(fd);
-	log_event(ERROR, "Could not fstat file descriptor %d (%s).", fd, fpath);
-	return;
-    }
-    // Also, if an empty file, return here silently.
-    if (sb.st_size == 0){
-	close(fd);
-	return;
-    }
-    char *addr;
-    char *start_line, *end_line;
-    // Map the file to memory
-    // Read and write to the map, so we can substitute a \n with a \0 for searching
-    start_line = addr = mmap(0, sb.st_size, PROT_READ | PROT_WRITE, MAP_PRIVATE, fd, 0);
-    if (addr == MAP_FAILED){
-	close(fd);
-	log_event(ERROR, "Failed to map file descriptor %d (%s).", fd, fpath);
-	return;
-    }
-    char *foundAt;
+void search_file_single_match(char * const addr, const char * const fpath){
+    char *start_line = addr, *end_line, *foundAt;
     // Only count file lines if we find a match.
 #ifdef HAVE_STRCASESTR
     if ((foundAt = settings.comp_func(start_line, settings.search_string)) != 0){
@@ -192,16 +198,19 @@ void parse_file_single_match(const char *fpath){
 	} while ((foundAt = strstr(start_line, settings.search_string)) != 0);
 #endif
     }
-    
-    munmap(addr, sb.st_size);
-    close(fd);
 #else
+/**
+ * Parses a file for the search string, but only matches once per line.
+ * Matches are added to the results list.
+ *
+ * @param file
+ * The file to search.
+ *
+ * @param fpath
+ * The path of the file being read from.
+ */
+void search_file_single_match(FILE *file, const char * const fpath){
     static char start_line[BIG_BUFFER];
-    FILE *file = fopen(fpath, "r");
-    if (!file){
-        log_event(ERROR, "Failed to open file %s.", fpath);
-	return;
-    }
     // Loop optimization
     if (fgets(start_line, BIG_BUFFER, file)){
         char *foundAt;
@@ -213,7 +222,6 @@ void parse_file_single_match(const char *fpath){
 	    }
         } while (fgets(start_line, BIG_BUFFER, file));
     }
-    fclose(file);
 #endif
 }
     
@@ -269,7 +277,7 @@ int onWalk(const char *fpath, const struct stat *sb, int typeflag, struct FTW *f
         return 0;
     case FTW_F:
         log_event(INFO, "Searching for '%s' in %s.", settings.search_string, fpath);
-        settings.file_parser(fpath);
+        parse_file(fpath);
         return 0;
     case FTW_SL:
         return 0;
