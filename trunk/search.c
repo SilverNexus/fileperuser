@@ -217,7 +217,11 @@ void search_file_single_match(FILE *file, const char * const fpath){
         register int line_num = 0;
         do{
 	    ++line_num;
+#ifdef HAVE_STRCASESTR
 	    if ((foundAt = settings.comp_func(start_line, settings.search_string)) != 0){
+#else
+	    if ((foundAt = strstr(start_line, settings.search_string)) != 0){
+#endif
 		add_result(line_num, (long)foundAt - (long)start_line + 1, fpath);
 	    }
         } while (fgets(start_line, BIG_BUFFER, file));
@@ -345,7 +349,7 @@ void search_folder(const char *fpath){
 		    break;
 		case DT_REG:
 		    log_event(INFO, "Searching for '%s' in %s.", settings.search_string, currentDir);
-		    settings.file_parser(currentDir);
+		    parse_file(currentDir);
 		    break;
 		case DT_LNK:
 		    break;
