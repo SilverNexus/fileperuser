@@ -1,7 +1,7 @@
 /***************************************************************************/
 /*                                                                         */
 /*                               settings.h                                */
-/* Original code written by Daniel Hawkins. Last modified on 2016-01-10.   */
+/* Original code written by Daniel Hawkins. Last modified on 2016-01-11.   */
 /*                                                                         */
 /* The file defines the structures for handling important variables.       */
 /*                                                                         */
@@ -52,11 +52,7 @@ struct {
      * Pointer to the file parsing function
      * one multi-matches, the other single-matches
      */
-#ifdef HAVE_MMAP
     void (*file_parser)(char * const, const char * const);
-#else
-    void (*file_parser)(FILE *, const char * const);
-#endif
 
     char *output_file;
 
