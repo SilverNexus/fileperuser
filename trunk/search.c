@@ -49,6 +49,7 @@ inline void parse_file(const char * const fpath){
     }
 #ifndef HAVE_NFTW
     // Also, if an empty file, return here silently.
+    // Only needed if we didn't have nftw. We've already done this check if nftw is here.
     if (sb.st_size == 0){
 	close(fd);
 	return;
