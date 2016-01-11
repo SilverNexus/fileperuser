@@ -11,9 +11,6 @@
 #define SEARCH_H
 
 #include "config.h"
-#ifndef HAVE_MMAP
-#include <stdio.h>
-#endif
 
 // Implement different functions if we have different tools available.
 #if defined HAVE_NFTW

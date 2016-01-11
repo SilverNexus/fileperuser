@@ -4,6 +4,7 @@
 	  Refactored all stat calls to be outside parse_file, and check file size before entering parse_file.
 	* search.h: Consolidated preprocessor conditionals rendered obsolete by reading files
 	  into memory when using stdio.
+	  Removed unneeded include for stdio.h.
 	* settings.h: Preprocessor conditional cleanup from a more uniform search backend.
 
 2016-01-10  SilverNexus
