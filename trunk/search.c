@@ -47,11 +47,13 @@ inline void parse_file(const char * const fpath){
 	log_event(ERROR, "Could not fstat file descriptor %d (%s).", fd, fpath);
 	return;
     }
+#ifndef HAVE_NFTW
     // Also, if an empty file, return here silently.
     if (sb.st_size == 0){
 	close(fd);
 	return;
     }
+#endif
     // Map the file to memory
     // Read and write to the map, so we can substitute a \n with a \0 for searching
     char *addr = mmap(0, sb.st_size, PROT_READ | PROT_WRITE, MAP_PRIVATE, fd, 0);
@@ -66,9 +68,12 @@ inline void parse_file(const char * const fpath){
 	log_event(ERROR, "Failed to stat file %s.", fpath);
 	return;
     }
+#ifndef HAVE_NFTW
+    // If we had nftw, we would have already checked for this
     if (sb.st_size == 0){
 	return;
     }
+#endif
     char *addr = (char *)malloc(sizeof(char) * (sb.st_size + 1));
     if (!addr){
 	// Not fatal because we might legitimately not be able to parse really large files.
@@ -242,8 +247,10 @@ int onWalk(const char *fpath, const struct stat *sb, int typeflag, struct FTW *f
         }
         return 0;
     case FTW_F:
-        log_event(INFO, "Searching for '%s' in %s.", settings.search_string, fpath);
-        parse_file(fpath);
+	if (sb->st_size > 0){
+	    log_event(INFO, "Searching for '%s' in %s.", settings.search_string, fpath);
+	    parse_file(fpath);
+	}
         return 0;
     case FTW_SL:
         return 0;
