@@ -1,7 +1,7 @@
 /***************************************************************************/
 /*                                                                         */
 /*                                search.c                                 */
-/* Original code written by Daniel Hawkins. Last modified on 2016-01-10.   */
+/* Original code written by Daniel Hawkins. Last modified on 2016-01-11.   */
 /*                                                                         */
 /* The file defines the searching functions.                               */
 /*                                                                         */
@@ -13,16 +13,16 @@
 #include "settings.h"
 #include "dir_list.h"
 #include "result_list.h"
+#include <sys/stat.h>
+#include <sys/types.h>
+#include <unistd.h>
 
 #ifdef HAVE_MMAP
 #include <sys/mman.h>
-#include <sys/stat.h>
-#include <sys/types.h>
 #include <fcntl.h>
-#include <unistd.h>
 #else
 #include <stdio.h>
-#define BIG_BUFFER 9000
+#include <stdlib.h>
 #endif
 
 /**
@@ -60,21 +60,46 @@ inline void parse_file(const char *fpath){
 	log_event(ERROR, "Failed to map file descriptor %d (%s).", fd, fpath);
 	return;
     }
-    settings.file_parser(addr, fpath);
-    munmap(addr, sb.st_size);
-    close(fd);
 #else
-    FILE *file = fopen(fpath, "r");
+    struct stat sb;
+    if (stat(fpath, &sb) == -1){
+	log_event(ERROR, "Failed to stat file %s.", fpath);
+	return;
+    }
+    if (sb.st_size == 0){
+	return;
+    }
+    char *addr = (char *)malloc(sizeof(char) * (sb.st_size + 1));
+    if (!addr){
+	// Not fatal because we might legitimately not be able to parse really large files.
+	log_event(ERROR, "Not enough memory to parse file %s.", fpath);
+	return;
+    }
+    FILE *file = fopen(fpath, "rb");
     if (!file){
         log_event(ERROR, "Failed to open file %s.", fpath);
 	return;
     }
-    settings.file_parser(file, fpath);
+    // Read the file into the malloc'ed space.
+    size_t in = fread(addr, sizeof(char), sb.st_size, file);
+    if (in != sb.st_size)
+	log_event(WARNING, "Short read occurred, may produce bogus results.");
+    // Now I can even close this before the call, since we have a copy of the data.
     fclose(file);
+    // Make sure the end of the file data is set to a null character.
+    addr[in] = '\0';
+#endif
+    settings.file_parser(addr, fpath);
+    
+    // Cleanup
+#ifdef HAVE_MMAP
+    munmap(addr, sb.st_size);
+    close(fd);
+#else
+    free(addr);
 #endif
 }
 
-#ifdef HAVE_MMAP
 /**
  * Searches the given memory-mapped file for the search string.
  * Matches multiple times per line.
@@ -117,41 +142,8 @@ void search_file_multi_match(char * const addr, const char * const fpath){
 	} while ((foundAt = strstr(in_line, settings.search_string)) != 0);
 #endif
     }
-#else
-/**
- * Searches the given file for the search string.
- * Matches multiple times per line.
- *
- * @param file
- * The file read from.
- *
- * @param fpath
- * The path of the file being read from.
- */
-void search_file_multi_match(FILE *file, const char * const fpath){
-    static char start_line[BIG_BUFFER];
-    // Loop optimization
-    if (fgets(start_line, BIG_BUFFER, file)){
-        char *foundAt;
-        int col;
-        register int line_num = 0;
-        do{
-	    ++line_num;
-	    col = 0;
-#ifdef HAVE_STRCASESTR
-	    while ((foundAt = settings.comp_func(start_line + col, settings.search_string)) != 0){
-#else
-	    while ((foundAt = strstr(start_line + col, settings.search_string)) != 0){
-#endif
-		col = (long)foundAt - (long)start_line + 1;
-		add_result(line_num, col, fpath);
-	    }
-        } while (fgets(start_line, BIG_BUFFER, file));
-    }
-#endif
 }
 
-#ifdef HAVE_MMAP
 /**
  * Parses a file for the search string, but only matches once per line.
  * Matches are added to the results list.
@@ -198,37 +190,7 @@ void search_file_single_match(char * const addr, const char * const fpath){
 	} while ((foundAt = strstr(start_line, settings.search_string)) != 0);
 #endif
     }
-#else
-/**
- * Parses a file for the search string, but only matches once per line.
- * Matches are added to the results list.
- *
- * @param file
- * The file to search.
- *
- * @param fpath
- * The path of the file being read from.
- */
-void search_file_single_match(FILE *file, const char * const fpath){
-    static char start_line[BIG_BUFFER];
-    // Loop optimization
-    if (fgets(start_line, BIG_BUFFER, file)){
-        char *foundAt;
-        register int line_num = 0;
-        do{
-	    ++line_num;
-#ifdef HAVE_STRCASESTR
-	    if ((foundAt = settings.comp_func(start_line, settings.search_string)) != 0){
-#else
-	    if ((foundAt = strstr(start_line, settings.search_string)) != 0){
-#endif
-		add_result(line_num, (long)foundAt - (long)start_line + 1, fpath);
-	    }
-        } while (fgets(start_line, BIG_BUFFER, file));
-    }
-#endif
 }
-    
 
 #if defined HAVE_NFTW
 /**

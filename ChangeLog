@@ -1,3 +1,9 @@
+2016-01-11  SilverNexus
+	* search.c: Refactored stdio search to behave more like mmaped search.
+	* search.h: Consolidated preprocessor conditionals rendered obsolete by reading files
+	  into memory when using stdio.
+	* settings.h: Preprocessor conditional cleanup from a more uniform search backend.
+
 2016-01-10  SilverNexus
 	* search.c: Refactored search code to reduce duplication of code.
 	* search.h: Add decarations for new functions from the refactor.
