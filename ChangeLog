@@ -1,6 +1,7 @@
 2016-01-11  SilverNexus
 	* search.c: Refactored stdio search to behave more like mmaped search.
 	  Also utilized inode stat information in nftw(3) when parsing files.
+	  Refactored all stat calls to be outside parse_file, and check file size before entering parse_file.
 	* search.h: Consolidated preprocessor conditionals rendered obsolete by reading files
 	  into memory when using stdio.
 	* settings.h: Preprocessor conditional cleanup from a more uniform search backend.

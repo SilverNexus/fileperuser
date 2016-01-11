@@ -22,6 +22,9 @@
 #include <fcntl.h>
 #else
 #include <stdio.h>
+#endif
+
+#if !defined (HAVE_MMAP) || !defined (HAVE_NFTW)
 #include <stdlib.h>
 #endif
 
@@ -31,8 +34,11 @@
  *
  * @param fpath
  * The file path to search.
+ *
+ * @param file_size
+ * The size of the file. Assumed to be greater than zero.
  */
-inline void parse_file(const char * const fpath){
+inline void parse_file(const char * const fpath, const off_t file_size){
 #ifdef HAVE_MMAP
     // Open the file and get the file descriptor
     int fd = open(fpath, O_RDONLY);
@@ -40,42 +46,16 @@ inline void parse_file(const char * const fpath){
 	log_event(ERROR, "Could not open file %s.", fpath);
 	return;
     }
-    struct stat sb;
-    // Get the file size (and some other stuff, too)
-    if (fstat(fd, &sb) == -1){
-	close(fd);
-	log_event(ERROR, "Could not fstat file descriptor %d (%s).", fd, fpath);
-	return;
-    }
-#ifndef HAVE_NFTW
-    // Also, if an empty file, return here silently.
-    // Only needed if we didn't have nftw. We've already done this check if nftw is here.
-    if (sb.st_size == 0){
-	close(fd);
-	return;
-    }
-#endif
     // Map the file to memory
     // Read and write to the map, so we can substitute a \n with a \0 for searching
-    char *addr = mmap(0, sb.st_size, PROT_READ | PROT_WRITE, MAP_PRIVATE, fd, 0);
+    char *addr = mmap(0, file_size, PROT_READ | PROT_WRITE, MAP_PRIVATE, fd, 0);
     if (addr == MAP_FAILED){
 	close(fd);
 	log_event(ERROR, "Failed to map file descriptor %d (%s).", fd, fpath);
 	return;
     }
 #else
-    struct stat sb;
-    if (stat(fpath, &sb) == -1){
-	log_event(ERROR, "Failed to stat file %s.", fpath);
-	return;
-    }
-#ifndef HAVE_NFTW
-    // If we had nftw, we would have already checked for this
-    if (sb.st_size == 0){
-	return;
-    }
-#endif
-    char *addr = (char *)malloc(sizeof(char) * (sb.st_size + 1));
+    char *addr = (char *)malloc(sizeof(char) * (file_size + 1));
     if (!addr){
 	// Not fatal because we might legitimately not be able to parse really large files.
 	log_event(ERROR, "Not enough memory to parse file %s.", fpath);
@@ -87,8 +67,8 @@ inline void parse_file(const char * const fpath){
 	return;
     }
     // Read the file into the malloc'ed space.
-    size_t in = fread(addr, sizeof(char), sb.st_size, file);
-    if (in != sb.st_size)
+    size_t in = fread(addr, sizeof(char), file_size, file);
+    if (in != file_size)
 	log_event(WARNING, "Short read occurred, may produce bogus results.");
     // Now I can even close this before the call, since we have a copy of the data.
     fclose(file);
@@ -99,7 +79,7 @@ inline void parse_file(const char * const fpath){
     
     // Cleanup
 #ifdef HAVE_MMAP
-    munmap(addr, sb.st_size);
+    munmap(addr, file_size);
     close(fd);
 #else
     free(addr);
@@ -250,7 +230,7 @@ int onWalk(const char *fpath, const struct stat *sb, int typeflag, struct FTW *f
     case FTW_F:
 	if (sb->st_size > 0){
 	    log_event(INFO, "Searching for '%s' in %s.", settings.search_string, fpath);
-	    parse_file(fpath);
+	    parse_file(fpath, sb->st_size);
 	}
         return 0;
     case FTW_SL:
@@ -318,8 +298,16 @@ void search_folder(const char *fpath){
 		    }
 		    break;
 		case DT_REG:
-		    log_event(INFO, "Searching for '%s' in %s.", settings.search_string, currentDir);
-		    parse_file(currentDir);
+		    ; // Again, silencing errors
+		    struct stat sb;
+		    if (stat(currentDir, &sb) == -1){
+			log_event(ERROR, "Could not stat %s.", currentDir);
+			break;
+		    }
+		    if (sb.st_size > 0){
+			log_event(INFO, "Searching for '%s' in %s.", settings.search_string, currentDir);
+			parse_file(currentDir, sb.st_size);
+		    }
 		    break;
 		case DT_LNK:
 		    break;
