@@ -32,7 +32,7 @@
  * @param fpath
  * The file path to search.
  */
-inline void parse_file(const char *fpath){
+inline void parse_file(const char * const fpath){
 #ifdef HAVE_MMAP
     // Open the file and get the file descriptor
     int fd = open(fpath, O_RDONLY);
