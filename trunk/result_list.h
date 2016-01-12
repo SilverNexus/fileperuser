@@ -1,7 +1,7 @@
 /***************************************************************************/
 /*                                                                         */
 /*                             result_list.h                               */
-/* Original code written by Daniel Hawkins. Last modified on 2015-06-03.   */
+/* Original code written by Daniel Hawkins. Last modified on 2016-01-11.   */
 /*                                                                         */
 /* Defines the structures for storing results in a linked list.            */
 /*                                                                         */
@@ -28,7 +28,7 @@ struct result_list {
 
 void init_results();
 
-int add_result(int line, int col, const char *file);
+void add_result(int line, int col, const char *file);
 
 void clear_results();
 
