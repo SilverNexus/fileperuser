@@ -1,7 +1,7 @@
 /***************************************************************************/
 /*                                                                         */
 /*                                search.c                                 */
-/* Original code written by Daniel Hawkins. Last modified on 2016-01-11.   */
+/* Original code written by Daniel Hawkins. Last modified on 2016-01-12.   */
 /*                                                                         */
 /* The file defines the searching functions.                               */
 /*                                                                         */
@@ -41,21 +41,21 @@
 inline void parse_file(const char * const fpath, const off_t file_size){
 #ifdef HAVE_MMAP
     // Open the file and get the file descriptor
-    int fd = open(fpath, O_RDONLY);
+    const int fd = open(fpath, O_RDONLY);
     if (!fd){
 	log_event(ERROR, "Could not open file %s.", fpath);
 	return;
     }
     // Map the file to memory
     // Read and write to the map, so we can substitute a \n with a \0 for searching
-    char *addr = mmap(0, file_size, PROT_READ | PROT_WRITE, MAP_PRIVATE, fd, 0);
+    char * const addr = mmap(0, file_size, PROT_READ | PROT_WRITE, MAP_PRIVATE, fd, 0);
     if (addr == MAP_FAILED){
 	close(fd);
 	log_event(ERROR, "Failed to map file descriptor %d (%s).", fd, fpath);
 	return;
     }
 #else
-    char *addr = (char *)malloc(sizeof(char) * (file_size + 1));
+    char * const addr = (char *)malloc(sizeof(char) * (file_size + 1));
     if (!addr){
 	// Not fatal because we might legitimately not be able to parse really large files.
 	log_event(ERROR, "Not enough memory to parse file %s.", fpath);
@@ -67,7 +67,7 @@ inline void parse_file(const char * const fpath, const off_t file_size){
 	return;
     }
     // Read the file into the malloc'ed space.
-    size_t in = fread(addr, sizeof(char), file_size, file);
+    const size_t in = fread(addr, sizeof(char), file_size, file);
     if (in != file_size)
 	log_event(WARNING, "Short read occurred, may produce bogus results.");
     // Now I can even close this before the call, since we have a copy of the data.
