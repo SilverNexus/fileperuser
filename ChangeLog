@@ -6,6 +6,8 @@
 	  into memory when using stdio.
 	  Removed unneeded include for stdio.h.
 	* settings.h: Preprocessor conditional cleanup from a more uniform search backend.
+	* result_list.c: Change add_result() to be void.
+	* result_list.h: Alter declaration to match add_result() definition.
 
 2016-01-10  SilverNexus
 	* search.c: Refactored search code to reduce duplication of code.

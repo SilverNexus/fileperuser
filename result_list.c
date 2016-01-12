@@ -1,7 +1,7 @@
 /***************************************************************************/
 /*                                                                         */
 /*                             result_list.c                               */
-/* Original code written by Daniel Hawkins. Last modified on 2015-12-22.   */
+/* Original code written by Daniel Hawkins. Last modified on 2016-01-11.   */
 /*                                                                         */
 /* Implements the routines for storing results in a linked list.           */
 /*                                                                         */
@@ -34,11 +34,8 @@ void init_results(){
  *
  * @param file The path the the file the result was found in.
  *
- * @retval 0 Successfully added to list.
- *
- * @todo Make void? Any errors in here terminate the entire program.
  */
-int add_result(int line, int col, const char *file){
+void add_result(int line, int col, const char *file){
     RESULT_ITEM *item = (RESULT_ITEM *)malloc(sizeof(RESULT_ITEM));
     if (!item)
         log_event(FATAL, "No memory to allocate result in file %s, line %d, col %d.", file, line, col);
@@ -60,7 +57,6 @@ int add_result(int line, int col, const char *file){
         results.last->next = item;
         results.last = item;
     }
-    return 0;
 }
 
 /**
