@@ -23,4 +23,4 @@ else
 DBG = -Ofast -s
 endif
 
-AM_CFLAGS = -std=gnu99 -D_XOPEN_SOURCE=600 -D_GNU_SOURCE $(DBG)
+AM_CFLAGS = -std=gnu99 -D_XOPEN_SOURCE=600 -D_GNU_SOURCE -Wall -Wextra $(DBG)
