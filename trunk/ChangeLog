@@ -2,6 +2,7 @@
 	* Makefile.am: Add -Wall and -Wextra to the CFLAGS.
 	* search.c: Add const qualifiers to some variables and pointers.
 	  Fixed incorrect check for fd load failure when mmap'ing files.
+	  Utilized ftwbuf->base for faster checks of excluded directories.
 
 2016-01-11  SilverNexus
 	* search.c: Refactored stdio search to behave more like mmaped search.
