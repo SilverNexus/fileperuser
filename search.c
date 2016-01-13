@@ -42,7 +42,7 @@ inline void parse_file(const char * const fpath, const off_t file_size){
 #ifdef HAVE_MMAP
     // Open the file and get the file descriptor
     const int fd = open(fpath, O_RDONLY);
-    if (!fd){
+    if (fd == -1){
 	log_event(ERROR, "Could not open file %s.", fpath);
 	return;
     }
