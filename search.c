@@ -97,35 +97,36 @@ inline void parse_file(const char * const fpath, const off_t file_size){
  * The path of the file being read from.
  */
 void search_file_multi_match(char * const addr, const char * const fpath){
-    char *start_line = addr, *end_line, *in_line = addr, *foundAt;
+    char *in_line = addr, *found_at;
     // Only count file lines if we find a match.
 #ifdef HAVE_STRCASESTR
-    if ((foundAt = settings.comp_func(in_line, settings.search_string)) != 0){
+    if ((found_at = settings.comp_func(in_line, settings.search_string)) != 0){
 #else
     // We don't have to worry about alternate search functions, so there may be better optimizations this way.
-    if ((foundAt = strstr(in_line, settings.search_string)) != 0){
+    if ((found_at = strstr(in_line, settings.search_string)) != 0){
 #endif
+	char *start_line = addr, *end_line;
 	char tmp;
 	register int line_num = 1;
 	do{
 	    // Substitute foundAt to make searching for lines easy
-	    tmp = *foundAt;
-	    *foundAt = '\0';
+	    tmp = *found_at;
+	    *found_at = '\0';
 	    // Find the line num.
 	    while ((end_line = strchr(start_line, '\n')) != 0){
 		++line_num;
 		start_line = end_line + 1;
 	    }
 	    // Substitute back *foundAt.
-	    *foundAt = tmp;
-	    add_result(line_num, (long)foundAt - (long)start_line + 1, fpath);
+	    *found_at = tmp;
+	    add_result(line_num, (long)found_at - (long)start_line + 1, fpath);
 
 	    // Continue search within the line
-	    in_line = foundAt + 1;
+	    in_line = found_at + 1;
 #ifdef HAVE_STRCASESTR
-	} while ((foundAt = settings.comp_func(in_line, settings.search_string)) != 0);
+	} while ((found_at = settings.comp_func(in_line, settings.search_string)) != 0);
 #else
-	} while ((foundAt = strstr(in_line, settings.search_string)) != 0);
+	} while ((found_at = strstr(in_line, settings.search_string)) != 0);
 #endif
     }
 }
@@ -141,39 +142,40 @@ void search_file_multi_match(char * const addr, const char * const fpath){
  * The path of the file being read from.
  */
 void search_file_single_match(char * const addr, const char * const fpath){
-    char *start_line = addr, *end_line, *foundAt;
+    char *start_line = addr, *found_at;
     // Only count file lines if we find a match.
 #ifdef HAVE_STRCASESTR
-    if ((foundAt = settings.comp_func(start_line, settings.search_string)) != 0){
+    if ((found_at = settings.comp_func(start_line, settings.search_string)) != 0){
 #else
     // We don't have to worry about alternate search functions, so there may be better optimizations this way.
-    if ((foundAt = strstr(start_line, settings.search_string)) != 0){
+    if ((found_at = strstr(start_line, settings.search_string)) != 0){
 #endif
+	char *end_line;
 	char tmp;
 	register int line_num = 1;
 	do{
 	    // Substitute foundAt to make searching for lines easy
-	    tmp = *foundAt;
-	    *foundAt = '\0';
+	    tmp = *found_at;
+	    *found_at = '\0';
 	    // Find the line num.
 	    while ((end_line = strchr(start_line, '\n')) != 0){
 		++line_num;
 		start_line = end_line + 1;
 	    }
 	    // Substitute back *foundAt.
-	    *foundAt = tmp;
-	    add_result(line_num, (long)foundAt - (long)start_line + 1, fpath);
+	    *found_at = tmp;
+	    add_result(line_num, (long)found_at - (long)start_line + 1, fpath);
 	    // Go to the start of the next line to continue the search
-	    end_line = strchr(foundAt, '\n');
+	    end_line = strchr(found_at, '\n');
 	    if (!end_line)
 		break;
 	    // Make sure we account for moving to a new line.
 	    ++line_num;
 	    start_line = end_line + 1;
 #ifdef HAVE_STRCASESTR
-	} while ((foundAt = settings.comp_func(start_line, settings.search_string)) != 0);
+	} while ((found_at = settings.comp_func(start_line, settings.search_string)) != 0);
 #else
-	} while ((foundAt = strstr(start_line, settings.search_string)) != 0);
+	} while ((found_at = strstr(start_line, settings.search_string)) != 0);
 #endif
     }
 }
