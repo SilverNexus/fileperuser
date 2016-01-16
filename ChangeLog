@@ -1,3 +1,7 @@
+2016-01-16  SilverNexus
+	* ErrorLog.c: Refactor logging to use vfprintf instead of vsnprintf.
+	  Error logging no longer uses a fixed-size buffer to write errors.
+
 2016-01-12  SilverNexus
 	* Makefile.am: Add -Wall and -Wextra to the CFLAGS.
 	* search.c: Add const qualifiers to some variables and pointers.
