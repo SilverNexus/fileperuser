@@ -1,7 +1,7 @@
 /***************************************************************************/
 /*                                                                         */
 /*                                search.c                                 */
-/* Original code written by Daniel Hawkins. Last modified on 2016-01-12.   */
+/* Original code written by Daniel Hawkins. Last modified on 2016-01-20.   */
 /*                                                                         */
 /* The file defines the searching functions.                               */
 /*                                                                         */
@@ -54,6 +54,9 @@ inline void parse_file(const char * const fpath, const off_t file_size){
 	log_event(ERROR, "Failed to map file descriptor %d (%s).", fd, fpath);
 	return;
     }
+    // Temporary fix to reduce frequency of segfault error further
+    if (addr[file_size - 1] != settings.search_string[strlen(settings.search_string) - 1])
+	addr[file_size - 1] = '\0';
 #else
     char * const addr = (char *)malloc(sizeof(char) * (file_size + 1));
     if (!addr){

@@ -1,3 +1,8 @@
+2016-01-20  SilverNexus
+	* search.c: Reduce the frequency of segfault detailed in ticket #1;
+	  give the end spot of the mmaped file a null terminator if the last
+	  character of needle does not match the last character of the file.
+
 2016-01-16  SilverNexus
 	* ErrorLog.c: Refactor logging to use vfprintf instead of vsnprintf.
 	  Error logging no longer uses a fixed-size buffer to write errors.
