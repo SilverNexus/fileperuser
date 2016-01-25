@@ -34,13 +34,8 @@
  *
  * @return
  * Pointer to the first character in haystack of a match to needle, or 0 if it was not found.
- *
- * @todo
- * ISO C strstr returns haystack on needle_len == 0. I return 0 in this; should probably change that to match ISO standards.
  */
 char *fileperuser_memcasemem(char *haystack, size_t haystack_len, char *needle, size_t needle_len, const size_t * const jump){
-    if (!needle_len)
-	return 0;
     if (needle_len > 3){
 	const char * const haystack_last = haystack + haystack_len - needle_len + 1;
 	const char needle_last = tolower(needle[needle_len - 1]);
@@ -111,13 +106,8 @@ char *fileperuser_memcasemem(char *haystack, size_t haystack_len, char *needle, 
  *
  * @param jump
  * The Boyer-Moore jump table. Only used if needle_len > 6.
- *
- * @todo
- * ISO C strstr returns haystack if needle_len == 0. I should do the same.
  */
 char *fileperuser_memmem(char *haystack, size_t haystack_len, char *needle, size_t needle_len, const size_t * const jump){
-    if (!needle_len)
-	return 0;
     if (needle_len > 6){
 	// Boyer-Moore search
 	size_t at = needle_len - 1, c_at, ch;

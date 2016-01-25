@@ -13,7 +13,8 @@ fileperuser_SOURCES =\
 	parseArgs.c \
 	result_list.c \
 	output.c \
-	fileperuser_search.c
+	fileperuser_search.c \
+	jump_table.c
 
 # Make sure that we generate debugging symbols for debug mode
 # Make sure we optimize otherwise

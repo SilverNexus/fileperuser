@@ -1,7 +1,7 @@
 /***************************************************************************/
 /*                                                                         */
 /*                                 main.c                                  */
-/* Original code written by Daniel Hawkins. Last modified on 2015-12-23.   */
+/* Original code written by Daniel Hawkins. Last modified on 2016-01-25.   */
 /*                                                                         */
 /* The file defines the main function and several searching functions.     */
 /*                                                                         */
@@ -21,6 +21,8 @@
 #include <signal.h>
 #include "result_list.h"
 #include "output.h"
+#include "jump_table.h"
+#include <string.h>
 
 static void handle_sigint(int sig){
     puts("\nSIGINT Received. Dumping current results to file.");
@@ -53,6 +55,19 @@ int main(int argc, char *argv[]){
 	// but only do that if we are writing to it.
 	if (settings.output_file)
 	    remove(settings.output_file);
+	// Set up the jump table.
+	init_jump_table();
+	// Get the length of the needle.
+	needle_len = strlen(settings.search_string);
+	// If no needle, we can bail now.
+	if (!needle_len){
+	    log_event(ERROR, "Search string has no length.");
+	    return 1;
+	}
+	// Build the jump table.
+	setup_jump_table();
+	// Set up the cleanup when the program exits.
+	atexit(cleanup_jump_table);
         // Time the search -- start timing
         time_t start_time = time(0), end_time;
         // Begin the search

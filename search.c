@@ -1,7 +1,7 @@
 /***************************************************************************/
 /*                                                                         */
 /*                                search.c                                 */
-/* Original code written by Daniel Hawkins. Last modified on 2016-01-20.   */
+/* Original code written by Daniel Hawkins. Last modified on 2016-01-25.   */
 /*                                                                         */
 /* The file defines the searching functions.                               */
 /*                                                                         */
@@ -17,7 +17,7 @@
 #include <sys/types.h>
 #include <unistd.h>
 #include "fileperuser_search.h"
-#include <ctype.h>
+#include "jump_table.h"
 
 #ifdef HAVE_MMAP
 #include <sys/mman.h>
@@ -61,7 +61,7 @@ inline void parse_file(const char * const fpath, const off_t file_size){
     // Only check if case-sensitive
     if (!(settings.search_flags & FLAG_NO_CASE)){
 	// Temporary fix to reduce frequency of segfault error further
-	if (addr[file_size - 1] != settings.search_string[strlen(settings.search_string) - 1])
+	if (addr[file_size - 1] != settings.search_string[needle_len - 1])
 	    addr[file_size - 1] = '\0';
 	// If we can't guarantee a null-termination, then use the custom function.
 	else
@@ -99,50 +99,6 @@ inline void parse_file(const char * const fpath, const off_t file_size){
 #endif
 }
 
-inline size_t *get_jump_table(size_t needle_len){
-    // TODO: Make the needle_len check more maintainable by making some defines to specify the algorithm swap points.
-    // If case insensitive and needle_len > 3, then make a Boyer-Moore jump table
-    if (settings.search_flags & FLAG_NO_CASE){
-	if (needle_len > 3){
-	    size_t jump_table[256];
-	    unsigned short i;
-	    // Initialize
-	    for (i = 0; i < 256; ++i){
-		jump_table[i] = needle_len;
-	    }
-	    // Now adjust for the characters in the needle, except the last one.
-	    /**
-	     * By ignoring the last character of needle, we can ensure that a failed match will jump based on
-	     * the next-to-last occurrence of the last character in needle, as opposed to jumping smaller.
-	     */
-	    for (i = 0; i < needle_len - 1; ++i){
-		jump_table[tolower(i)] = needle_len - i - 1;
-		jump_table[toupper(i)] = needle_len - i - 1;
-	    }
-	    // Get the jump table from this scope so it can be used later.
-	    return jump_table;
-	}
-    }
-    // If case sensitive and not using strstr and needle_len > 6, then make a Boyer-Moore jump table
-    else{
-	if (settings.comp_func != strstr_wrapper && needle_len > 6){
-	    size_t jump_table[256];
-	    unsigned short i;
-	    // Initialize
-	    for (i = 0; i < 256; ++i){
-		jump_table[i] = needle_len;
-	    }
-	    // Now adjust for the characters in the needle, except the last one.
-	    for (i = 0; i < needle_len - 1; ++i){
-		jump_table[i] = needle_len - i - 1;
-	    }
-	    // Get the jump table from this scope so it can be used later.
-	    return jump_table;
-	}
-    }
-    return 0;
-}
-
 /**
  * Searches the given memory-mapped file for the search string.
  * Matches multiple times per line.
@@ -158,14 +114,9 @@ inline size_t *get_jump_table(size_t needle_len){
  */
 void search_file_multi_match(char * const addr, size_t len, const char * const fpath){
     char *in_line = addr, *found_at;
-    // TODO: Abstract this check out farther to reduce redundant strlen calls.
-    size_t needle_len = strlen(settings.search_string);
-    // TODO: Abstract out the Boyer-Moore jump table creation. It really only needs to be done once.
-    size_t *jump = get_jump_table(needle_len);
-
     // Only count file lines if we find a match.
     // I can also skip the subtraction of the current position from len on this because addr - in_line = 0.
-    if ((found_at = settings.comp_func(in_line, len, settings.search_string, needle_len, jump)) != 0){
+    if ((found_at = settings.comp_func(in_line, len, settings.search_string, needle_len, jump_tbl)) != 0){
 	char *start_line = addr, *end_line;
 	char tmp;
 	register int line_num = 1;
@@ -184,7 +135,7 @@ void search_file_multi_match(char * const addr, size_t len, const char * const f
 
 	    // Continue search within the line
 	    in_line = found_at + 1;
-	} while ((found_at = settings.comp_func(in_line, len - (addr - in_line), settings.search_string, needle_len, jump)) != 0);
+	} while ((found_at = settings.comp_func(in_line, len - (addr - in_line), settings.search_string, needle_len, jump_tbl)) != 0);
     }
 }
 
@@ -203,12 +154,8 @@ void search_file_multi_match(char * const addr, size_t len, const char * const f
  */
 void search_file_single_match(char * const addr, size_t len, const char * const fpath){
     char *start_line = addr, *found_at;
-    // TODO: Abstract this check out farther to reduce redundant strlen calls.
-    size_t needle_len = strlen(settings.search_string);
-    // TODO: Abstract out the Boyer-Moore jump table creation. It really only needs to be done once.
-    size_t *jump = get_jump_table(needle_len);
     // Only count file lines if we find a match.
-    if ((found_at = settings.comp_func(start_line, len, settings.search_string, needle_len, jump)) != 0){
+    if ((found_at = settings.comp_func(start_line, len, settings.search_string, needle_len, jump_tbl)) != 0){
 	char *end_line;
 	char tmp;
 	register int line_num = 1;
@@ -231,7 +178,7 @@ void search_file_single_match(char * const addr, size_t len, const char * const 
 	    // Make sure we account for moving to a new line.
 	    ++line_num;
 	    start_line = end_line + 1;
-	} while ((found_at = settings.comp_func(start_line, len - (addr - start_line), settings.search_string, needle_len, jump)) != 0);
+	} while ((found_at = settings.comp_func(start_line, len - (addr - start_line), settings.search_string, needle_len, jump_tbl)) != 0);
     }
 }
 
