@@ -41,8 +41,7 @@ FilePeruser User Guide
        -X and --exclude-path can also be used to exclude specific files from the search.
 
 2. Requirements:
-       - A C99 compiler with ftw.h (something at least partly POSIX-compliant)
-         and with functions strstr, strcasestr, and nftw.
+       - A C99 compiler with ftw.h or dirent.h; if you use dirent.h, it expects struct dirent.d_type to exist.
        Note:
            I do not know any more of the system requirements for this program.
            If any more are discovered, add them here.
