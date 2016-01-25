@@ -16,6 +16,8 @@
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <unistd.h>
+#include "fileperuser_search.h"
+#include <ctype.h>
 
 #ifdef HAVE_MMAP
 #include <sys/mman.h>
@@ -39,6 +41,7 @@
  * The size of the file. Assumed to be greater than zero.
  */
 inline void parse_file(const char * const fpath, const off_t file_size){
+    size_t in;
 #ifdef HAVE_MMAP
     // Open the file and get the file descriptor
     const int fd = open(fpath, O_RDONLY);
@@ -54,9 +57,16 @@ inline void parse_file(const char * const fpath, const off_t file_size){
 	log_event(ERROR, "Failed to map file descriptor %d (%s).", fd, fpath);
 	return;
     }
-    // Temporary fix to reduce frequency of segfault error further
-    if (addr[file_size - 1] != settings.search_string[strlen(settings.search_string) - 1])
-	addr[file_size - 1] = '\0';
+    in = file_size;
+    // Only check if case-sensitive
+    if (!(settings.search_flags & FLAG_NO_CASE)){
+	// Temporary fix to reduce frequency of segfault error further
+	if (addr[file_size - 1] != settings.search_string[strlen(settings.search_string) - 1])
+	    addr[file_size - 1] = '\0';
+	// If we can't guarantee a null-termination, then use the custom function.
+	else
+	    settings.comp_func = fileperuser_memmem;
+    }
 #else
     char * const addr = (char *)malloc(sizeof(char) * (file_size + 1));
     if (!addr){
@@ -70,7 +80,7 @@ inline void parse_file(const char * const fpath, const off_t file_size){
 	return;
     }
     // Read the file into the malloc'ed space.
-    const size_t in = fread(addr, sizeof(char), file_size, file);
+    in = fread(addr, sizeof(char), file_size, file);
     if (in != file_size)
 	log_event(WARNING, "Short read occurred, may produce bogus results.");
     // Now I can even close this before the call, since we have a copy of the data.
@@ -78,7 +88,7 @@ inline void parse_file(const char * const fpath, const off_t file_size){
     // Make sure the end of the file data is set to a null character.
     addr[in] = '\0';
 #endif
-    settings.file_parser(addr, fpath);
+    settings.file_parser(addr, in, fpath);
     
     // Cleanup
 #ifdef HAVE_MMAP
@@ -89,6 +99,50 @@ inline void parse_file(const char * const fpath, const off_t file_size){
 #endif
 }
 
+inline size_t *get_jump_table(size_t needle_len){
+    // TODO: Make the needle_len check more maintainable by making some defines to specify the algorithm swap points.
+    // If case insensitive and needle_len > 3, then make a Boyer-Moore jump table
+    if (settings.search_flags & FLAG_NO_CASE){
+	if (needle_len > 3){
+	    size_t jump_table[256];
+	    unsigned short i;
+	    // Initialize
+	    for (i = 0; i < 256; ++i){
+		jump_table[i] = needle_len;
+	    }
+	    // Now adjust for the characters in the needle, except the last one.
+	    /**
+	     * By ignoring the last character of needle, we can ensure that a failed match will jump based on
+	     * the next-to-last occurrence of the last character in needle, as opposed to jumping smaller.
+	     */
+	    for (i = 0; i < needle_len - 1; ++i){
+		jump_table[tolower(i)] = needle_len - i - 1;
+		jump_table[toupper(i)] = needle_len - i - 1;
+	    }
+	    // Get the jump table from this scope so it can be used later.
+	    return jump_table;
+	}
+    }
+    // If case sensitive and not using strstr and needle_len > 6, then make a Boyer-Moore jump table
+    else{
+	if (settings.comp_func != strstr_wrapper && needle_len > 6){
+	    size_t jump_table[256];
+	    unsigned short i;
+	    // Initialize
+	    for (i = 0; i < 256; ++i){
+		jump_table[i] = needle_len;
+	    }
+	    // Now adjust for the characters in the needle, except the last one.
+	    for (i = 0; i < needle_len - 1; ++i){
+		jump_table[i] = needle_len - i - 1;
+	    }
+	    // Get the jump table from this scope so it can be used later.
+	    return jump_table;
+	}
+    }
+    return 0;
+}
+
 /**
  * Searches the given memory-mapped file for the search string.
  * Matches multiple times per line.
@@ -96,18 +150,22 @@ inline void parse_file(const char * const fpath, const off_t file_size){
  * @param addr
  * Where the file is mapped to.
  *
+ * @param len
+ * The length of the mapped file. Can be ignored if not using mmap.
+ *
  * @param fpath
  * The path of the file being read from.
  */
-void search_file_multi_match(char * const addr, const char * const fpath){
+void search_file_multi_match(char * const addr, size_t len, const char * const fpath){
     char *in_line = addr, *found_at;
+    // TODO: Abstract this check out farther to reduce redundant strlen calls.
+    size_t needle_len = strlen(settings.search_string);
+    // TODO: Abstract out the Boyer-Moore jump table creation. It really only needs to be done once.
+    size_t *jump = get_jump_table(needle_len);
+
     // Only count file lines if we find a match.
-#ifdef HAVE_STRCASESTR
-    if ((found_at = settings.comp_func(in_line, settings.search_string)) != 0){
-#else
-    // We don't have to worry about alternate search functions, so there may be better optimizations this way.
-    if ((found_at = strstr(in_line, settings.search_string)) != 0){
-#endif
+    // I can also skip the subtraction of the current position from len on this because addr - in_line = 0.
+    if ((found_at = settings.comp_func(in_line, len, settings.search_string, needle_len, jump)) != 0){
 	char *start_line = addr, *end_line;
 	char tmp;
 	register int line_num = 1;
@@ -126,11 +184,7 @@ void search_file_multi_match(char * const addr, const char * const fpath){
 
 	    // Continue search within the line
 	    in_line = found_at + 1;
-#ifdef HAVE_STRCASESTR
-	} while ((found_at = settings.comp_func(in_line, settings.search_string)) != 0);
-#else
-	} while ((found_at = strstr(in_line, settings.search_string)) != 0);
-#endif
+	} while ((found_at = settings.comp_func(in_line, len - (addr - in_line), settings.search_string, needle_len, jump)) != 0);
     }
 }
 
@@ -141,18 +195,20 @@ void search_file_multi_match(char * const addr, const char * const fpath){
  * @param addr
  * The address of the memory-mapped file to search.
  *
+ * @param len
+ * The length of the mapped file. Can be ignored if not using mmap.
+ *
  * @param fpath
  * The path of the file being read from.
  */
-void search_file_single_match(char * const addr, const char * const fpath){
+void search_file_single_match(char * const addr, size_t len, const char * const fpath){
     char *start_line = addr, *found_at;
+    // TODO: Abstract this check out farther to reduce redundant strlen calls.
+    size_t needle_len = strlen(settings.search_string);
+    // TODO: Abstract out the Boyer-Moore jump table creation. It really only needs to be done once.
+    size_t *jump = get_jump_table(needle_len);
     // Only count file lines if we find a match.
-#ifdef HAVE_STRCASESTR
-    if ((found_at = settings.comp_func(start_line, settings.search_string)) != 0){
-#else
-    // We don't have to worry about alternate search functions, so there may be better optimizations this way.
-    if ((found_at = strstr(start_line, settings.search_string)) != 0){
-#endif
+    if ((found_at = settings.comp_func(start_line, len, settings.search_string, needle_len, jump)) != 0){
 	char *end_line;
 	char tmp;
 	register int line_num = 1;
@@ -175,11 +231,7 @@ void search_file_single_match(char * const addr, const char * const fpath){
 	    // Make sure we account for moving to a new line.
 	    ++line_num;
 	    start_line = end_line + 1;
-#ifdef HAVE_STRCASESTR
-	} while ((found_at = settings.comp_func(start_line, settings.search_string)) != 0);
-#else
-	} while ((found_at = strstr(start_line, settings.search_string)) != 0);
-#endif
+	} while ((found_at = settings.comp_func(start_line, len - (addr - start_line), settings.search_string, needle_len, jump)) != 0);
     }
 }
 

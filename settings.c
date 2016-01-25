@@ -1,7 +1,7 @@
 /***************************************************************************/
 /*                                                                         */
 /*                               settings.c                                */
-/* Original code written by Daniel Hawkins. Last modified on 2016-01-10.   */
+/* Original code written by Daniel Hawkins. Last modified on 2016-01-25.   */
 /*                                                                         */
 /* The file defines the functions for handling settings.                   */
 /*                                                                         */
@@ -13,6 +13,7 @@
 #include "search.h"
 #include <string.h>
 #include "config.h"
+#include "fileperuser_search.h"
 
 /**
  * Initializes the settings to their default values.
@@ -25,9 +26,8 @@ void init_settings(){
     settings.base_search_path_length = 0;
     settings.root_dirs = 0;
     settings.search_string = 0;
-#ifdef HAVE_STRCASESTR
-    settings.comp_func = strstr;
-#endif
+    settings.search_flags = FLAG_NONE;
+    settings.comp_func = strstr_wrapper;
     settings.file_parser = search_file_multi_match;
     settings.output_file = 0;
     settings.log_file = "fileperuser.log";
