@@ -1,7 +1,7 @@
 /***************************************************************************/
 /*                                                                         */
 /*                                search.c                                 */
-/* Original code written by Daniel Hawkins. Last modified on 2016-01-25.   */
+/* Original code written by Daniel Hawkins. Last modified on 2016-01-26.   */
 /*                                                                         */
 /* The file defines the searching functions.                               */
 /*                                                                         */
@@ -92,6 +92,9 @@ inline void parse_file(const char * const fpath, const off_t file_size){
     
     // Cleanup
 #ifdef HAVE_MMAP
+    // Reset the string search to use strstr after this file if it was changed
+    if (settings.comp_func == fileperuser_memmem)
+	settings.comp_func = strstr_wrapper;
     munmap(addr, file_size);
     close(fd);
 #else

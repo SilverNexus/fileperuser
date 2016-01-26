@@ -1,3 +1,23 @@
+2016-01-26  SilverNexus
+	* search.c: Revert back to strstr when done parsing a file with fileperuser_memmem.
+	* fileperuser_search.c: Fixed segfault when haystack_len is shorter than needle_len.
+
+2016-01-25  SilverNexus
+	* Makefile.am: Add build rules for new source files.
+	* fileperuser_search.c: Add custom implementations for memmem and memcasemem.
+	* fileperuser_search.h: Add declarations for custom substring functions.
+	* search.c: Implement use of custom substring functions.
+	* jump_table.c: Abstract out Boyer-Moore jump table creation from the search functions.
+	* jump_table.h: Declare functions for Boyer-Moore substring jumps.
+	* settings.h: Add a flag for case-insensitive searches.
+	  Add defines for the jump table limits for each case-sensitive and -insensitive searches.
+	* parseArgs.c: Use fileperuser_memcasemem on case-insensitive searches and set the flag.
+	* main.c: Set up the jump table before searching begins.
+	* README: Update requirements and usage.
+	* configure.ac: Remove check for strcasestr, as it is no longer used.
+	* search.h: Modified single- and multi- match functions to take length.
+	* settings.c: Set default search to strstr_wrapper.
+
 2016-01-20  SilverNexus
 	* search.c: Reduce the frequency of segfault detailed in ticket #1;
 	  give the end spot of the mmaped file a null terminator if the last

@@ -13,6 +13,7 @@
 #include <ctype.h>
 #include <string.h>
 #include "fileperuser_search.h"
+#include "settings.h"
 
 /**
  * Finds a substring in a block of memory, ignoring case.
@@ -36,7 +37,9 @@
  * Pointer to the first character in haystack of a match to needle, or 0 if it was not found.
  */
 char *fileperuser_memcasemem(char *haystack, size_t haystack_len, char *needle, size_t needle_len, const size_t * const jump){
-    if (needle_len > 3){
+    if (haystack_len < needle_len)
+	return 0;
+    if (needle_len > MIN_JUMP_TABLE_NO_CASE){
 	const char * const haystack_last = haystack + haystack_len - needle_len + 1;
 	const char needle_last = tolower(needle[needle_len - 1]);
 	size_t at;
@@ -108,7 +111,9 @@ char *fileperuser_memcasemem(char *haystack, size_t haystack_len, char *needle, 
  * The Boyer-Moore jump table. Only used if needle_len > 6.
  */
 char *fileperuser_memmem(char *haystack, size_t haystack_len, char *needle, size_t needle_len, const size_t * const jump){
-    if (needle_len > 6){
+    if (haystack_len < needle_len)
+	return 0;
+    if (needle_len > MIN_JUMP_TABLE_CASE){
 	// Boyer-Moore search
 	size_t at = needle_len - 1, c_at, ch;
 	while (at < haystack_len){
@@ -146,8 +151,9 @@ char *fileperuser_memmem(char *haystack, size_t haystack_len, char *needle, size
 	    if (n_at == needle_len)
 		return at;
 	    ++at;
-	    haystack_left = haystack_len - (at - haystack);
-	    if (!haystack_left)
+	    haystack_left = haystack_len - (at - haystack) - needle_len + 1;
+	    // If haystack is zero or rolled over, then we're done
+	    if (!haystack_left || haystack_left > haystack_len)
 		break;
 	}
 	return 0;
