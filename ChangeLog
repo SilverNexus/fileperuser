@@ -1,6 +1,8 @@
 2016-01-26  SilverNexus
 	* search.c: Revert back to strstr when done parsing a file with fileperuser_memmem.
 	* fileperuser_search.c: Fixed segfault when haystack_len is shorter than needle_len.
+	* *.c: Add GNU GPL 2 Header to the files and reformat the file information comments.
+	* *.h: Reformat file information comments.
 
 2016-01-25  SilverNexus
 	* Makefile.am: Add build rules for new source files.

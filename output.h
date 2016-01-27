@@ -1,11 +1,9 @@
-/***************************************************************************/
-/*                                                                         */
-/*                                output.h                                 */
-/* Original code written by Daniel Hawkins. Last modified on 2015-11-04.   */
-/*                                                                         */
-/* The file declares the output function to be used at termination.        */
-/*                                                                         */
-/***************************************************************************/
+/**
+ * @file output.h
+ * Last modified on 2015-11-04 by Daniel Hawkins.
+ *
+ * The file declares the output function to be used at termination.
+ */
 
 #ifndef OUTPUT_H
 #define OUTPUT_H

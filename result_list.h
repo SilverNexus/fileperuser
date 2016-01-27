@@ -1,11 +1,9 @@
-/***************************************************************************/
-/*                                                                         */
-/*                             result_list.h                               */
-/* Original code written by Daniel Hawkins. Last modified on 2016-01-11.   */
-/*                                                                         */
-/* Defines the structures for storing results in a linked list.            */
-/*                                                                         */
-/***************************************************************************/
+/**
+ * @file result_list.h
+ * Last modified on 2016-01-11 by Daniel Hawkins.
+ *
+ * Defines the structures for storing results in a linked list.
+ */
 
 #ifndef RESULT_LIST_H
 #define RESULT_LIST_H

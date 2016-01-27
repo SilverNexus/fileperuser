@@ -1,11 +1,9 @@
-/***************************************************************************/
-/*                                                                         */
-/*                               settings.h                                */
-/* Original code written by Daniel Hawkins. Last modified on 2016-01-25.   */
-/*                                                                         */
-/* The file defines the structures for handling important variables.       */
-/*                                                                         */
-/***************************************************************************/
+/**
+ * @file settings.h
+ * Last modified on 2016-01-25 by Daniel Hawkins.
+ *
+ * The file defines the structures for handling important variables.
+ */
 
 #ifndef SETTINGS_H
 #define SETTINGS_H

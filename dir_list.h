@@ -1,11 +1,9 @@
-/***************************************************************************/
-/*                                                                         */
-/*                               dir_list.h                                */
-/* Original code written by Daniel Hawkins. Last modified on 2015-06-02.   */
-/*                                                                         */
-/* The file defines the structures for handling sets of directories.       */
-/*                                                                         */
-/***************************************************************************/
+/**
+ * @file dir_list.h
+ * Last modified on 2015-06-02 by Daniel Hawkins.
+ *
+ * The file defines the structures for handling sets of directories.
+ */
 
 #ifndef DIR_LIST_H
 #define DIR_LIST_H

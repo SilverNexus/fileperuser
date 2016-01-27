@@ -1,11 +1,9 @@
-/***************************************************************************/
-/*                                                                         */
-/*                              parseArgs.h                                */
-/* Original code written by Daniel Hawkins. Last modified on 2014-06-03.   */
-/*                                                                         */
-/* The file defines the argument parsing function prototypes.              */
-/*                                                                         */
-/***************************************************************************/
+/**
+ * @file parseArgs.h
+ * Last modified on 2014-06-03 by Daniel Hawkins.
+ *
+ * The file defines the argument parsing function prototypes.
+ */
 
 #ifndef PARSEARGS_H
 #define PARSEARGS_H
