@@ -19,7 +19,7 @@
 
 /**
  * @file fileperuser_search.c
- * Last Modified 2016-01-25 by Daniel Hawkins
+ * Last Modified 2016-01-28 by Daniel Hawkins
  *
  * Defines the search functions for use when needed.
  * 
@@ -128,6 +128,9 @@ char *fileperuser_memcasemem(char *haystack, size_t haystack_len, char *needle, 
  *
  * @param jump
  * The Boyer-Moore jump table. Only used if needle_len > 6.
+ *
+ * @return
+ * Pointer to the first match of needle in haystack, or 0 if not found.
  */
 char *fileperuser_memmem(char *haystack, size_t haystack_len, char *needle, size_t needle_len, const size_t * const jump){
     if (haystack_len < needle_len)
