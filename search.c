@@ -19,7 +19,7 @@
 
 /**
  * @file search.c
- * Last modified on 2016-01-26 by Daniel Hawkins.
+ * Last modified on 2016-01-28 by Daniel Hawkins.
  *
  * The file defines the searching functions.
  */
@@ -238,6 +238,7 @@ int onWalk(const char *fpath, const struct stat *sb, int typeflag, struct FTW *f
 	    // ftwbuf->base holds the start of this section of the path
 	    // This includes everything past the last slash.
 	    const char * const path = fpath + ftwbuf->base;
+	    // TODO: Make the list sorted and make this a binary search.
 	    for (DIR_LIST *tmp = settings.excluded_directories; tmp; tmp = tmp->next){
 		if (strcmp(tmp->dir, path) == 0){
 		    return FTW_SKIP_SUBTREE;
@@ -247,7 +248,10 @@ int onWalk(const char *fpath, const struct stat *sb, int typeflag, struct FTW *f
         return 0;
     case FTW_F:
 	if (sb->st_size > 0){
+#if 0
+	    // Preprocess this out unless we really need it.
 	    log_event(INFO, "Searching for '%s' in %s.", settings.search_string, fpath);
+#endif
 	    parse_file(fpath, sb->st_size);
 	}
         return 0;
@@ -323,7 +327,10 @@ void search_folder(const char *fpath){
 			break;
 		    }
 		    if (sb.st_size > 0){
+#if 0
+			// Preprocess this out unless we really need it.
 			log_event(INFO, "Searching for '%s' in %s.", settings.search_string, currentDir);
+#endif
 			parse_file(currentDir, sb.st_size);
 		    }
 		    break;

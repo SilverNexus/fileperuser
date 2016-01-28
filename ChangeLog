@@ -1,3 +1,7 @@
+2016-01-28  SilverNexus
+	* search.c: Preprocess out some info-level calls to log_event. The usually aren't needed,
+	  and add a bit of overhead to directory parsing.
+
 2016-01-26  SilverNexus
 	* search.c: Revert back to strstr when done parsing a file with fileperuser_memmem.
 	* fileperuser_search.c: Fixed segfault when haystack_len is shorter than needle_len.
