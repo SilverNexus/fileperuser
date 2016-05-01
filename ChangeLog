@@ -1,3 +1,11 @@
+2016-04-30  SilverNexus
+	* jump_table.c: Changed the jump table to be stack allocated.
+	  Removed implementation of initialization and cleanup, since no longer
+	  dynamically allocated.
+	* jump_table.h: Changed the extern declaration to match the new jump table.
+	  Removed prototypes for initialization and cleanup of jump table.
+	* main.c: Removed calls to initialization and cleanup of jump table.
+
 2016-01-28  SilverNexus
 	* search.c: Preprocess out some info-level calls to log_event. The usually aren't needed,
 	  and add a bit of overhead to directory parsing.
