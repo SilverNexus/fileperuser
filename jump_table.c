@@ -19,7 +19,7 @@
 
 /**
  * @file jump_table.c
- * Last Modified 2016-01-25 by Daniel Hawkins
+ * Last Modified 2016-04-30 by Daniel Hawkins
  *
  * Defines functions for dealing with the Boyer-Moore serch's jump table.
  */
@@ -30,16 +30,8 @@
 #include <stdlib.h>
 #include "settings.h"
 
-size_t *jump_tbl;
+size_t jump_tbl[256];
 size_t needle_len;
-
-/**
- * Makes sure jump_tbl is initialized.
- * Should be called before any access to jump_tbl
- */
-void init_jump_table(){
-    jump_tbl = 0;
-}
 
 /**
  * Set up the jump table from the needle
@@ -52,9 +44,6 @@ void setup_jump_table(){
     // If case insensitive and needle_len > 3, then make a Boyer-Moore jump table
     if (settings.search_flags & FLAG_NO_CASE){
 	if (needle_len > MIN_JUMP_TABLE_NO_CASE){
-	    jump_tbl = malloc(sizeof(size_t) * 256);
-	    if (!jump_tbl)
-		log_event(FATAL, "No memory left for jump table.");
 	    unsigned short i;
 	    // Initialize
 	    for (i = 0; i < 256; ++i){
@@ -74,9 +63,6 @@ void setup_jump_table(){
     // If case sensitive and needle_len > 6, then make a Boyer-Moore jump table
     else{
 	if (needle_len > MIN_JUMP_TABLE_CASE){
-	    jump_tbl = malloc(sizeof(size_t) * 256);
-	    if (!jump_tbl)
-		log_event(FATAL, "No memory left for jump table.");
 	    unsigned short i;
 	    // Initialize
 	    for (i = 0; i < 256; ++i){
@@ -88,16 +74,4 @@ void setup_jump_table(){
 	    }
 	}
     }
-}
-
-/**
- * Free the jump table allocated in setup_jump_table
- *
- * Called on exit with atexit(), so not many other uses for it.
- */
-void cleanup_jump_table(){
-    if (jump_tbl)
-	free(jump_tbl);
-    // Set to zero for good measure.
-    jump_tbl = 0;
 }
