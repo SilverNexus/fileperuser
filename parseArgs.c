@@ -19,7 +19,7 @@
 
 /**
  * @file parseArgs.c
- * Last modified on 2016-01-25 by Daniel Hawkins.
+ * Last modified on 2016-05-02 by Daniel Hawkins.
  *
  * The file defines the argument parsing functions.
  */
@@ -55,6 +55,7 @@ int parseArgs(char **flagArgs, int flagCount){
         if (*flagArgs[parseCount] == '-'){
             // Optimize out the initial dash -- this reduces the calls to strcmp.
             cur_flag = flagArgs[parseCount] + 1;
+	    // TODO: Make all the single character checks before the strcmp calls.
             if (*cur_flag == 'h' || strcmp(cur_flag, "-help") == 0){
                 help_message();
             }
@@ -78,19 +79,6 @@ int parseArgs(char **flagArgs, int flagCount){
                     return -1;
                 }
                 add_root_dir(flagArgs[parseCount]);
-            }
-            else if (*cur_flag == 's' || strcmp(cur_flag, "-search") == 0){
-                if (++parseCount == flagCount){
-                    log_event(ERROR, "%s flag needs a search string.", flagArgs[parseCount - 1]);
-                    return -1;
-                }
-                if (settings.search_string){
-                    log_event(WARNING, "Trying to set search string to '%s' when it is already '%s'.",
-                        flagArgs[parseCount], settings.search_string);
-                }
-                else{
-                    settings.search_string = flagArgs[parseCount];
-                }
             }
             else if (*cur_flag == 'o' || strcmp(cur_flag, "-output") == 0){
                 if (++parseCount == flagCount){
@@ -148,7 +136,13 @@ int parseArgs(char **flagArgs, int flagCount){
             }
         }
         else{
-            log_event(WARNING, "Invalid flag '%s' detected, skipping.", flagArgs[parseCount]);
+            if (settings.search_string){
+                log_event(WARNING, "Trying to set search string to '%s' when it is already '%s'.",
+                    flagArgs[parseCount], settings.search_string);
+            }
+            else{
+                settings.search_string = flagArgs[parseCount];
+            }
         }
     }
     return settings.search_string ? 0 : -1;
@@ -162,12 +156,10 @@ int parseArgs(char **flagArgs, int flagCount){
  */
 void help_message(){
     puts("Usage:");
-    puts("  fileperuser -s [search string] -d [directory] <flags>\n");
-    puts("Required Arguments:");
-    puts("  -d --dir [directory]      Sets root directory of the search.");
-    puts("  -s --search [phrase]      Sets the string to be searched.\n");
+    puts("  fileperuser <flags> <search phrase>\n");
     puts("Valid Flags:");
     puts("  -h --help                 Prints this help message.");
+    puts("  -d --dir [directory]      Sets root directory of the search.");
     puts("  -x --exclude [directory]  Excludes [directory] from the search.");
     puts("  -X --exclude-path [path]  Excludes [path] from the search. Can be a specific file.");
     puts("  -o --output [filename]    Sets the name (and path) of the output file. Default prints to stdout.");

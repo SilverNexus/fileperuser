@@ -1,3 +1,9 @@
+2016-05-02  SilverNexus
+	* parseArgs.c: Refactored the search string to not use a flag.
+	  Updated the help message to convey the change in argument syntax.
+	  Current design should allow for it to still be inserted between option flags.
+	* README: Updated the usage information to relect the adjusted argument syntax.
+
 2016-05-01  SilverNexus
 	* ErrorLog.c: Changed the month and error titles to be const char * const
 	  instead of const char *. This allows for slightly more aggressive optimization.

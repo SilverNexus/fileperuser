@@ -3,13 +3,12 @@ FilePeruser User Guide
 ----------------------
 
 1. Usage:
-       fileperuser -s [search string] [flags]
+       fileperuser [flags] [search string]
    Valid flags:
        -h or --help: prints help and exits program
        -x or --exclude: next argument is a directory to exclude
        -X or --exclude-path: next argument is a path to exclude from the search.
        -d or --dir: next argument is the root directory of the search
-       -s or --search: next argument is the search string
        -o or --output: next argument is the output file name.
        -f or --log-file: next argument is the log file name.
        -l or --loglevel: next argument is an integer representing
