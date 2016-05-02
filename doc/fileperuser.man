@@ -1,0 +1,100 @@
+.\" Manpage for FilePeruser
+.\" Any corrections should be submitted to silvernexus@users.sourceforge.net
+
+.TH fileperuser 1 "02 May 2016" "0.02-dev" "FilePeruser Manual"
+
+.SH NAME
+FilePeruser
+
+.SH SYNOPSIS
+fileperuser [-1] [-n] [-h] [-x \fIdir\fR] [-X \fIpath\fR] [-d \fIpath\fR]
+[-o \fIfile\fR] [-f \fIfile\fR] [-l \fIlevel\fR] [-p \fIlevel\fR]
+.I search
+
+.SH DESCRIPTION
+FilePeruser is a recursive file search utility, similar to ack, ag, ucg,
+or any other similar tool. The main difference between FilePeruser and
+these is the the lack of support for regular expressions and a unique syntax
+for invoking the command.
+
+It is designed to be small, clean and fast. The fast portion is a work in
+progress, since most other file search programs are equivalently fast with
+a greater degree of versatility. Features have been slowly added in order
+to compensate some for the relative infelxibility of FilePeruser.
+
+At the same time, CPU-expensive features have been avoided where plausible,
+particularly in the file-search algorithms, where the code executes the most.
+
+.SH OPTIONS
+.TP
+.B -h --help
+Displays the help/usage page for FilePeruser and terminates.
+
+.TP
+.B -x --exclude \fIdir\fR
+Excludes all instances of directories named
+.I dir
+from the search.
+
+.TP
+.B -X --exclude-path \fIpath\fR
+Excludes the inode at \fIpath\fR from the search.
+
+.TP
+.B -d --dir \fIpath\fR
+Sets \fIpath\fR as the directory to search. Can be used several times to set multiple
+directories to search.
+
+.TP
+.B -o --output \fIfile\fR
+Output the search results to file \fIfile\fR.
+
+.TP
+.B -f --log-file \fIfile\fR
+Output messages to file \fIfile\fR.
+
+.TP
+.B -l --loglevel \fIlevel\fR
+Sets the minimum level of messages written in the log to \fIlevel\fR.
+
+.TP
+.B -p --printlevel \fIlevel\fR
+Sets the minimum level of messages written to the screen to \fIlevel\fR.
+
+.TP
+.B -n --no-case
+Search without case-sensitivity.
+
+.TP
+.B -1 --single-match
+Find only one match per line.
+
+.TP
+The levels for logging and printing are as follows:
+.B Level | Severity
+  0   | DEBUG
+  1   | INFO
+  2   | WARNING
+  3   | ERROR
+  4   | FATAL
+
+.SH EXAMPLES
+.B fileperuser -1 -d sample/directory search
+.RS
+Searches with a single match per line in the folder sample/directory for "search"
+.RE
+
+.B fileperuser -n -x excluded_dir -X allowed_path/exclude_me frantic
+.RS
+Searches without case for every instance of "frantic" in the current directory
+except for any folder named "excluded_dir" and the inode ./allowed_path/exclude_me
+.RE
+
+.B fileperuser -h
+.RS
+Displays the help message for FilePeruser
+.RE
+
+.SH AUTHOR
+ (C) 2014-2016 SilverNexus (silvernexus@sourceforge.net)
+ 

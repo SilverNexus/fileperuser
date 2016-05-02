@@ -39,7 +39,8 @@ AC_CHECK_HEADERS([dirent.h])
 AC_CHECK_FUNCS([nftw mmap strdup])
 
 AS_BOX([Generate Output])
-AC_CONFIG_FILES([Makefile])
+AC_CONFIG_FILES([Makefile
+                 doc/Makefile])
 
 AC_OUTPUT
 

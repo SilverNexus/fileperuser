@@ -1,3 +1,5 @@
+SUBDIRS = doc
+
 EXTRA_DIST = AUTHORS ChangeLog COPYING autogen.sh
 
 ACLOCAL_AMFLAGS = -I macros --install

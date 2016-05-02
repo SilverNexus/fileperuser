@@ -3,6 +3,10 @@
 	  Updated the help message to convey the change in argument syntax.
 	  Current design should allow for it to still be inserted between option flags.
 	* README: Updated the usage information to relect the adjusted argument syntax.
+	* doc/fileperuser.man: Created man page for fileperuser.
+	* doc/Makefile.am: Set up for a makefile to install the manpage.
+	* Makefile.am: Indicate that doc has another Makefile.am in it.
+	* configure.ac: Make sure that doc/Makefile is produced.
 
 2016-05-01  SilverNexus
 	* ErrorLog.c: Changed the month and error titles to be const char * const
