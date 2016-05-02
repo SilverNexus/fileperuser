@@ -33,6 +33,7 @@
 #include <string.h>
 #include "fileperuser_search.h"
 #include "settings.h"
+#include "jump_table.h"
 
 /**
  * Finds a substring in a block of memory, ignoring case.
@@ -49,13 +50,10 @@
  * @param needle_len
  * The length of the search string.
  *
- * @param jump
- * The jump table for Boyer-Moore searching. Only used if needle_len > 3.
- *
  * @return
  * Pointer to the first character in haystack of a match to needle, or 0 if it was not found.
  */
-char *fileperuser_memcasemem(char *haystack, size_t haystack_len, char *needle, size_t needle_len, const size_t * const jump){
+char *fileperuser_memcasemem(char *haystack, size_t haystack_len, char *needle, size_t needle_len){
     if (haystack_len < needle_len)
 	return 0;
     if (needle_len > MIN_JUMP_TABLE_NO_CASE){
@@ -77,7 +75,7 @@ char *fileperuser_memcasemem(char *haystack, size_t haystack_len, char *needle, 
 		    return haystack;
 	    }
 	    // This already is set up to handle either case, so just drop it in
-	    haystack += jump[(unsigned char)haystack[needle_len - 1]];
+	    haystack += jump_tbl[(unsigned char)haystack[needle_len - 1]];
 	}
 	return 0;
     }
@@ -126,13 +124,10 @@ char *fileperuser_memcasemem(char *haystack, size_t haystack_len, char *needle, 
  * @param needle_len
  * The length of the string we wish to find.
  *
- * @param jump
- * The Boyer-Moore jump table. Only used if needle_len > 6.
- *
  * @return
  * Pointer to the first match of needle in haystack, or 0 if not found.
  */
-char *fileperuser_memmem(char *haystack, size_t haystack_len, char *needle, size_t needle_len, const size_t * const jump){
+char *fileperuser_memmem(char *haystack, size_t haystack_len, char *needle, size_t needle_len){
     if (haystack_len < needle_len)
 	return 0;
     if (needle_len > MIN_JUMP_TABLE_CASE){
@@ -154,7 +149,7 @@ char *fileperuser_memmem(char *haystack, size_t haystack_len, char *needle, size
 		// Move the jump so it aligns with the next letter in the needle that matches this.
 		// Fall through to the same code as otherwise
 	    }
-	    at += jump[(unsigned char)haystack[at]];
+	    at += jump_tbl[(unsigned char)haystack[at]];
 	}
 	return 0;
     }
@@ -197,6 +192,6 @@ char *fileperuser_memmem(char *haystack, size_t haystack_len, char *needle, size
  *
  * @return pointer the the beginning of the first match of needle in haystack, or 0 if not found.
  */
-char *strstr_wrapper(char *haystack, size_t irrelevant, char *needle, size_t not_needed, const size_t * const unused){
+char *strstr_wrapper(char *haystack, size_t irrelevant, char *needle, size_t not_needed){
     return strstr(haystack, needle);
 }

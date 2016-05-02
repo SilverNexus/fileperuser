@@ -136,7 +136,7 @@ void search_file_multi_match(char * const addr, size_t len, const char * const f
     char *in_line = addr, *found_at;
     // Only count file lines if we find a match.
     // I can also skip the subtraction of the current position from len on this because addr - in_line = 0.
-    if ((found_at = settings.comp_func(in_line, len, settings.search_string, needle_len, jump_tbl)) != 0){
+    if ((found_at = settings.comp_func(in_line, len, settings.search_string, needle_len)) != 0){
 	char *start_line = addr, *end_line;
 	char tmp;
 	register int line_num = 1;
@@ -155,7 +155,7 @@ void search_file_multi_match(char * const addr, size_t len, const char * const f
 
 	    // Continue search within the line
 	    in_line = found_at + 1;
-	} while ((found_at = settings.comp_func(in_line, len - (addr - in_line), settings.search_string, needle_len, jump_tbl)) != 0);
+	} while ((found_at = settings.comp_func(in_line, len - (addr - in_line), settings.search_string, needle_len)) != 0);
     }
 }
 
@@ -175,7 +175,7 @@ void search_file_multi_match(char * const addr, size_t len, const char * const f
 void search_file_single_match(char * const addr, size_t len, const char * const fpath){
     char *start_line = addr, *found_at;
     // Only count file lines if we find a match.
-    if ((found_at = settings.comp_func(start_line, len, settings.search_string, needle_len, jump_tbl)) != 0){
+    if ((found_at = settings.comp_func(start_line, len, settings.search_string, needle_len)) != 0){
 	char *end_line;
 	char tmp;
 	register int line_num = 1;
@@ -198,7 +198,7 @@ void search_file_single_match(char * const addr, size_t len, const char * const 
 	    // Make sure we account for moving to a new line.
 	    ++line_num;
 	    start_line = end_line + 1;
-	} while ((found_at = settings.comp_func(start_line, len - (addr - start_line), settings.search_string, needle_len, jump_tbl)) != 0);
+	} while ((found_at = settings.comp_func(start_line, len - (addr - start_line), settings.search_string, needle_len)) != 0);
     }
 }
 

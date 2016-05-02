@@ -47,7 +47,7 @@ struct {
     // Keep track of case sensitivity here for easy access.
     short search_flags;
 
-    char *(*comp_func)(char *, size_t, char *, size_t, const size_t * const);
+    char *(*comp_func)(char *, size_t, char *, size_t);
 
     /*
      * Pointer to the file parsing function

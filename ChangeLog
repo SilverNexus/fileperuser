@@ -1,6 +1,11 @@
 2016-05-01  SilverNexus
 	* ErrorLog.c: Changed the month and error titles to be const char * const
 	  instead of const char *. This allows for slightly more aggressive optimization.
+	* fileperuser_search.c: Remove parameter pass of jump table in favor of direct
+	  access from jump_table.h.
+	* fileperuser_search.h: Remove jump table parameter from the function prototypes.
+	* search.c: Don't pass the jump table anymore, either.
+	* settings.h: Don't have the function pointer use the jump table parameter slot.
 
 2016-04-30  SilverNexus
 	* jump_table.c: Changed the jump table to be stack allocated.
