@@ -3,6 +3,7 @@
 	  instead of const char *. This allows for slightly more aggressive optimization.
 	* fileperuser_search.c: Remove parameter pass of jump table in favor of direct
 	  access from jump_table.h.
+	  Also removed extraneous check from case insensitive search.
 	* fileperuser_search.h: Remove jump table parameter from the function prototypes.
 	* search.c: Don't pass the jump table anymore, either.
 	* settings.h: Don't have the function pointer use the jump table parameter slot.
