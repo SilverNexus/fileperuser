@@ -1,3 +1,7 @@
+2016-05-01  SilverNexus
+	* ErrorLog.c: Changed the month and error titles to be const char * const
+	  instead of const char *. This allows for slightly more aggressive optimization.
+
 2016-04-30  SilverNexus
 	* jump_table.c: Changed the jump table to be stack allocated.
 	  Removed implementation of initialization and cleanup, since no longer

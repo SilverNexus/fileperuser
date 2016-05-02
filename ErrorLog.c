@@ -19,7 +19,7 @@
 
 /**
  * @file ErrorLog.c
- * Last modified on 2016-01-16 by Daniel Hawkins.
+ * Last modified on 2016-05-01 by Daniel Hawkins.
  *
  * The file defines the functions for logging errors.
  */
@@ -31,8 +31,8 @@
 #include <stdarg.h>
 #include <stdlib.h>
 
-const char *ERROR_TYPE_CHARS[] = {"DEBUG", "INFO", "WARNING", "ERROR", "FATAL"};
-const char *MONTH[12] = {"January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"};
+const char * const ERROR_TYPE_CHARS[] = {"DEBUG", "INFO", "WARNING", "ERROR", "FATAL"};
+const char * const MONTH[12] = {"January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"};
 
 /**
  * Logs a message that is printed and, if urgent enough, printed to the log file.
