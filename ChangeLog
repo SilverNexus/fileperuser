@@ -1,3 +1,7 @@
+2016-05-03  SilverNexus
+	* main.c: Fixed the initial argument quantity check to account for the
+	  flagless search string as a parameter.
+
 2016-05-02  SilverNexus
 	* parseArgs.c: Refactored the search string to not use a flag.
 	  Updated the help message to convey the change in argument syntax.

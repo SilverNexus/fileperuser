@@ -19,7 +19,7 @@
 
 /**
  * @file main.c
- * Last modified on 2016-04-30 by Daniel Hawkins.
+ * Last modified on 2016-05-03 by Daniel Hawkins.
  *
  * The file defines the main function and several searching functions.
  */
@@ -48,7 +48,7 @@ static void handle_sigint(int sig){
 }
 
 int main(int argc, char *argv[]){
-    if (argc >= 3){
+    if (argc >= 2){
         init_settings();
         init_results();
         // Add a signal handler for sigint.
