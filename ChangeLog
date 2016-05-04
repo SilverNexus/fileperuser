@@ -1,3 +1,6 @@
+2016-05-04  SilverNexus
+	* main.c: Change the loop for performing each root search to a do-while loop.
+
 2016-05-03  SilverNexus
 	* main.c: Fixed the initial argument quantity check to account for the
 	  flagless search string as a parameter.

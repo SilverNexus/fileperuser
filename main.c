@@ -19,7 +19,7 @@
 
 /**
  * @file main.c
- * Last modified on 2016-05-03 by Daniel Hawkins.
+ * Last modified on 2016-05-04 by Daniel Hawkins.
  *
  * The file defines the main function and several searching functions.
  */
@@ -85,7 +85,9 @@ int main(int argc, char *argv[]){
         time_t start_time = time(0), end_time;
         // Begin the search
         DIR_LIST *thisDir = settings.root_dirs;
-        while (thisDir){
+	// There will be at least one root directory.
+	// We make sure to set to current directory if not specified.
+        do{
 #if defined HAVE_NFTW
             if (nftw(thisDir->dir, onWalk, 20, FTW_ACTIONRETVAL | FTW_PHYS) == -1)
                 log_event(FATAL, "Directory walk for %s failed!", thisDir->dir);
@@ -97,7 +99,7 @@ int main(int argc, char *argv[]){
             // Okay, we need to reset the base search path after a search tree is completed.
             settings.base_search_path_length = 0;
             thisDir = thisDir->next;
-        }
+        } while (thisDir);
         // end timing
         end_time = time(0);
         // Don't give the logger a chance to repress this message, so just print from here
