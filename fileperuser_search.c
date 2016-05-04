@@ -64,12 +64,6 @@ char *fileperuser_memcasemem(char *haystack, size_t haystack_len, char *needle, 
 	size_t at;
 	while (haystack < haystack_last){
 	    if (tolower(haystack[needle_len - 1]) == needle_last){
-		/* Since needle_len needs to be greater than
-		 * about 3 to reach here, this is extraneous
-		 * -- SilverNexus 2016-05-01
-		 * if (needle_len == 1)
-		 *     return haystack;
-		 */
 		at = needle_len - 2;
 		// This becomes false at unsigned rollover
 		while (at < needle_len){
