@@ -106,25 +106,29 @@ int parseArgs(char **flagArgs, int flagCount){
             else if (*cur_flag == 'l' || strcmp(cur_flag, "-loglevel") == 0){
 		CHECK_NEXT_ARG(flagArgs, parseCount, "%s flag needs a log level.");
                 // Make sure the value is numeric
-                int checkNum = strlen(flagArgs[parseCount]);
-                for (int check = 0; check < checkNum; ++check){
-                    if (!isdigit(flagArgs[parseCount][check])){
+                const char *arg = flagArgs[parseCount];
+		// We would have bailed already if empty, so do-while works
+                do {
+                    if (!isdigit(*arg)){
                         log_event(ERROR, "%s flag expected numeric log level, got %s.", flagArgs[parseCount - 1], flagArgs[parseCount]);
                         return -1;
                     }
-                }
+		// Increment arg and check
+                } while(*(++arg));
                 settings.min_log_level = atoi(flagArgs[parseCount]);
             }
             else if (*cur_flag == 'p' || strcmp(cur_flag, "-printlevel") == 0){
 		CHECK_NEXT_ARG(flagArgs, parseCount, "%s flag needs a print level.");
                 // Make sure the value is numeric
-                int checkNum = strlen(flagArgs[parseCount]);
-                for (int check = 0; check < checkNum; ++check){
-                    if (!isdigit(flagArgs[parseCount][check])){
+		const char *arg = flagArgs[parseCount];
+		// We would have bailed already if empty, so do-while works
+                do {
+                    if (!isdigit(*arg)){
                         log_event(ERROR, "%s flag expected numeric print level, got %s.", flagArgs[parseCount - 1], flagArgs[parseCount]);
                         return -1;
                     }
-                }
+		// Increment arg and check
+                } while(*(++arg));
                 settings.min_print_level = atoi(flagArgs[parseCount]);
             }
             else if (*cur_flag == 'n' || strcmp(cur_flag, "-no-case") == 0){
