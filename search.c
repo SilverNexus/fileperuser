@@ -202,6 +202,25 @@ void search_file_single_match(char * const addr, size_t len, const char * const 
     }
 }
 
+/**
+ * Check the excluded paths for our current path
+ *
+ * @param fpath
+ * The current path we are searching in.
+ *
+ * @todo
+ * Make this check smarter so it does some understanding of the excluded paths
+ */
+#define CHECK_EXCLUDED_PATHS(fpath) \
+    if (settings.excluded_paths){ \
+        if (!settings.base_search_path_length) \
+            settings.base_search_path_length = strlen(fpath) + 1; \
+        for (DIR_LIST *pth = settings.excluded_paths; pth; pth = pth->next){ \
+            if (strcmp(pth->dir, fpath + settings.base_search_path_length) == 0) \
+                return FTW_SKIP_SUBTREE; \
+        } \
+    }
+
 #if defined HAVE_NFTW
 /**
  * Checks each encountered inode so that it is handled correctly. Called from nftw(3)
@@ -216,21 +235,7 @@ void search_file_single_match(char * const addr, size_t len, const char * const 
  * @retval 0 nftw(3) should continue parsing as expected.
  */
 int onWalk(const char *fpath, const struct stat *sb, int typeflag, struct FTW *ftwbuf){
-    if (settings.excluded_paths){
-        if (!settings.base_search_path_length)
-            // If this is the first time into this search tree, get the absolute path of the tree root.
-            // Conveniently, this is fpath on the first run, so use that.
-            // NOTE: We add one to cover the trailing slash.
-            settings.base_search_path_length = strlen(fpath) + 1;
-
-        // Check to see if we are specifically excluding this path from the search
-        // This is listed out here so we can exclude specific files, as well.
-        for (DIR_LIST *pth = settings.excluded_paths; pth; pth = pth->next){
-            // For each excluded path, see if we are encountering the path we wish to exclude.
-            if (strcmp(pth->dir, fpath + settings.base_search_path_length) == 0)
-                return FTW_SKIP_SUBTREE;
-        }
-    }
+    CHECK_EXCLUDED_PATHS(fpath);
     switch (typeflag){
     case FTW_D:
         // No reason to make this check if no directories have been excluded
@@ -277,21 +282,7 @@ void search_folder(const char *fpath){
         while ((directory = readdir(mapsDirectory))){
             if (strcmp(directory->d_name, ".") == 0 || strcmp(directory->d_name, "..") == 0)
                 continue;
-	    if (settings.excluded_paths){
-		if (!settings.base_search_path_length)
-		    // If this is the first time into this search tree, get the absolute path of the tree root.
-		    // Conveniently, this is fpath on the first run, so use that.
-		    // NOTE: We add one to cover the trailing slash.
-		    settings.base_search_path_length = strlen(fpath) + 1;
-
-		// Check to see if we are specifically excluding this path from the search
-		// This is listed out here so we can exclude specific files, as well.
-		for (DIR_LIST *pth = settings.excluded_paths; pth; pth = pth->next){
-		    // For each excluded path, see if we are encountering the path we wish to exclude.
-		    if (strcmp(pth->dir, fpath + settings.base_search_path_length) == 0)
-			return;
-		}
-	    }
+	    CHECK_EXCLUDED_PATHS(fpath);
 	    /*
 	     * We add three to the length of the two pieces so we have enough
 	     * for both a null terminator and both slashes if necessary.
