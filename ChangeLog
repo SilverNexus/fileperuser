@@ -1,6 +1,8 @@
 2016-05-03  SilverNexus
 	* main.c: Fixed the initial argument quantity check to account for the
 	  flagless search string as a parameter.
+	* fileperuser_search.c: Only compile memmem equivalent when we have mmap.
+	* fileperuser_search.h: Only define memmem equivalent when we have mmap.
 
 2016-05-02  SilverNexus
 	* parseArgs.c: Refactored the search string to not use a flag.

@@ -19,7 +19,7 @@
 
 /**
  * @file fileperuser_search.c
- * Last Modified 2016-01-28 by Daniel Hawkins
+ * Last Modified 2016-05-03 by Daniel Hawkins
  *
  * Defines the search functions for use when needed.
  * 
@@ -27,6 +27,8 @@
  *
  * The case-sensitive search will only be used when we cannot null-terminate the haystack
  * without trampling a potential match, since strstr() is faster when needle_len > 1.
+ * Since this only occurs from using mmap, it is not declared or implemented when
+ * FilePeruser isn't compiled with mmap support.
  */
 
 #include <ctype.h>
@@ -113,6 +115,7 @@ char *fileperuser_memcasemem(char *haystack, size_t haystack_len, char *needle, 
     }
 }
 
+#ifdef HAVE_MMAP
 /**
  * Finds a substring in a block of memory.
  * 
@@ -184,6 +187,7 @@ char *fileperuser_memmem(char *haystack, size_t haystack_len, char *needle, size
 	return memchr(haystack, *needle, haystack_len);
     }
 }
+#endif
 
 /**
  * Wrapper for strstr so it can still be used when possible.
