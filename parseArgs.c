@@ -19,7 +19,7 @@
 
 /**
  * @file parseArgs.c
- * Last modified on 2016-05-02 by Daniel Hawkins.
+ * Last modified on 2016-05-04 by Daniel Hawkins.
  *
  * The file defines the argument parsing functions.
  */
@@ -34,6 +34,30 @@
 #include <ctype.h>
 #include "config.h"
 #include "fileperuser_search.h"
+
+/**
+ * Macro for checking the next argument for existence with
+ * argument-value pairs.
+ *
+ * @param flagArgs
+ * The array of c-strings that contains the command-line args.
+ *
+ * @param parseCount
+ * The index of the string we are parsing.
+ *
+ * @param errMsg
+ * The error message to display when a required value is not found.
+ *
+ * @warning errMsg must have 1 %s in it for the macro to work.
+ * The argument at flagArgs[parseCount - 1] will be printed at %s.
+ *
+ * @warning This macro also increments the value of parseCount.
+ */
+#define CHECK_NEXT_ARG(flagArgs, parseCount, errMsg) \
+    if (++parseCount == flagCount){ \
+        log_event(ERROR, errMsg, flagArgs[parseCount - 1]); \
+        return -1; \
+    }
 
 /**
  * Parses flags that alter program behavior
@@ -60,45 +84,27 @@ int parseArgs(char **flagArgs, int flagCount){
                 help_message();
             }
             else if (*cur_flag == 'x' || strcmp(cur_flag, "-exclude") == 0){
-                if (++parseCount == flagCount){
-                    log_event(ERROR, "%s flag needs a directory to exclude.", flagArgs[parseCount - 1]);
-                    return -1;
-                }
+                CHECK_NEXT_ARG(flagArgs, parseCount, "%s flag needs a directory to exclude.");
                 add_exclude_dir(flagArgs[parseCount]);
             }
             else if (*cur_flag == 'X' || strcmp(cur_flag, "-exclude-path") == 0){
-                if (++parseCount == flagCount){
-                    log_event(ERROR, "%s flag needs a path to exclude.", flagArgs[parseCount - 1]);
-                    return -1;
-                }
+                CHECK_NEXT_ARG(flagArgs, parseCount, "%s flag needs a path to exclude.");
                 add_exclude_path(flagArgs[parseCount]);
             }
             else if (*cur_flag == 'd' || strcmp(cur_flag, "-dir") == 0){
-                if (++parseCount == flagCount){
-                    log_event(ERROR, "%s flag needs a root directory.", flagArgs[parseCount - 1]);
-                    return -1;
-                }
+		CHECK_NEXT_ARG(flagArgs, parseCount, "%s flag needs a root directory.");
                 add_root_dir(flagArgs[parseCount]);
             }
             else if (*cur_flag == 'o' || strcmp(cur_flag, "-output") == 0){
-                if (++parseCount == flagCount){
-                    log_event(ERROR, "%s flag needs a file name.", flagArgs[parseCount - 1]);
-                    return -1;
-                }
+		CHECK_NEXT_ARG(flagArgs, parseCount, "%s flag needs a file name.");
                 settings.output_file = flagArgs[parseCount];
             }
             else if (*cur_flag == 'f' || strcmp(cur_flag, "-log-file") == 0){
-                if (++parseCount == flagCount){
-                    log_event(ERROR, "%s flag needs a file name.", flagArgs[parseCount - 1]);
-                    return -1;
-                }
+		CHECK_NEXT_ARG(flagArgs, parseCount, "%s flag needs a file name.");
                 settings.log_file = flagArgs[parseCount];
             }
             else if (*cur_flag == 'l' || strcmp(cur_flag, "-loglevel") == 0){
-                if (++parseCount == flagCount){
-                    log_event(ERROR, "%s flag needs a log level.", flagArgs[parseCount - 1]);
-                    return -1;
-                }
+		CHECK_NEXT_ARG(flagArgs, parseCount, "%s flag needs a log level.");
                 // Make sure the value is numeric
                 int checkNum = strlen(flagArgs[parseCount]);
                 for (int check = 0; check < checkNum; ++check){
@@ -110,10 +116,7 @@ int parseArgs(char **flagArgs, int flagCount){
                 settings.min_log_level = atoi(flagArgs[parseCount]);
             }
             else if (*cur_flag == 'p' || strcmp(cur_flag, "-printlevel") == 0){
-                if (++parseCount == flagCount){
-                    log_event(ERROR, "%s flag needs a print level.", flagArgs[parseCount - 1]);
-                    return -1;
-                }
+		CHECK_NEXT_ARG(flagArgs, parseCount, "%s flag needs a print level.");
                 // Make sure the value is numeric
                 int checkNum = strlen(flagArgs[parseCount]);
                 for (int check = 0; check < checkNum; ++check){
