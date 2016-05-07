@@ -1,3 +1,6 @@
+2016-05-07  SilverNexus
+	* configure.ac: Adjusted comments in autoconf script to use autoconf comments.
+
 2016-05-04  SilverNexus
 	* main.c: Change the loop for performing each root search to a do-while loop.
 	* parseArgs.c: Refactor the required argument value check to a macro.
