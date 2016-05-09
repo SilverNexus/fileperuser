@@ -19,7 +19,7 @@
 
 /**
  * @file fileperuser_search.c
- * Last Modified 2016-05-03 by Daniel Hawkins
+ * Last Modified 2016-05-08 by Daniel Hawkins
  *
  * Defines the search functions for use when needed.
  * 
@@ -182,18 +182,3 @@ char *fileperuser_memmem(char *haystack, size_t haystack_len, char *needle, size
     }
 }
 #endif
-
-/**
- * Wrapper for strstr so it can still be used when possible.
- *
- * @param haystack
- * The string we will search in. Must be null-terminated.
- * 
- * @param needle
- * The string we will search for.
- *
- * @return pointer the the beginning of the first match of needle in haystack, or 0 if not found.
- */
-char *strstr_wrapper(char *haystack, size_t irrelevant, char *needle, size_t not_needed){
-    return strstr(haystack, needle);
-}

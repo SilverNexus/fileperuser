@@ -1,6 +1,6 @@
 /**
  * @file settings.h
- * Last modified on 2016-01-25 by Daniel Hawkins.
+ * Last modified on 2016-05-08 by Daniel Hawkins.
  *
  * The file defines the structures for handling important variables.
  */
@@ -46,8 +46,6 @@ struct {
 
     // Keep track of case sensitivity here for easy access.
     short search_flags;
-
-    char *(*comp_func)(char *, size_t, char *, size_t);
 
     /*
      * Pointer to the file parsing function

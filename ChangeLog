@@ -1,3 +1,12 @@
+2016-05-08  SilverNexus
+	* settings.h: Removed function pointer for search. Now an if statement.
+	* settings.c: Remove initialization of removed function pointer.
+	* parseArgs.c: Remove setting of pointer on alternate option. Just set a flag.
+	* search.c: Replace function pointer calls with a set if-elseif-else statements.
+	  This method is more optimizable by the compiler.
+	* fileperuser.h: Remove prototype for strstr_wrapper.
+	* fileperuser_search.c: Removed strstr_wrapper.
+
 2016-05-07  SilverNexus
 	* configure.ac: Adjusted comments in autoconf script to use autoconf comments.
 

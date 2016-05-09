@@ -19,7 +19,7 @@
 
 /**
  * @file settings.c
- * Last modified on 2016-01-25 by Daniel Hawkins.
+ * Last modified on 2016-05-08 by Daniel Hawkins.
  *
  * The file defines the functions for handling settings.
  *
@@ -45,7 +45,6 @@ void init_settings(){
     settings.root_dirs = 0;
     settings.search_string = 0;
     settings.search_flags = FLAG_NONE;
-    settings.comp_func = strstr_wrapper;
     settings.file_parser = search_file_multi_match;
     settings.output_file = 0;
     settings.log_file = "fileperuser.log";

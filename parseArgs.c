@@ -19,7 +19,7 @@
 
 /**
  * @file parseArgs.c
- * Last modified on 2016-05-04 by Daniel Hawkins.
+ * Last modified on 2016-05-08 by Daniel Hawkins.
  *
  * The file defines the argument parsing functions.
  */
@@ -132,7 +132,6 @@ int parseArgs(char **flagArgs, int flagCount){
                 settings.min_print_level = atoi(flagArgs[parseCount]);
             }
             else if (*cur_flag == 'n' || strcmp(cur_flag, "-no-case") == 0){
-                settings.comp_func = fileperuser_memcasemem;
 		settings.search_flags |= FLAG_NO_CASE;
             }
 	    else if (*cur_flag == '1' || strcmp(cur_flag, "-single-match") == 0){

@@ -19,9 +19,12 @@
 
 /**
  * @file search.c
- * Last modified on 2016-01-28 by Daniel Hawkins.
+ * Last modified on 2016-05-08 by Daniel Hawkins.
  *
  * The file defines the searching functions.
+ *
+ * @note optimizations of the search function determination
+ * need to be done in four places.
  */
 
 #include "search.h"
@@ -75,15 +78,8 @@ inline void parse_file(const char * const fpath, const off_t file_size){
 	return;
     }
     in = file_size;
-    // Only check if case-sensitive
-    if (!(settings.search_flags & FLAG_NO_CASE)){
-	// Temporary fix to reduce frequency of segfault error further
-	if (addr[file_size - 1] != settings.search_string[needle_len - 1])
-	    addr[file_size - 1] = '\0';
-	// If we can't guarantee a null-termination, then use the custom function.
-	else
-	    settings.comp_func = fileperuser_memmem;
-    }
+    if (addr[file_size - 1] != settings.search_string[needle_len - 1])
+	addr[file_size - 1] = '\0';
 #else
     char * const addr = (char *)malloc(sizeof(char) * (file_size + 1));
     if (!addr){
@@ -109,9 +105,6 @@ inline void parse_file(const char * const fpath, const off_t file_size){
     
     // Cleanup
 #ifdef HAVE_MMAP
-    // Reset the string search to use strstr after this file if it was changed
-    if (settings.comp_func == fileperuser_memmem)
-	settings.comp_func = strstr_wrapper;
     munmap(addr, file_size);
     close(fd);
 #else
@@ -136,7 +129,18 @@ void search_file_multi_match(char * const addr, size_t len, const char * const f
     char *in_line = addr, *found_at;
     // Only count file lines if we find a match.
     // I can also skip the subtraction of the current position from len on this because addr - in_line = 0.
-    if ((found_at = settings.comp_func(in_line, len, settings.search_string, needle_len)) != 0){
+    if (settings.search_flags & FLAG_NO_CASE)
+	found_at = fileperuser_memcasemem(in_line, len, settings.search_string, needle_len);
+    else
+#ifdef HAVE_MMAP
+	if (!addr[len - 1])
+#endif
+	    found_at = strstr(in_line, settings.search_string);
+#ifdef HAVE_MMAP
+	else
+	    found_at = fileperuser_memmem(in_line, len, settings.search_string, needle_len);
+#endif
+    if (found_at){
 	char *start_line = addr, *end_line;
 	char tmp;
 	register int line_num = 1;
@@ -155,7 +159,18 @@ void search_file_multi_match(char * const addr, size_t len, const char * const f
 
 	    // Continue search within the line
 	    in_line = found_at + 1;
-	} while ((found_at = settings.comp_func(in_line, len - (addr - in_line), settings.search_string, needle_len)) != 0);
+	    if (settings.search_flags & FLAG_NO_CASE)
+		found_at = fileperuser_memcasemem(in_line, len, settings.search_string, needle_len);
+	    else
+#ifdef HAVE_MMAP
+		if (!addr[len - 1])
+#endif
+		    found_at = strstr(in_line, settings.search_string);
+#ifdef HAVE_MMAP
+		else
+		    found_at = fileperuser_memmem(in_line, len - (addr - in_line), settings.search_string, needle_len);
+#endif
+	} while (found_at);
     }
 }
 
@@ -175,7 +190,19 @@ void search_file_multi_match(char * const addr, size_t len, const char * const f
 void search_file_single_match(char * const addr, size_t len, const char * const fpath){
     char *start_line = addr, *found_at;
     // Only count file lines if we find a match.
-    if ((found_at = settings.comp_func(start_line, len, settings.search_string, needle_len)) != 0){
+    if (settings.search_flags & FLAG_NO_CASE)
+	found_at = fileperuser_memcasemem(start_line, len, settings.search_string, needle_len);
+    // If this is the null terminator, the use strstr
+    else
+#ifdef HAVE_MMAP
+	if (!addr[len - 1])
+#endif
+	    found_at = strstr(start_line, settings.search_string);
+#ifdef HAVE_MMAP
+	else
+	    found_at = fileperuser_memmem(start_line, len, settings.search_string, needle_len);
+#endif
+    if (found_at){
 	char *end_line;
 	char tmp;
 	register int line_num = 1;
@@ -198,7 +225,18 @@ void search_file_single_match(char * const addr, size_t len, const char * const 
 	    // Make sure we account for moving to a new line.
 	    ++line_num;
 	    start_line = end_line + 1;
-	} while ((found_at = settings.comp_func(start_line, len - (addr - start_line), settings.search_string, needle_len)) != 0);
+	    if (settings.search_flags & FLAG_NO_CASE)
+		found_at = fileperuser_memcasemem(start_line, len, settings.search_string, needle_len);
+	    else
+#ifdef HAVE_MMAP
+		if (!addr[len - 1])
+#endif
+		    found_at = strstr(start_line, settings.search_string);
+#ifdef HAVE_MMAP
+		else
+		    found_at = fileperuser_memmem(start_line, len - (addr - start_line), settings.search_string, needle_len);
+#endif
+	} while (found_at);
     }
 }
 
