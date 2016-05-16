@@ -1,3 +1,7 @@
+2016-05-16  SilverNexus
+	* search.c: Fixed a bug introduced when removing function pointers for
+	  the search function. len was not adjusted for fileperuser_memcasemem().
+
 2016-05-08  SilverNexus
 	* settings.h: Removed function pointer for search. Now an if statement.
 	* settings.c: Remove initialization of removed function pointer.

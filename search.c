@@ -160,7 +160,7 @@ void search_file_multi_match(char * const addr, size_t len, const char * const f
 	    // Continue search within the line
 	    in_line = found_at + 1;
 	    if (settings.search_flags & FLAG_NO_CASE)
-		found_at = fileperuser_memcasemem(in_line, len, settings.search_string, needle_len);
+		found_at = fileperuser_memcasemem(in_line, len - (addr - in_line), settings.search_string, needle_len);
 	    else
 #ifdef HAVE_MMAP
 		if (!addr[len - 1])
@@ -226,7 +226,7 @@ void search_file_single_match(char * const addr, size_t len, const char * const 
 	    ++line_num;
 	    start_line = end_line + 1;
 	    if (settings.search_flags & FLAG_NO_CASE)
-		found_at = fileperuser_memcasemem(start_line, len, settings.search_string, needle_len);
+		found_at = fileperuser_memcasemem(start_line, len - (addr - start_line), settings.search_string, needle_len);
 	    else
 #ifdef HAVE_MMAP
 		if (!addr[len - 1])
