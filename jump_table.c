@@ -53,8 +53,8 @@ void setup_jump_table(){
 	     * the next-to-last occurrence of the last character in needle, as opposed to jumping smaller.
 	     */
 	    for (i = 0; i < needle_len - 1; ++i){
-		jump_tbl[tolower(i)] = needle_len - i - 1;
-		jump_tbl[toupper(i)] = needle_len - i - 1;
+		jump_tbl[tolower(settings.search_string[i])] = needle_len - i - 1;
+		jump_tbl[toupper(settings.search_string[i])] = needle_len - i - 1;
 	    }
 	}
     }
@@ -68,7 +68,7 @@ void setup_jump_table(){
 	    }
 	    // Now adjust for the characters in the needle, except the last one.
 	    for (i = 0; i < needle_len - 1; ++i){
-		jump_tbl[i] = needle_len - i - 1;
+		jump_tbl[(unsigned char)settings.search_string[i]] = needle_len - i - 1;
 	    }
 	}
     }

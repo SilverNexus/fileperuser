@@ -6,6 +6,8 @@
 	* fileperuser_search.c: Refactored so that the index of the endpoint
 	  of the search is calculated once, not on every entry to the function.
 	* fileperuser_search.h: Update the function prototype to reflect refactor.
+	* jump_table.c: Fixed a bug in the jump table creation that resulted in
+	  an inaccurate jump table being created.
 
 2016-05-08  SilverNexus
 	* settings.h: Removed function pointer for search. Now an if statement.
