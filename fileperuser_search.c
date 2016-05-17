@@ -55,11 +55,8 @@
  * @return
  * Pointer to the first character in haystack of a match to needle, or 0 if it was not found.
  */
-char *fileperuser_memcasemem(char *haystack, size_t haystack_len, char *needle, size_t needle_len){
-    if (haystack_len < needle_len)
-	return 0;
+char *fileperuser_memcasemem(char *haystack, const char * const haystack_last, char *needle, size_t needle_len){
     if (needle_len > MIN_JUMP_TABLE_NO_CASE){
-	const char * const haystack_last = haystack + haystack_len - needle_len + 1;
 	const char needle_last = tolower(needle[needle_len - 1]);
 	size_t at;
 	while (haystack < haystack_last){
@@ -80,9 +77,8 @@ char *fileperuser_memcasemem(char *haystack, size_t haystack_len, char *needle, 
 	return 0;
     }
     else if (needle_len > 1){
-	haystack_len -= needle_len - 1;
 	size_t at;
-	while (haystack_len > 0){
+	while (haystack < haystack_last){
 	    if (tolower(*haystack) == tolower(*needle)){
 		at = 1;
 		while (at < needle_len){
@@ -94,16 +90,14 @@ char *fileperuser_memcasemem(char *haystack, size_t haystack_len, char *needle, 
 		    return haystack;
 	    }
 	    ++haystack;
-	    --haystack_len;
 	}
 	return 0;
     }
     else{
-	while (haystack_len > 0){
+	while (haystack < haystack_last){
 	    if (tolower(*haystack) == tolower(*needle))
 		return haystack;
 	    ++haystack;
-	    --haystack_len;
 	}
 	return 0;  
     }

@@ -127,10 +127,13 @@ inline void parse_file(const char * const fpath, const off_t file_size){
  */
 void search_file_multi_match(char * const addr, size_t len, const char * const fpath){
     char *in_line = addr, *found_at;
+    const char *last;
     // Only count file lines if we find a match.
     // I can also skip the subtraction of the current position from len on this because addr - in_line = 0.
-    if (settings.search_flags & FLAG_NO_CASE)
-	found_at = fileperuser_memcasemem(in_line, len, settings.search_string, needle_len);
+    if (settings.search_flags & FLAG_NO_CASE){
+	last = addr + len - needle_len + 1;
+	found_at = fileperuser_memcasemem(in_line, last, settings.search_string, needle_len);
+    }
     else
 #ifdef HAVE_MMAP
 	if (!addr[len - 1])
@@ -160,7 +163,7 @@ void search_file_multi_match(char * const addr, size_t len, const char * const f
 	    // Continue search within the line
 	    in_line = found_at + 1;
 	    if (settings.search_flags & FLAG_NO_CASE)
-		found_at = fileperuser_memcasemem(in_line, len - (addr - in_line), settings.search_string, needle_len);
+		found_at = fileperuser_memcasemem(in_line, last, settings.search_string, needle_len);
 	    else
 #ifdef HAVE_MMAP
 		if (!addr[len - 1])
@@ -189,10 +192,12 @@ void search_file_multi_match(char * const addr, size_t len, const char * const f
  */
 void search_file_single_match(char * const addr, size_t len, const char * const fpath){
     char *start_line = addr, *found_at;
+    const char *last;
     // Only count file lines if we find a match.
-    if (settings.search_flags & FLAG_NO_CASE)
-	found_at = fileperuser_memcasemem(start_line, len, settings.search_string, needle_len);
-    // If this is the null terminator, the use strstr
+    if (settings.search_flags & FLAG_NO_CASE){
+	last = addr + len - needle_len + 1;
+	found_at = fileperuser_memcasemem(start_line, last, settings.search_string, needle_len);
+    }
     else
 #ifdef HAVE_MMAP
 	if (!addr[len - 1])
@@ -226,7 +231,7 @@ void search_file_single_match(char * const addr, size_t len, const char * const 
 	    ++line_num;
 	    start_line = end_line + 1;
 	    if (settings.search_flags & FLAG_NO_CASE)
-		found_at = fileperuser_memcasemem(start_line, len - (addr - start_line), settings.search_string, needle_len);
+		found_at = fileperuser_memcasemem(start_line, last, settings.search_string, needle_len);
 	    else
 #ifdef HAVE_MMAP
 		if (!addr[len - 1])

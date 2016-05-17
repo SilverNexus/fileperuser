@@ -1,6 +1,11 @@
 2016-05-16  SilverNexus
 	* search.c: Fixed a bug introduced when removing function pointers for
 	  the search function. len was not adjusted for fileperuser_memcasemem().
+	  Then refactored filepruser_memcasemem() to use the address of the
+	  last spot needed to search in haystack instead of the length.
+	* fileperuser_search.c: Refactored so that the index of the endpoint
+	  of the search is calculated once, not on every entry to the function.
+	* fileperuser_search.h: Update the function prototype to reflect refactor.
 
 2016-05-08  SilverNexus
 	* settings.h: Removed function pointer for search. Now an if statement.
