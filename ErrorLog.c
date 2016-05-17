@@ -19,8 +19,6 @@
 
 /**
  * @file ErrorLog.c
- * Last modified on 2016-05-01 by Daniel Hawkins.
- *
  * The file defines the functions for logging errors.
  */
 

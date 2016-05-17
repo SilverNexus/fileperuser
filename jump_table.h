@@ -1,7 +1,5 @@
 /**
  * @file jump_table.h
- * Last Modified 2016-04-30 by Daniel Hawkins
- *
  * Holds information about the jump table that will be built
  * for Boyer-Moore string search.
  */

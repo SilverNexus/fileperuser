@@ -1,7 +1,5 @@
 /**
  * @file settings.h
- * Last modified on 2016-05-08 by Daniel Hawkins.
- *
  * The file defines the structures for handling important variables.
  */
 

@@ -19,8 +19,6 @@
 
 /**
  * @file result_list.c
- * Last modified on 2016-01-11 by Daniel Hawkins.
- *
  * Implements the routines for storing results in a linked list.
  */
 

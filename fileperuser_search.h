@@ -1,7 +1,5 @@
 /**
  * @file fileperuser_search.h
- * Last Modified 2016-05-08 by Daniel Hawkins
- *
  * Declares the string search functions.
  */
 

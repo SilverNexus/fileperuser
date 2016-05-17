@@ -1,7 +1,5 @@
 /**
  * @file search.h
- * Last modified on 2016-01-25 by Daniel Hawkins.
- *
  * The file defines several searching functions' prototypes.
  */
 

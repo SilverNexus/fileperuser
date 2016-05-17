@@ -19,8 +19,6 @@
 
 /**
  * @file output.c
- * Last modified on 2015-12-23 by Daniel Hawkins.
- *
  * The file implements the output function to be used at termination.
  */
 

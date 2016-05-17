@@ -19,8 +19,6 @@
 
 /**
  * @file fileperuser_search.c
- * Last Modified 2016-05-08 by Daniel Hawkins
- *
  * Defines the search functions for use when needed.
  * 
  * The case-insensitive search is faster than strcasestr(), so it will always be used.

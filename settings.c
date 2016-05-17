@@ -19,8 +19,6 @@
 
 /**
  * @file settings.c
- * Last modified on 2016-05-08 by Daniel Hawkins.
- *
  * The file defines the functions for handling settings.
  *
  */

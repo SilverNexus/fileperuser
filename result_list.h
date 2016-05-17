@@ -1,7 +1,5 @@
 /**
  * @file result_list.h
- * Last modified on 2016-01-11 by Daniel Hawkins.
- *
  * Defines the structures for storing results in a linked list.
  */
 

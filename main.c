@@ -19,8 +19,6 @@
 
 /**
  * @file main.c
- * Last modified on 2016-05-04 by Daniel Hawkins.
- *
  * The file defines the main function and several searching functions.
  */
 

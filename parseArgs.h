@@ -1,7 +1,5 @@
 /**
  * @file parseArgs.h
- * Last modified on 2014-06-03 by Daniel Hawkins.
- *
  * The file defines the argument parsing function prototypes.
  */
 

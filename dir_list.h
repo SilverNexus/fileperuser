@@ -1,7 +1,5 @@
 /**
  * @file dir_list.h
- * Last modified on 2015-06-02 by Daniel Hawkins.
- *
  * The file defines the structures for handling sets of directories.
  */
 

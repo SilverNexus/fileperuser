@@ -19,8 +19,6 @@
 
 /**
  * @file parseArgs.c
- * Last modified on 2016-05-08 by Daniel Hawkins.
- *
  * The file defines the argument parsing functions.
  */
 

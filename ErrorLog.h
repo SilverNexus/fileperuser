@@ -1,7 +1,5 @@
 /**
  * @file ErrorLog.h
- * Last modified on 2014-10-01 by Daniel Hawkins.
- *
  * The file defines the enumeration for the type of error message, and
  * has the function prototype for the errorlogging function.
  */

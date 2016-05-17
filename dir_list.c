@@ -19,8 +19,6 @@
 
 /**
  * @file dir_list.c
- * Last modified on 2015-12-19 by Daniel Hawkins.
- *
  * The file defines the functions for handling the dir_list structure.
  */
 

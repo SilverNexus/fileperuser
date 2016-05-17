@@ -19,8 +19,6 @@
 
 /**
  * @file jump_table.c
- * Last Modified 2016-04-30 by Daniel Hawkins
- *
  * Defines functions for dealing with the Boyer-Moore serch's jump table.
  */
 
