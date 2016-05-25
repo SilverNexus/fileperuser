@@ -111,6 +111,23 @@ inline void parse_file(const char * const fpath, const off_t file_size){
 }
 
 /**
+ * Shared section between both search macros that will be easier to maintain as
+ * a single section of code.
+ */
+#define FIND_AND_SET_LINE_NUM() \
+    /* Substitute foundAt to make searching for lines easy */ \
+    tmp = *found_at; \
+    *found_at = '\0'; \
+    /* Find the line num. */ \
+    while ((end_line = strchr(start_line, '\n')) != 0){ \
+	++line_num; \
+	start_line = end_line + 1; \
+    } \
+    /* Substitute back *foundAt. */ \
+    *found_at = tmp; \
+    add_result(line_num, (long)found_at - (long)start_line + 1, fpath);
+
+/**
  * Macro to allow for fewer comparisons to determine which search function to use.
  *
  * @param func
@@ -122,17 +139,7 @@ inline void parse_file(const char * const fpath, const off_t file_size){
 	char tmp; \
 	register int line_num = 1; \
 	do{ \
-	    /* Substitute foundAt to make searching for lines easy */ \
-	    tmp = *found_at; \
-	    *found_at = '\0'; \
-	    /* Find the line num. */ \
-	    while ((end_line = strchr(start_line, '\n')) != 0){ \
-		++line_num; \
-		start_line = end_line + 1; \
-	    } \
-	    /* Substitute back *foundAt. */ \
-	    *found_at = tmp; \
-	    add_result(line_num, (long)found_at - (long)start_line + 1, fpath); \
+	    FIND_AND_SET_LINE_NUM() \
 	    \
 	    /* Continue search within the line */ \
 	    in_line = found_at + 1; \
@@ -195,17 +202,7 @@ void search_file_multi_match(char * const addr, size_t len, const char * const f
 	char tmp; \
 	register int line_num = 1; \
 	do{ \
-	    /* Substitute foundAt to make searching for lines easy */ \
-	    tmp = *found_at; \
-	    *found_at = '\0'; \
-	    /* Find the line num. */ \
-	    while ((end_line = strchr(start_line, '\n')) != 0){ \
-		++line_num; \
-		start_line = end_line + 1; \
-	    } \
-	    /* Substitute back *foundAt. */ \
-	    *found_at = tmp; \
-	    add_result(line_num, (long)found_at - (long)start_line + 1, fpath); \
+	    FIND_AND_SET_LINE_NUM() \
 	    /* Go to the start of the next line to continue the search */ \
 	    end_line = strchr(found_at, '\n'); \
 	    if (!end_line) \
