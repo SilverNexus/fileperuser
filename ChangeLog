@@ -16,6 +16,8 @@
 	* settings.c: Removed return values from dir_list functions and updated
 	  documentation to reflect this change.
 	* dir_list.h: Merge typedef into struct declaration.
+	* parseArgs.c: Remove checks to ensure min_print_level and min_log_level
+	  received numeric values -- atoi returns 0 on non-numeric input.
 
 2016-05-16  SilverNexus
 	* search.c: Fixed a bug introduced when removing function pointers for
