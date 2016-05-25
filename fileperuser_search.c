@@ -45,7 +45,8 @@
  * The length of the block of memory to search.
  *
  * @param needle
- * The substring to search for.
+ * The substring to search for. Must be converted to lowercase before
+ * reaching this function.
  *
  * @param needle_len
  * The length of the search string.
@@ -55,14 +56,14 @@
  */
 char *fileperuser_memcasemem(char *haystack, const char * const haystack_last, char *needle, size_t needle_len){
     if (needle_len > MIN_JUMP_TABLE_NO_CASE){
-	const char needle_last = tolower(needle[needle_len - 1]);
+	const char needle_last = needle[needle_len - 1];
 	size_t at;
 	while (haystack < haystack_last){
 	    if (tolower(haystack[needle_len - 1]) == needle_last){
 		at = needle_len - 2;
 		// This becomes false at unsigned rollover
 		while (at < needle_len){
-		    if (tolower(needle[at]) != tolower(haystack[at]))
+		    if (needle[at] != tolower(haystack[at]))
 			break;
 		    --at;
 		}
@@ -77,10 +78,10 @@ char *fileperuser_memcasemem(char *haystack, const char * const haystack_last, c
     else if (needle_len > 1){
 	size_t at;
 	while (haystack < haystack_last){
-	    if (tolower(*haystack) == tolower(*needle)){
+	    if (tolower(*haystack) == *needle){
 		at = 1;
 		while (at < needle_len){
-		    if (tolower(haystack[at]) != tolower(needle[at]))
+		    if (tolower(haystack[at]) != needle[at])
 			break;
 		    ++at;
 		}
@@ -93,7 +94,7 @@ char *fileperuser_memcasemem(char *haystack, const char * const haystack_last, c
     }
     else{
 	while (haystack < haystack_last){
-	    if (tolower(*haystack) == tolower(*needle))
+	    if (tolower(*haystack) == *needle)
 		return haystack;
 	    ++haystack;
 	}

@@ -37,6 +37,8 @@ size_t needle_len;
  * @note
  * The needle and needle_len are defined in accessible scopes, so just use those.
  * Yes, that means it is assumed those are already set.
+ * In the case of case insensitive searches, it is also assumed that the needle
+ * has been converted to entirely lowercase.
  */
 void setup_jump_table(){
     // If case insensitive and needle_len > 3, then make a Boyer-Moore jump table
@@ -53,7 +55,7 @@ void setup_jump_table(){
 	     * the next-to-last occurrence of the last character in needle, as opposed to jumping smaller.
 	     */
 	    for (i = 0; i < needle_len - 1; ++i){
-		jump_tbl[tolower(settings.search_string[i])] = needle_len - i - 1;
+		jump_tbl[(unsigned char)settings.search_string[i]] = needle_len - i - 1;
 		jump_tbl[toupper(settings.search_string[i])] = needle_len - i - 1;
 	    }
 	}

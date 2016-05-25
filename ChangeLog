@@ -1,3 +1,13 @@
+2016-05-25  SilverNexus
+	* main.c: Made case insensitive searches convert all characters to lowercase
+	  before building the jump table or searching.
+	* fileperuser_search.c: Removed conversion of the character in needle to
+	  lowercase and added documentation indicating that the function expects
+	  an all-lowercase needle.
+	* jump_table.c: Removed conversion of search string character to lowercase.
+	  Added documentation to indicate the function expected a lowercased needle
+	  on case-insensitive searches.
+
 2016-05-16  SilverNexus
 	* search.c: Fixed a bug introduced when removing function pointers for
 	  the search function. len was not adjusted for fileperuser_memcasemem().

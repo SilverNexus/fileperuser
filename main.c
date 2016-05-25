@@ -38,6 +38,7 @@
 #include "output.h"
 #include "jump_table.h"
 #include <string.h>
+#include <ctype.h>
 
 static void handle_sigint(int sig){
     puts("\nSIGINT Received. Dumping current results to file.");
@@ -76,6 +77,16 @@ int main(int argc, char *argv[]){
 	if (!needle_len){
 	    log_event(ERROR, "Search string has no length.");
 	    return 1;
+	}
+	/*
+	 * Convert the needle to lowercase if we are doing a case insensitive search.
+	 * We do this before the jump table so we can make some assumptions about the
+	 * needle in the jump table to save time.
+	 */
+	if (settings.search_flags & FLAG_NO_CASE){
+	    for (size_t i = 0; i < needle_len; ++i){
+		settings.search_string[i] = tolower(settings.search_string[i]);
+	    }
 	}
 	// Build the jump table.
 	setup_jump_table();
