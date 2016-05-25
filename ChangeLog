@@ -15,6 +15,7 @@
 	  it cannot return null.
 	* settings.c: Removed return values from dir_list functions and updated
 	  documentation to reflect this change.
+	* dir_list.h: Merge typedef into struct declaration.
 
 2016-05-16  SilverNexus
 	* search.c: Fixed a bug introduced when removing function pointers for
