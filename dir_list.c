@@ -31,7 +31,8 @@
  *
  * @param directory The directory this node stores.
  *
- * @return Pointer to the new node.
+ * @return Pointer to the new node. Will terminate if allocation fails,
+ * so this will never be null.
  */
 DIR_LIST *init_dir_node(char *directory){
     DIR_LIST *new_node = (DIR_LIST *)malloc(sizeof(DIR_LIST));

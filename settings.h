@@ -57,8 +57,8 @@ struct {
 
 void init_settings();
 void free_settings();
-int add_exclude_dir(char *);
-int add_root_dir(char *);
-int add_exclude_path(char *);
+void add_exclude_dir(char *);
+void add_root_dir(char *);
+void add_exclude_path(char *);
 
 #endif

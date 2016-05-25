@@ -9,7 +9,12 @@
 	  Added documentation to indicate the function expected a lowercased needle
 	  on case-insensitive searches.
 	* settings.h: Moved the min jump table defines to jump_table.h.
+	  Adjusted dir_list functions to not void return type.
 	* jump_table.h: Add min jump table defines from settings.h.
+	* dir_list.c: Update return information for init_dir_node() to indicate
+	  it cannot return null.
+	* settings.c: Removed return values from dir_list functions and updated
+	  documentation to reflect this change.
 
 2016-05-16  SilverNexus
 	* search.c: Fixed a bug introduced when removing function pointers for

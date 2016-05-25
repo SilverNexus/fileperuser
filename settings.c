@@ -67,18 +67,14 @@ void free_settings(){
  *
  * @param newDir The name of the directory to be added.
  *
- * @retval 0 Successfully added directory to the list.
- *
- * @retval -1 The node could not be allocated.
+ * @note cannot fail, so don't return a success value.
  */
-int add_exclude_dir(char *newDir){
+void add_exclude_dir(char *newDir){
     DIR_LIST *newExclusion = init_dir_node(newDir);
-    if (!newExclusion){
-        log_event(ERROR, "Excluded directory %s not added to list.", newDir);
-        return -1;
-    }
+    /*
+     * init_dir_node() cannot return null, so don't check for it.
+     */
     link_dir_node(newExclusion, &settings.excluded_directories);
-    return 0;
 }
 
 /**
@@ -86,18 +82,14 @@ int add_exclude_dir(char *newDir){
  *
  * @param newDir The name of the path to be added.
  *
- * @retval 0 Successfully added path to the list.
- *
- * @retval -1 The node could not be allocated.
+ * @note cannot fail, so don't return a success value.
  */
-int add_exclude_path(char *newDir){
+void add_exclude_path(char *newDir){
     DIR_LIST *newExclusion = init_dir_node(newDir);
-    if (!newExclusion){
-        log_event(ERROR, "Excluded path %s not added to list.", newDir);
-        return -1;
-    }
+    /*
+     * init_dir_node() cannot return null, so don't check for it.
+     */
     link_dir_node(newExclusion, &settings.excluded_paths);
-    return 0;
 }
 
 /**
@@ -105,16 +97,12 @@ int add_exclude_path(char *newDir){
  *
  * @param newDir The directory path to be added.
  *
- * @retval 0 The directory was successfully added.
- *
- * @retval -1 Allocation of directory node failed.
+ * @note cannot fail, so don't return a success value.
  */
-int add_root_dir(char *newDir){
+void add_root_dir(char *newDir){
     DIR_LIST *newRoot = init_dir_node(newDir);
-    if (!newRoot){
-        log_event(ERROR, "Root directory %s not added to list.", newDir);
-        return -1;
-    }
+    /*
+     * init_dir_node() cannot return null, so don't check for it.
+     */
     link_dir_node(newRoot, &settings.root_dirs);
-    return 0;
 }
