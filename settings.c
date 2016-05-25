@@ -59,7 +59,6 @@ void free_settings(){
     free_dir_list(settings.excluded_directories);
     free_dir_list(settings.excluded_paths);
     free_dir_list(settings.root_dirs);
-    return;
 }
 
 /**
