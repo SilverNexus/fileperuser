@@ -118,7 +118,8 @@ inline void parse_file(const char * const fpath, const off_t file_size){
  * Where the file is mapped to.
  *
  * @param len
- * The length of the mapped file. Can be ignored if not using mmap.
+ * The length of the mapped file. Can be ignored if not using mmap(2) and not using
+ * case-insensitive searches.
  *
  * @param fpath
  * The path of the file being read from.
@@ -183,7 +184,8 @@ void search_file_multi_match(char * const addr, size_t len, const char * const f
  * The address of the memory-mapped file to search.
  *
  * @param len
- * The length of the mapped file. Can be ignored if not using mmap.
+ * The length of the mapped file. Can be ignored if not using mmap(2) and not using
+ * case-insensitive searches.
  *
  * @param fpath
  * The path of the file being read from.
