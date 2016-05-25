@@ -56,6 +56,86 @@
         log_event(ERROR, errMsg, flagArgs[parseCount - 1]); \
         return -1; \
     }
+/**
+ * Handles the argument parsing to add an excluded directory.
+ *
+ * Macroed in order to allow for smarter argument parsing.
+ */
+#define HANDLE_EXCLUDE_DIR() \
+    CHECK_NEXT_ARG(flagArgs, parseCount, "%s flag needs a directory to exclude."); \
+    add_exclude_dir(flagArgs[parseCount]);
+
+/**
+ * Handles the argument parsing to add an excluded path.
+ *
+ * Macroed in order to allow for smarter argument parsing.
+ */
+#define HANDLE_EXCLUDE_PATH() \
+    CHECK_NEXT_ARG(flagArgs, parseCount, "%s flag needs a path to exclude."); \
+    add_exclude_path(flagArgs[parseCount]);
+
+/**
+ * Handles the argument parsing to add a root search directory.
+ *
+ * Macroed in order to allow for smarter argument parsing.
+ */
+#define HANDLE_ROOT_DIR() \
+    CHECK_NEXT_ARG(flagArgs, parseCount, "%s flag needs a root directory."); \
+    add_root_dir(flagArgs[parseCount]);
+
+/**
+ * Handles the argument parsing to set up the output file.
+ *
+ * Macroed in order to allow for smarter argument parsing.
+ */
+#define HANDLE_OUTPUT_FILE() \
+    CHECK_NEXT_ARG(flagArgs, parseCount, "%s flag needs a file name."); \
+    settings.output_file = flagArgs[parseCount];
+
+/**
+ * Handles the argument parsing to set up the log file.
+ *
+ * Macroed in order to allow for smarter argument parsing.
+ */
+#define HANDLE_LOG_FILE() \
+    CHECK_NEXT_ARG(flagArgs, parseCount, "%s flag needs a file name."); \
+    settings.log_file = flagArgs[parseCount];
+
+/**
+ * Handles the argument parsing to set up the log level.
+ *
+ * Macroed in order to allow for smarter argument parsing.
+ */
+#define HANDLE_LOG_LEVEL() \
+    CHECK_NEXT_ARG(flagArgs, parseCount, "%s flag needs a log level."); \
+    /* If value is not numeric, atoi returns zero. Oh well. It works. */ \
+    settings.min_log_level = atoi(flagArgs[parseCount]);
+
+/**
+ * Handles the argument parsing to set up the print level.
+ *
+ * Macroed in order to allow for smarter argument parsing.
+ */
+#define HANDLE_PRINT_LEVEL() \
+    CHECK_NEXT_ARG(flagArgs, parseCount, "%s flag needs a print level."); \
+    /* If value is not numeric, atoi returns zero. Oh well. It works. */ \
+    settings.min_print_level = atoi(flagArgs[parseCount]);
+
+/**
+ * Handles the argument parsing for case sensitivity.
+ *
+ * Macroed in order to allow for smarter argument parsing.
+ */
+#define HANDLE_NO_CASE() \
+    settings.search_flags |= FLAG_NO_CASE;
+
+/**
+ * Handles the argument parsing for line matching.
+ *
+ * Macroed in order to allow for smarter argument parsing.
+ */
+#define HANDLE_LINE_MATCHER() \
+    settings.file_parser = search_file_single_match;
 
 /**
  * Parses flags that alter program behavior
@@ -77,49 +157,79 @@ int parseArgs(char **flagArgs, int flagCount){
         if (*flagArgs[parseCount] == '-'){
             // Optimize out the initial dash -- this reduces the calls to strcmp.
             cur_flag = flagArgs[parseCount] + 1;
-	    // TODO: Make all the single character checks before the strcmp calls.
-            if (*cur_flag == 'h' || strcmp(cur_flag, "-help") == 0){
-                help_message();
-            }
-            else if (*cur_flag == 'x' || strcmp(cur_flag, "-exclude") == 0){
-                CHECK_NEXT_ARG(flagArgs, parseCount, "%s flag needs a directory to exclude.");
-                add_exclude_dir(flagArgs[parseCount]);
-            }
-            else if (*cur_flag == 'X' || strcmp(cur_flag, "-exclude-path") == 0){
-                CHECK_NEXT_ARG(flagArgs, parseCount, "%s flag needs a path to exclude.");
-                add_exclude_path(flagArgs[parseCount]);
-            }
-            else if (*cur_flag == 'd' || strcmp(cur_flag, "-dir") == 0){
-		CHECK_NEXT_ARG(flagArgs, parseCount, "%s flag needs a root directory.");
-                add_root_dir(flagArgs[parseCount]);
-            }
-            else if (*cur_flag == 'o' || strcmp(cur_flag, "-output") == 0){
-		CHECK_NEXT_ARG(flagArgs, parseCount, "%s flag needs a file name.");
-                settings.output_file = flagArgs[parseCount];
-            }
-            else if (*cur_flag == 'f' || strcmp(cur_flag, "-log-file") == 0){
-		CHECK_NEXT_ARG(flagArgs, parseCount, "%s flag needs a file name.");
-                settings.log_file = flagArgs[parseCount];
-            }
-            else if (*cur_flag == 'l' || strcmp(cur_flag, "-loglevel") == 0){
-		CHECK_NEXT_ARG(flagArgs, parseCount, "%s flag needs a log level.");
-		// If value is not numeric, atoi returns zero. Oh well. It works.
-                settings.min_log_level = atoi(flagArgs[parseCount]);
-            }
-            else if (*cur_flag == 'p' || strcmp(cur_flag, "-printlevel") == 0){
-		CHECK_NEXT_ARG(flagArgs, parseCount, "%s flag needs a print level.");
-		// If value is not numeric, atoi returns zero. Oh well. It works.
-                settings.min_print_level = atoi(flagArgs[parseCount]);
-            }
-            else if (*cur_flag == 'n' || strcmp(cur_flag, "-no-case") == 0){
-		settings.search_flags |= FLAG_NO_CASE;
-            }
-	    else if (*cur_flag == '1' || strcmp(cur_flag, "-single-match") == 0){
-                settings.file_parser = search_file_single_match;
+	    // Make all the single character checks before the strcmp calls.
+	    switch(*cur_flag){
+		case 'h':
+		    help_message();
+		    break;
+		case 'x':
+		    HANDLE_EXCLUDE_DIR();
+		    break;
+		case 'X':
+		    HANDLE_EXCLUDE_PATH();
+		    break;
+		case 'd':
+		    HANDLE_ROOT_DIR();
+		    break;
+		case 'o':
+		    HANDLE_OUTPUT_FILE();
+		    break;
+		case 'f':
+		    HANDLE_LOG_FILE();
+		    break;
+		case 'l':
+		    HANDLE_LOG_LEVEL();
+		    break;
+		case 'p':
+		    HANDLE_PRINT_LEVEL();
+		    break;
+		case 'n':
+		    HANDLE_NO_CASE();
+		    break;
+		case '1':
+		    HANDLE_LINE_MATCHER();
+		    break;
+		case '-':
+		    // Move past the dash, since we don't need to handle it now.
+		    ++cur_flag;
+		    // TODO: Use strcmp's return value to make this a binary search
+		    if (strcmp(cur_flag, "help") == 0)
+			help_message();
+		    // Use brackets on macro expanded operation for good measure.
+		    else if (strcmp(cur_flag, "exclude") == 0){
+			HANDLE_EXCLUDE_DIR();
+		    }
+		    else if (strcmp(cur_flag, "exclude-path") == 0){
+			HANDLE_EXCLUDE_PATH();
+		    }
+		    else if (strcmp(cur_flag, "dir") == 0){
+			HANDLE_ROOT_DIR();
+		    }
+		    else if (strcmp(cur_flag, "output") == 0){
+			HANDLE_OUTPUT_FILE();
+		    }
+		    else if (strcmp(cur_flag, "log-file") == 0){
+			HANDLE_LOG_FILE();
+		    }
+		    else if (strcmp(cur_flag, "loglevel") == 0){
+			HANDLE_LOG_LEVEL();
+		    }
+		    else if (strcmp(cur_flag, "printlevel") == 0){
+			HANDLE_PRINT_LEVEL();
+		    }
+		    else if (strcmp(cur_flag, "no-case") == 0){
+			HANDLE_NO_CASE();
+		    }
+		    else if (strcmp(cur_flag, "single-match") == 0){
+			HANDLE_LINE_MATCHER();
+		    }
+		    else{
+			log_event(WARNING, "Invalid flag '%s' detected, skipping.", flagArgs[parseCount]);
+		    }
+		    break;
+		default:
+		    log_event(WARNING, "Invalid flag '%s' detected, skipping.", flagArgs[parseCount]);
 	    }
-            else{
-                log_event(WARNING, "Invalid flag '%s' detected, skipping.", flagArgs[parseCount]);
-            }
         }
         else{
             if (settings.search_string){

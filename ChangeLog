@@ -18,6 +18,7 @@
 	* dir_list.h: Merge typedef into struct declaration.
 	* parseArgs.c: Remove checks to ensure min_print_level and min_log_level
 	  received numeric values -- atoi returns 0 on non-numeric input.
+	  Refactored argument parsing to reduce calls to strcmp().
 
 2016-05-16  SilverNexus
 	* search.c: Fixed a bug introduced when removing function pointers for
