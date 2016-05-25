@@ -111,6 +111,36 @@ inline void parse_file(const char * const fpath, const off_t file_size){
 }
 
 /**
+ * Macro to allow for fewer comparisons to determine which search function to use.
+ *
+ * @param func
+ * The fully formed search function to use.
+ */
+#define DO_MULTI_MATCHES(func) \
+    if (found_at){ \
+	char *start_line = addr, *end_line; \
+	char tmp; \
+	register int line_num = 1; \
+	do{ \
+	    /* Substitute foundAt to make searching for lines easy */ \
+	    tmp = *found_at; \
+	    *found_at = '\0'; \
+	    /* Find the line num. */ \
+	    while ((end_line = strchr(start_line, '\n')) != 0){ \
+		++line_num; \
+		start_line = end_line + 1; \
+	    } \
+	    /* Substitute back *foundAt. */ \
+	    *found_at = tmp; \
+	    add_result(line_num, (long)found_at - (long)start_line + 1, fpath); \
+	    \
+	    /* Continue search within the line */ \
+	    in_line = found_at + 1; \
+	    found_at = func; \
+	} while (found_at); \
+    }
+
+/**
  * Searches the given memory-mapped file for the search string.
  * Matches multiple times per line.
  *
@@ -132,49 +162,60 @@ void search_file_multi_match(char * const addr, size_t len, const char * const f
     if (settings.search_flags & FLAG_NO_CASE){
 	last = addr + len - needle_len + 1;
 	found_at = fileperuser_memcasemem(in_line, last, settings.search_string, needle_len);
+	DO_MULTI_MATCHES(fileperuser_memcasemem(in_line, last, settings.search_string, needle_len));
     }
     else
 #ifdef HAVE_MMAP
-	if (!addr[len - 1])
+	if (!addr[len - 1]){
 #endif
 	    found_at = strstr(in_line, settings.search_string);
+	    DO_MULTI_MATCHES(strstr(in_line, settings.search_string));
 #ifdef HAVE_MMAP
-	else
+	}
+	else{
 	    found_at = fileperuser_memmem(in_line, len, settings.search_string, needle_len);
+	    DO_MULTI_MATCHES(fileperuser_memmem(in_line, len - (addr - in_line), settings.search_string, needle_len));
+	}
 #endif
-    if (found_at){
-	char *start_line = addr, *end_line;
-	char tmp;
-	register int line_num = 1;
-	do{
-	    // Substitute foundAt to make searching for lines easy
-	    tmp = *found_at;
-	    *found_at = '\0';
-	    // Find the line num.
-	    while ((end_line = strchr(start_line, '\n')) != 0){
-		++line_num;
-		start_line = end_line + 1;
-	    }
-	    // Substitute back *foundAt.
-	    *found_at = tmp;
-	    add_result(line_num, (long)found_at - (long)start_line + 1, fpath);
-
-	    // Continue search within the line
-	    in_line = found_at + 1;
-	    if (settings.search_flags & FLAG_NO_CASE)
-		found_at = fileperuser_memcasemem(in_line, last, settings.search_string, needle_len);
-	    else
-#ifdef HAVE_MMAP
-		if (!addr[len - 1])
-#endif
-		    found_at = strstr(in_line, settings.search_string);
-#ifdef HAVE_MMAP
-		else
-		    found_at = fileperuser_memmem(in_line, len - (addr - in_line), settings.search_string, needle_len);
-#endif
-	} while (found_at);
-    }
 }
+
+/**
+ * Macro to reduce the comparisons for determining what search function to use.
+ *
+ * This allows for one comparison in the calling function, and the appropriate function
+ * tcan be called later without having to check again for which search to use.
+ *
+ * @param func
+ * The fully-formed function call to use at the end of the loop to set found_at
+ * for the next iteration of the loop.
+ */
+#define DO_SINGLE_MATCHES(func) \
+    if (found_at){ \
+	char *end_line; \
+	char tmp; \
+	register int line_num = 1; \
+	do{ \
+	    /* Substitute foundAt to make searching for lines easy */ \
+	    tmp = *found_at; \
+	    *found_at = '\0'; \
+	    /* Find the line num. */ \
+	    while ((end_line = strchr(start_line, '\n')) != 0){ \
+		++line_num; \
+		start_line = end_line + 1; \
+	    } \
+	    /* Substitute back *foundAt. */ \
+	    *found_at = tmp; \
+	    add_result(line_num, (long)found_at - (long)start_line + 1, fpath); \
+	    /* Go to the start of the next line to continue the search */ \
+	    end_line = strchr(found_at, '\n'); \
+	    if (!end_line) \
+		break; \
+	    /* Make sure we account for moving to a new line. */ \
+	    ++line_num; \
+	    start_line = end_line + 1; \
+	    found_at = func; \
+	} while (found_at); \
+    }
 
 /**
  * Parses a file for the search string, but only matches once per line.
@@ -197,52 +238,21 @@ void search_file_single_match(char * const addr, size_t len, const char * const 
     if (settings.search_flags & FLAG_NO_CASE){
 	last = addr + len - needle_len + 1;
 	found_at = fileperuser_memcasemem(start_line, last, settings.search_string, needle_len);
+	DO_SINGLE_MATCHES(fileperuser_memcasemem(start_line, last, settings.search_string, needle_len));
     }
     else
 #ifdef HAVE_MMAP
-	if (!addr[len - 1])
+	if (!addr[len - 1]){
 #endif
 	    found_at = strstr(start_line, settings.search_string);
+	    DO_SINGLE_MATCHES(strstr(start_line, settings.search_string));
 #ifdef HAVE_MMAP
-	else
+	}
+	else{
 	    found_at = fileperuser_memmem(start_line, len, settings.search_string, needle_len);
+	    DO_SINGLE_MATCHES(fileperuser_memmem(start_line, len - (addr - start_line), settings.search_string, needle_len));
+	}
 #endif
-    if (found_at){
-	char *end_line;
-	char tmp;
-	register int line_num = 1;
-	do{
-	    // Substitute foundAt to make searching for lines easy
-	    tmp = *found_at;
-	    *found_at = '\0';
-	    // Find the line num.
-	    while ((end_line = strchr(start_line, '\n')) != 0){
-		++line_num;
-		start_line = end_line + 1;
-	    }
-	    // Substitute back *foundAt.
-	    *found_at = tmp;
-	    add_result(line_num, (long)found_at - (long)start_line + 1, fpath);
-	    // Go to the start of the next line to continue the search
-	    end_line = strchr(found_at, '\n');
-	    if (!end_line)
-		break;
-	    // Make sure we account for moving to a new line.
-	    ++line_num;
-	    start_line = end_line + 1;
-	    if (settings.search_flags & FLAG_NO_CASE)
-		found_at = fileperuser_memcasemem(start_line, last, settings.search_string, needle_len);
-	    else
-#ifdef HAVE_MMAP
-		if (!addr[len - 1])
-#endif
-		    found_at = strstr(start_line, settings.search_string);
-#ifdef HAVE_MMAP
-		else
-		    found_at = fileperuser_memmem(start_line, len - (addr - start_line), settings.search_string, needle_len);
-#endif
-	} while (found_at);
-    }
 }
 
 /**
