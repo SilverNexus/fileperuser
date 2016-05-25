@@ -1,6 +1,7 @@
 2016-05-25  SilverNexus
 	* main.c: Made case insensitive searches convert all characters to lowercase
 	  before building the jump table or searching.
+	  Also, remove the search timer. It was too granular and generally unhelpful.
 	* fileperuser_search.c: Removed conversion of the character in needle to
 	  lowercase and added documentation indicating that the function expects
 	  an all-lowercase needle.

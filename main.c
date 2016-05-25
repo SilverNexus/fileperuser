@@ -32,7 +32,6 @@
 #include "parseArgs.h"
 #include "settings.h"
 #include <stdlib.h>
-#include <time.h>
 #include <signal.h>
 #include "result_list.h"
 #include "output.h"
@@ -90,8 +89,6 @@ int main(int argc, char *argv[]){
 	}
 	// Build the jump table.
 	setup_jump_table();
-        // Time the search -- start timing
-        time_t start_time = time(0), end_time;
         // Begin the search
         DIR_LIST *thisDir = settings.root_dirs;
 	// There will be at least one root directory.
@@ -109,10 +106,6 @@ int main(int argc, char *argv[]){
             settings.base_search_path_length = 0;
             thisDir = thisDir->next;
         } while (thisDir);
-        // end timing
-        end_time = time(0);
-        // Don't give the logger a chance to repress this message, so just print from here
-        fprintf(stderr, "Search completed in %i seconds.\n", (int)(end_time - start_time));
         output_matches();
     }
     else{
