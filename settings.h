@@ -15,9 +15,6 @@
 #define FLAG_NONE    0x0000
 #define FLAG_NO_CASE 0x0001
 
-#define MIN_JUMP_TABLE_CASE    6
-#define MIN_JUMP_TABLE_NO_CASE 3
-
 struct {
     /*
      * List of directory names to skip.

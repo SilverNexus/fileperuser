@@ -9,6 +9,9 @@
 
 #include <stddef.h>
 
+#define MIN_JUMP_TABLE_CASE    6
+#define MIN_JUMP_TABLE_NO_CASE 3
+
 extern size_t jump_tbl[];
 extern size_t needle_len;
 

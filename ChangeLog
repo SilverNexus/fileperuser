@@ -7,6 +7,8 @@
 	* jump_table.c: Removed conversion of search string character to lowercase.
 	  Added documentation to indicate the function expected a lowercased needle
 	  on case-insensitive searches.
+	* settings.h: Moved the min jump table defines to jump_table.h.
+	* jump_table.h: Add min jump table defines from settings.h.
 
 2016-05-16  SilverNexus
 	* search.c: Fixed a bug introduced when removing function pointers for
