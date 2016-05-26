@@ -135,7 +135,7 @@ inline void parse_file(const char * const fpath, const off_t file_size){
  */
 #define DO_MULTI_MATCHES(func) \
     if (found_at){ \
-	char *start_line = addr, *end_line; \
+	const char *start_line = addr, *end_line; \
 	char tmp; \
 	register int line_num = 1; \
 	do{ \
