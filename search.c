@@ -83,6 +83,7 @@
  * The fully formed search function to use.
  */
 #define DO_MULTI_MATCHES(func) \
+    /* Only count file lines if we find a match. */ \
     if (found_at){ \
 	const char *start_line = addr, *in_line = addr, *end_line; \
 	char tmp; \
@@ -106,6 +107,7 @@
  * for the next iteration of the loop.
  */
 #define DO_SINGLE_MATCHES(func) \
+    /* Only count file lines if we find a match. */ \
     if (found_at){ \
 	const char *start_line = addr, *in_line = addr, *end_line; \
 	char tmp; \
@@ -131,14 +133,13 @@
  * Should be DO_SINGLE_MATCHES or DO_MULTI_MATCHES.
  */
 #define SEARCH_FILE(match_tp) \
-    /* Only count file lines if we find a match. */ \
     if (settings.search_flags & FLAG_NO_CASE){ \
 	const char *last = addr + file_size - needle_len + 1; \
 	found_at = fileperuser_memcasemem(addr, last, settings.search_string, needle_len); \
-	match_tp(fileperuser_memcasemem(in_line, last, settings.search_string, needle_len)); \
+	match_tp(fileperuser_memcasemem(in_line, last, settings.search_string, needle_len)) \
     } \
     else{ \
-	GET_CASE_SENSITIVE_SEARCH(match_tp); \
+	GET_CASE_SENSITIVE_SEARCH(match_tp) \
     }
 
 /**
@@ -154,19 +155,19 @@
 #define GET_CASE_SENSITIVE_SEARCH(match_tp) \
     if (!addr[file_size - 1]){ \
         found_at = strstr(addr, settings.search_string); \
-        match_tp(strstr(in_line, settings.search_string)); \
+        match_tp(strstr(in_line, settings.search_string)) \
     } \
     else{ \
         /* I can also skip the subtraction of the current position from len on this because addr - in_line = 0. */ \
         found_at = fileperuser_memmem(addr, file_size, settings.search_string, needle_len); \
-        match_tp(fileperuser_memmem(in_line, file_size - (addr - in_line), settings.search_string, needle_len)); \
+        match_tp(fileperuser_memmem(in_line, file_size - (addr - in_line), settings.search_string, needle_len)) \
     }
 #else
 // This is a simpler case, since fileperuser_memmem is only used to circumvent
 // the lack of null termination on an mmaped file that ses the whole cluster.
 #define GET_CASE_SENSITIVE_SEARCH(match_tp) \
     found_at = strstr(addr, settings.search_string); \
-    match_tp(strstr(in_line, settings.search_string));
+    match_tp(strstr(in_line, settings.search_string))
 #endif
 
 /**
