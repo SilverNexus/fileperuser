@@ -1,6 +1,7 @@
 2016-05-26  SilverNexus
 	* search.c: Define start_line and end_line as const char * in multi-search.
 	  Fix a condition structure bug when HAVE_MMAP is not defined.
+	* jump_table.c: Loop optimization.
 
 2016-05-25  SilverNexus
 	* main.c: Made case insensitive searches convert all characters to lowercase

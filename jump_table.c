@@ -44,10 +44,16 @@ void setup_jump_table(){
     // If case insensitive and needle_len > 3, then make a Boyer-Moore jump table
     if (settings.search_flags & FLAG_NO_CASE){
 	if (needle_len > MIN_JUMP_TABLE_NO_CASE){
-	    unsigned short i;
+	    size_t i = 256;
 	    // Initialize
-	    for (i = 0; i < 256; ++i){
-		jump_tbl[i] = needle_len;
+	    // Comparing to zero is faster than comparing to 256
+	    while (i){
+		/*
+		 * Decrement first, then index.
+		 * In this way, we can check on 256 -> 1,
+		 * but affect indexes 255 -> 0.
+		 */
+		jump_tbl[--i] = needle_len;
 	    }
 	    // Now adjust for the characters in the needle, except the last one.
 	    /**
@@ -63,10 +69,16 @@ void setup_jump_table(){
     // If case sensitive and needle_len > 6, then make a Boyer-Moore jump table
     else{
 	if (needle_len > MIN_JUMP_TABLE_CASE){
-	    unsigned short i;
+	    size_t i = 256;
 	    // Initialize
-	    for (i = 0; i < 256; ++i){
-		jump_tbl[i] = needle_len;
+	    // Comparing to zero is faster than comparing to 256
+	    while (i){
+		/*
+		 * Decrement first, then index.
+		 * In this way, we can check on 256 -> 1,
+		 * but affect indexes 255 -> 0.
+		 */
+		jump_tbl[--i] = needle_len;
 	    }
 	    // Now adjust for the characters in the needle, except the last one.
 	    for (i = 0; i < needle_len - 1; ++i){
