@@ -55,6 +55,8 @@
  *
  * The also are meant to make code more maintainable by reducing the level
  * of manually duplicated code.
+ *
+ * They will not work outside of this use without a lot of variables predefined.
  */
 
 /**
@@ -129,10 +131,9 @@
  * Should be DO_SINGLE_MATCHES or DO_MULTI_MATCHES.
  */
 #define SEARCH_FILE(match_tp) \
-    char *in_line = addr, *found_at; \
     /* Only count file lines if we find a match. */ \
     if (settings.search_flags & FLAG_NO_CASE){ \
-	const char *last = addr + len - needle_len + 1; \
+	const char *last = addr + file_size - needle_len + 1; \
 	found_at = fileperuser_memcasemem(in_line, last, settings.search_string, needle_len); \
 	match_tp(fileperuser_memcasemem(in_line, last, settings.search_string, needle_len)); \
     } \
@@ -151,14 +152,14 @@
  */
 #ifdef HAVE_MMAP
 #define GET_CASE_SENSITIVE_SEARCH(match_tp) \
-    if (!addr[len - 1]){ \
+    if (!addr[file_size - 1]){ \
         found_at = strstr(in_line, settings.search_string); \
         match_tp(strstr(in_line, settings.search_string)); \
     } \
     else{ \
         /* I can also skip the subtraction of the current position from len on this because addr - in_line = 0. */ \
-        found_at = fileperuser_memmem(in_line, len, settings.search_string, needle_len); \
-        match_tp(fileperuser_memmem(in_line, len - (addr - in_line), settings.search_string, needle_len)); \
+        found_at = fileperuser_memmem(in_line, file_size, settings.search_string, needle_len); \
+        match_tp(fileperuser_memmem(in_line, file_size - (addr - in_line), settings.search_string, needle_len)); \
     }
 #else
 // This is a simpler case, since fileperuser_memmem is only used to circumvent
@@ -179,7 +180,6 @@
  * The size of the file. Assumed to be greater than zero.
  */
 inline void parse_file(const char * const fpath, const off_t file_size){
-    size_t len;
 #ifdef HAVE_MMAP
     // Open the file and get the file descriptor
     const int fd = open(fpath, O_RDONLY);
@@ -195,7 +195,6 @@ inline void parse_file(const char * const fpath, const off_t file_size){
 	log_event(ERROR, "Failed to map file descriptor %d (%s).", fd, fpath);
 	return;
     }
-    len = file_size;
     if (addr[file_size - 1] != settings.search_string[needle_len - 1])
 	addr[file_size - 1] = '\0';
 #else
@@ -211,14 +210,19 @@ inline void parse_file(const char * const fpath, const off_t file_size){
 	return;
     }
     // Read the file into the malloc'ed space.
-    len = fread(addr, sizeof(char), file_size, file);
-    if (len != file_size)
-	log_event(WARNING, "Short read occurred, may produce bogus results.");
+    size_t len = fread(addr, sizeof(char), file_size, file);
+    if (len != file_size){
+	log_event(ERROR, "Short read occurred on file %s (%lu != %lu).", fpath, len, file_size);
+	fclose(file);
+	return;
+    }
     // Now I can even close this before the call, since we have a copy of the data.
     fclose(file);
     // Make sure the end of the file data is set to a null character.
-    addr[len] = '\0';
+    addr[file_size] = '\0';
 #endif
+    // Since we have entirely macro expansion here, we can declare these outside the macros.
+    char *in_line = addr, *found_at;
     if (settings.search_flags & FLAG_SINGLE_MATCH){
 	SEARCH_FILE(DO_SINGLE_MATCHES);
     }
