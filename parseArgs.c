@@ -135,7 +135,7 @@
  * Macroed in order to allow for smarter argument parsing.
  */
 #define HANDLE_LINE_MATCHER() \
-    settings.file_parser = search_file_single_match;
+    settings.search_flags |= FLAG_SINGLE_MATCH;
 
 /**
  * Parses flags that alter program behavior

@@ -20,9 +20,6 @@
 /**
  * @file search.c
  * The file defines the searching functions.
- *
- * @note optimizations of the search function determination
- * need to be done in four places.
  */
 
 #include "search.h"
@@ -49,66 +46,16 @@
 #endif
 
 /**
- * Parses a file for a search string, calling the appropriate matching
- * function based on user selection.
+ * The following macros are built to reduce function overhead and improve maintenance
  *
- * @param fpath
- * The file path to search.
+ * FIND_AND_SET_LINE_NUM
+ * DO_MULTI_MATCHES
+ * DO_SINGLE_MATCHES
+ * SEARCH_FILE
  *
- * @param file_size
- * The size of the file. Assumed to be greater than zero.
+ * The also are meant to make code more maintainable by reducing the level
+ * of manually duplicated code.
  */
-inline void parse_file(const char * const fpath, const off_t file_size){
-    size_t in;
-#ifdef HAVE_MMAP
-    // Open the file and get the file descriptor
-    const int fd = open(fpath, O_RDONLY);
-    if (fd == -1){
-	log_event(ERROR, "Could not open file %s.", fpath);
-	return;
-    }
-    // Map the file to memory
-    // Read and write to the map, so we can substitute a \n with a \0 for searching
-    char * const addr = mmap(0, file_size, PROT_READ | PROT_WRITE, MAP_PRIVATE, fd, 0);
-    if (addr == MAP_FAILED){
-	close(fd);
-	log_event(ERROR, "Failed to map file descriptor %d (%s).", fd, fpath);
-	return;
-    }
-    in = file_size;
-    if (addr[file_size - 1] != settings.search_string[needle_len - 1])
-	addr[file_size - 1] = '\0';
-#else
-    char * const addr = (char *)malloc(sizeof(char) * (file_size + 1));
-    if (!addr){
-	// Not fatal because we might legitimately not be able to parse really large files.
-	log_event(ERROR, "Not enough memory to parse file %s.", fpath);
-	return;
-    }
-    FILE *file = fopen(fpath, "rb");
-    if (!file){
-        log_event(ERROR, "Failed to open file %s.", fpath);
-	return;
-    }
-    // Read the file into the malloc'ed space.
-    in = fread(addr, sizeof(char), file_size, file);
-    if (in != file_size)
-	log_event(WARNING, "Short read occurred, may produce bogus results.");
-    // Now I can even close this before the call, since we have a copy of the data.
-    fclose(file);
-    // Make sure the end of the file data is set to a null character.
-    addr[in] = '\0';
-#endif
-    settings.file_parser(addr, in, fpath);
-    
-    // Cleanup
-#ifdef HAVE_MMAP
-    munmap(addr, file_size);
-    close(fd);
-#else
-    free(addr);
-#endif
-}
 
 /**
  * Shared section between both search macros that will be easier to maintain as
@@ -140,51 +87,11 @@ inline void parse_file(const char * const fpath, const off_t file_size){
 	register int line_num = 1; \
 	do{ \
 	    FIND_AND_SET_LINE_NUM() \
-	    \
 	    /* Continue search within the line */ \
 	    in_line = found_at + 1; \
 	    found_at = func; \
 	} while (found_at); \
     }
-
-/**
- * Searches the given memory-mapped file for the search string.
- * Matches multiple times per line.
- *
- * @param addr
- * Where the file is mapped to.
- *
- * @param len
- * The length of the mapped file. Can be ignored if not using mmap(2) and not using
- * case-insensitive searches.
- *
- * @param fpath
- * The path of the file being read from.
- */
-void search_file_multi_match(char * const addr, size_t len, const char * const fpath){
-    char *in_line = addr, *found_at;
-    const char *last;
-    // Only count file lines if we find a match.
-    // I can also skip the subtraction of the current position from len on this because addr - in_line = 0.
-    if (settings.search_flags & FLAG_NO_CASE){
-	last = addr + len - needle_len + 1;
-	found_at = fileperuser_memcasemem(in_line, last, settings.search_string, needle_len);
-	DO_MULTI_MATCHES(fileperuser_memcasemem(in_line, last, settings.search_string, needle_len));
-    }
-    else
-#ifdef HAVE_MMAP
-	if (!addr[len - 1]){
-#endif
-	    found_at = strstr(in_line, settings.search_string);
-	    DO_MULTI_MATCHES(strstr(in_line, settings.search_string));
-#ifdef HAVE_MMAP
-	}
-	else{
-	    found_at = fileperuser_memmem(in_line, len, settings.search_string, needle_len);
-	    DO_MULTI_MATCHES(fileperuser_memmem(in_line, len - (addr - in_line), settings.search_string, needle_len));
-	}
-#endif
-}
 
 /**
  * Macro to reduce the comparisons for determining what search function to use.
@@ -198,7 +105,7 @@ void search_file_multi_match(char * const addr, size_t len, const char * const f
  */
 #define DO_SINGLE_MATCHES(func) \
     if (found_at){ \
-	char *end_line; \
+	char *start_line = addr, *end_line; \
 	char tmp; \
 	register int line_num = 1; \
 	do{ \
@@ -209,46 +116,122 @@ void search_file_multi_match(char * const addr, size_t len, const char * const f
 		break; \
 	    /* Make sure we account for moving to a new line. */ \
 	    ++line_num; \
-	    start_line = end_line + 1; \
+	    in_line = start_line = end_line + 1; \
 	    found_at = func; \
 	} while (found_at); \
     }
 
 /**
- * Parses a file for the search string, but only matches once per line.
- * Matches are added to the results list.
+ * Old search functions are now inline macros for less overhead.
  *
- * @param addr
- * The address of the memory-mapped file to search.
+ * @param match_tp
+ * The macro symbol to use for the loop section of the search.
+ * Should be DO_SINGLE_MATCHES or DO_MULTI_MATCHES.
+ */
+#define SEARCH_FILE(match_tp) \
+    char *in_line = addr, *found_at; \
+    /* Only count file lines if we find a match. */ \
+    if (settings.search_flags & FLAG_NO_CASE){ \
+	const char *last = addr + len - needle_len + 1; \
+	found_at = fileperuser_memcasemem(in_line, last, settings.search_string, needle_len); \
+	match_tp(fileperuser_memcasemem(in_line, last, settings.search_string, needle_len)); \
+    } \
+    else{ \
+	GET_CASE_SENSITIVE_SEARCH(match_tp); \
+    }
+
+/**
+ * Macro to prevent preprocessor ifdefs in the middle of the define macro.
  *
- * @param len
- * The length of the mapped file. Can be ignored if not using mmap(2) and not using
- * case-insensitive searches.
+ * Defined in both cases to provide the same functionality as existed before.
+ *
+ * @param match_tp
+ * Macro symbol to use to search the file with.
+ * Should be DO_SINGLE_MATCHES or DO_MULTI_MATCHES.
+ */
+#ifdef HAVE_MMAP
+#define GET_CASE_SENSITIVE_SEARCH(match_tp) \
+    if (!addr[len - 1]){ \
+        found_at = strstr(in_line, settings.search_string); \
+        match_tp(strstr(in_line, settings.search_string)); \
+    } \
+    else{ \
+        /* I can also skip the subtraction of the current position from len on this because addr - in_line = 0. */ \
+        found_at = fileperuser_memmem(in_line, len, settings.search_string, needle_len); \
+        match_tp(fileperuser_memmem(in_line, len - (addr - in_line), settings.search_string, needle_len)); \
+    }
+#else
+// This is a simpler case, since fileperuser_memmem is only used to circumvent
+// the lack of null termination on an mmaped file that ses the whole cluster.
+#define GET_CASE_SENSITIVE_SEARCH(match_tp) \
+    found_at = strstr(in_line, settings.search_string); \
+    match_tp(strstr(in_line, settings.search_string));
+#endif
+
+/**
+ * Parses a file for a search string, calling the appropriate matching
+ * function based on user selection.
  *
  * @param fpath
- * The path of the file being read from.
+ * The file path to search.
+ *
+ * @param file_size
+ * The size of the file. Assumed to be greater than zero.
  */
-void search_file_single_match(char * const addr, size_t len, const char * const fpath){
-    char *start_line = addr, *found_at;
-    const char *last;
-    // Only count file lines if we find a match.
-    if (settings.search_flags & FLAG_NO_CASE){
-	last = addr + len - needle_len + 1;
-	found_at = fileperuser_memcasemem(start_line, last, settings.search_string, needle_len);
-	DO_SINGLE_MATCHES(fileperuser_memcasemem(start_line, last, settings.search_string, needle_len));
+inline void parse_file(const char * const fpath, const off_t file_size){
+    size_t len;
+#ifdef HAVE_MMAP
+    // Open the file and get the file descriptor
+    const int fd = open(fpath, O_RDONLY);
+    if (fd == -1){
+	log_event(ERROR, "Could not open file %s.", fpath);
+	return;
     }
-    else
-#ifdef HAVE_MMAP
-	if (!addr[len - 1]){
+    // Map the file to memory
+    // Read and write to the map, so we can substitute a \n with a \0 for searching
+    char * const addr = mmap(0, file_size, PROT_READ | PROT_WRITE, MAP_PRIVATE, fd, 0);
+    if (addr == MAP_FAILED){
+	close(fd);
+	log_event(ERROR, "Failed to map file descriptor %d (%s).", fd, fpath);
+	return;
+    }
+    len = file_size;
+    if (addr[file_size - 1] != settings.search_string[needle_len - 1])
+	addr[file_size - 1] = '\0';
+#else
+    char * const addr = (char *)malloc(sizeof(char) * (file_size + 1));
+    if (!addr){
+	// Not fatal because we might legitimately not be able to parse really large files.
+	log_event(ERROR, "Not enough memory to parse file %s.", fpath);
+	return;
+    }
+    FILE *file = fopen(fpath, "rb");
+    if (!file){
+        log_event(ERROR, "Failed to open file %s.", fpath);
+	return;
+    }
+    // Read the file into the malloc'ed space.
+    len = fread(addr, sizeof(char), file_size, file);
+    if (len != file_size)
+	log_event(WARNING, "Short read occurred, may produce bogus results.");
+    // Now I can even close this before the call, since we have a copy of the data.
+    fclose(file);
+    // Make sure the end of the file data is set to a null character.
+    addr[len] = '\0';
 #endif
-	    found_at = strstr(start_line, settings.search_string);
-	    DO_SINGLE_MATCHES(strstr(start_line, settings.search_string));
+    if (settings.search_flags & FLAG_SINGLE_MATCH){
+	SEARCH_FILE(DO_SINGLE_MATCHES);
+    }
+    else{
+	SEARCH_FILE(DO_MULTI_MATCHES);
+    }
+
+    // Cleanup
 #ifdef HAVE_MMAP
-	}
-	else{
-	    found_at = fileperuser_memmem(start_line, len, settings.search_string, needle_len);
-	    DO_SINGLE_MATCHES(fileperuser_memmem(start_line, len - (addr - start_line), settings.search_string, needle_len));
-	}
+    munmap(addr, file_size);
+    close(fd);
+#else
+    free(addr);
 #endif
 }
 

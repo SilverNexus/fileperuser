@@ -43,7 +43,6 @@ void init_settings(){
     settings.root_dirs = 0;
     settings.search_string = 0;
     settings.search_flags = FLAG_NONE;
-    settings.file_parser = search_file_multi_match;
     settings.output_file = 0;
     settings.log_file = "fileperuser.log";
     // Only log warning and higher by default

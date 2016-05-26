@@ -12,8 +12,9 @@
 #include <stddef.h>
 #include <stdio.h>
 
-#define FLAG_NONE    0x0000
-#define FLAG_NO_CASE 0x0001
+#define FLAG_NONE         0x0000
+#define FLAG_NO_CASE      0x0001
+#define FLAG_SINGLE_MATCH 0x0002
 
 struct {
     /*
@@ -41,12 +42,6 @@ struct {
 
     // Keep track of case sensitivity here for easy access.
     short search_flags;
-
-    /*
-     * Pointer to the file parsing function
-     * one multi-matches, the other single-matches
-     */
-    void (*file_parser)(char * const, size_t, const char * const);
 
     char *output_file;
 
