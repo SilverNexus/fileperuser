@@ -84,7 +84,7 @@
  */
 #define DO_MULTI_MATCHES(func) \
     if (found_at){ \
-	char *start_line = addr, *end_line; \
+	const char *start_line = addr, *in_line = addr, *end_line; \
 	char tmp; \
 	register int line_num = 1; \
 	do{ \
@@ -107,7 +107,7 @@
  */
 #define DO_SINGLE_MATCHES(func) \
     if (found_at){ \
-	char *start_line = addr, *end_line; \
+	const char *start_line = addr, *in_line = addr, *end_line; \
 	char tmp; \
 	register int line_num = 1; \
 	do{ \
@@ -134,7 +134,7 @@
     /* Only count file lines if we find a match. */ \
     if (settings.search_flags & FLAG_NO_CASE){ \
 	const char *last = addr + file_size - needle_len + 1; \
-	found_at = fileperuser_memcasemem(in_line, last, settings.search_string, needle_len); \
+	found_at = fileperuser_memcasemem(addr, last, settings.search_string, needle_len); \
 	match_tp(fileperuser_memcasemem(in_line, last, settings.search_string, needle_len)); \
     } \
     else{ \
@@ -153,19 +153,19 @@
 #ifdef HAVE_MMAP
 #define GET_CASE_SENSITIVE_SEARCH(match_tp) \
     if (!addr[file_size - 1]){ \
-        found_at = strstr(in_line, settings.search_string); \
+        found_at = strstr(addr, settings.search_string); \
         match_tp(strstr(in_line, settings.search_string)); \
     } \
     else{ \
         /* I can also skip the subtraction of the current position from len on this because addr - in_line = 0. */ \
-        found_at = fileperuser_memmem(in_line, file_size, settings.search_string, needle_len); \
+        found_at = fileperuser_memmem(addr, file_size, settings.search_string, needle_len); \
         match_tp(fileperuser_memmem(in_line, file_size - (addr - in_line), settings.search_string, needle_len)); \
     }
 #else
 // This is a simpler case, since fileperuser_memmem is only used to circumvent
 // the lack of null termination on an mmaped file that ses the whole cluster.
 #define GET_CASE_SENSITIVE_SEARCH(match_tp) \
-    found_at = strstr(in_line, settings.search_string); \
+    found_at = strstr(addr, settings.search_string); \
     match_tp(strstr(in_line, settings.search_string));
 #endif
 
@@ -222,7 +222,7 @@ inline void parse_file(const char * const fpath, const off_t file_size){
     addr[file_size] = '\0';
 #endif
     // Since we have entirely macro expansion here, we can declare these outside the macros.
-    char *in_line = addr, *found_at;
+    char *found_at;
     if (settings.search_flags & FLAG_SINGLE_MATCH){
 	SEARCH_FILE(DO_SINGLE_MATCHES);
     }

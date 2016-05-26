@@ -1,3 +1,13 @@
+2016-05-26  SilverNexus (on remove_function_pointers branch)
+	* fileperuser_search.c: Attempt to make data types stricter in order to
+	  allow for stronger optimization.
+	* fileperuser_search.h: Change the function prototypes to match the stricter search typing.
+	* search.c: Fiddling with variables in an attempt to improve performance.
+
+2016-05-25  SilverNexus (on remove_function_pointers branch)
+	* search.c: Fully factor the file searches into macros. Try to make it perform
+	  on the level it used to (because strchrnul is called twice as much now).
+
 2016-05-25  SilverNexus
 	* main.c: Made case insensitive searches convert all characters to lowercase
 	  before building the jump table or searching.

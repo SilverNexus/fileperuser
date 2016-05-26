@@ -54,7 +54,7 @@
  * @return
  * Pointer to the first character in haystack of a match to needle, or 0 if it was not found.
  */
-char *fileperuser_memcasemem(char *haystack, const char * const haystack_last, char *needle, size_t needle_len){
+char *fileperuser_memcasemem(const char *haystack, const char * const haystack_last, char *needle, size_t needle_len){
     if (needle_len > MIN_JUMP_TABLE_NO_CASE){
 	const char needle_last = needle[needle_len - 1];
 	size_t at;
@@ -68,7 +68,7 @@ char *fileperuser_memcasemem(char *haystack, const char * const haystack_last, c
 		    --at;
 		}
 		if (at > needle_len)
-		    return haystack;
+		    return (char *)haystack;
 	    }
 	    // This already is set up to handle either case, so just drop it in
 	    haystack += jump_tbl[(unsigned char)haystack[needle_len - 1]];
@@ -86,7 +86,7 @@ char *fileperuser_memcasemem(char *haystack, const char * const haystack_last, c
 		    ++at;
 		}
 		if (at == needle_len)
-		    return haystack;
+		    return (char *)haystack;
 	    }
 	    ++haystack;
 	}
@@ -95,7 +95,7 @@ char *fileperuser_memcasemem(char *haystack, const char * const haystack_last, c
     else{
 	while (haystack < haystack_last){
 	    if (tolower(*haystack) == *needle)
-		return haystack;
+		return (char *)haystack;
 	    ++haystack;
 	}
 	return 0;  
@@ -121,7 +121,7 @@ char *fileperuser_memcasemem(char *haystack, const char * const haystack_last, c
  * @return
  * Pointer to the first match of needle in haystack, or 0 if not found.
  */
-char *fileperuser_memmem(char *haystack, size_t haystack_len, char *needle, size_t needle_len){
+char *fileperuser_memmem(const char *haystack, size_t haystack_len, char *needle, size_t needle_len){
     if (haystack_len < needle_len)
 	return 0;
     if (needle_len > MIN_JUMP_TABLE_CASE){
@@ -138,7 +138,7 @@ char *fileperuser_memmem(char *haystack, size_t haystack_len, char *needle, size
 		// Unsigned integer abuse
 		if (ch > needle_len){
 		    /** - (needle_len - 1) == - needle_len + 1 */
-		    return haystack + at - needle_len + 1;
+		    return (char *)(haystack + at - needle_len + 1);
 		}
 		// Move the jump so it aligns with the next letter in the needle that matches this.
 		// Fall through to the same code as otherwise
@@ -150,7 +150,7 @@ char *fileperuser_memmem(char *haystack, size_t haystack_len, char *needle, size
     // This is faster than boyer-moore with really small needles (<= ~6 chars), likely because it foregoes the setup time of boyer-moore
     else if (needle_len > 1){
 	// Find the first place where the first character of needle matches in haystack
-	char *at = haystack;
+	const char *at = haystack;
 	// Make haystack_left be the amount of the haystack needed to be checked in memchr.
 	size_t n_at, haystack_left = haystack_len - needle_len + 1;
 	while ((at = memchr(at, *needle, haystack_left)) != 0){
@@ -160,7 +160,7 @@ char *fileperuser_memmem(char *haystack, size_t haystack_len, char *needle, size
 	    
 	    }
 	    if (n_at == needle_len)
-		return at;
+		return (char *)at;
 	    ++at;
 	    haystack_left = haystack_len - (at - haystack) - needle_len + 1;
 	    // If haystack is zero or rolled over, then we're done
