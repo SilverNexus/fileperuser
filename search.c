@@ -171,7 +171,7 @@ void search_file_multi_match(char * const addr, size_t len, const char * const f
 	found_at = fileperuser_memcasemem(in_line, last, settings.search_string, needle_len);
 	DO_MULTI_MATCHES(fileperuser_memcasemem(in_line, last, settings.search_string, needle_len));
     }
-    else
+    else{
 #ifdef HAVE_MMAP
 	if (!addr[len - 1]){
 #endif
@@ -184,6 +184,7 @@ void search_file_multi_match(char * const addr, size_t len, const char * const f
 	    DO_MULTI_MATCHES(fileperuser_memmem(in_line, len - (addr - in_line), settings.search_string, needle_len));
 	}
 #endif
+    }
 }
 
 /**
@@ -237,7 +238,7 @@ void search_file_single_match(char * const addr, size_t len, const char * const 
 	found_at = fileperuser_memcasemem(start_line, last, settings.search_string, needle_len);
 	DO_SINGLE_MATCHES(fileperuser_memcasemem(start_line, last, settings.search_string, needle_len));
     }
-    else
+    else{
 #ifdef HAVE_MMAP
 	if (!addr[len - 1]){
 #endif
@@ -250,6 +251,7 @@ void search_file_single_match(char * const addr, size_t len, const char * const 
 	    DO_SINGLE_MATCHES(fileperuser_memmem(start_line, len - (addr - start_line), settings.search_string, needle_len));
 	}
 #endif
+    }
 }
 
 /**
