@@ -111,6 +111,59 @@ inline void parse_file(const char * const fpath, const off_t file_size){
 }
 
 /**
+ * Shared code between both match types.
+ *
+ * Macroed for maintainability.
+ */
+#define DETERMINE_SEARCH_FUNC_AND_SEARCH(first_var, match_type) \
+    /* Only count file lines if we find a match. */ \
+    if (settings.search_flags & FLAG_NO_CASE){ \
+	last = addr + len - needle_len + 1; \
+	if (needle_len > MIN_JUMP_TABLE_NO_CASE){ \
+	    found_at = fileperuser_memcasemem_boyer(first_var, last, settings.search_string, needle_len); \
+	    DO_##match_type ## _MATCHES(fileperuser_memcasemem_boyer(first_var, last, settings.search_string, needle_len)); \
+	} \
+	else if (needle_len > 1){ \
+	    found_at = fileperuser_memcasemem_brute(first_var, last, settings.search_string, needle_len); \
+	    DO_##match_type ## _MATCHES(fileperuser_memcasemem_brute(first_var, last, settings.search_string, needle_len)); \
+	} \
+	else{ \
+	    found_at = fileperuser_memcasemem_single(first_var, last, *(settings.search_string)); \
+	    DO_##match_type ## _MATCHES(fileperuser_memcasemem_single(first_var, last, *(settings.search_string))); \
+	} \
+    } \
+    else{ \
+	DO_CASE_SENSITIVE(first_var, match_type) \
+    }
+
+/**
+ * Macro to allow for conditional building of each section of case-sensitive search
+ *
+ * @param first_var
+ * the variable that keeps track of the position in the search
+ *
+ * @param match_type
+ * the type of match we are performing.
+ * Should be SINGLE or MULTI.
+ */
+#ifdef HAVE_MMAP
+#define DO_CASE_SENSITIVE(first_var, match_type) \
+    if (!addr[len - 1]){ \
+        found_at = strstr(first_var, settings.search_string); \
+        DO_##match_type ## _MATCHES(strstr(first_var, settings.search_string)); \
+    } \
+    else{ \
+	/* I can also skip the subtraction of the current position from len on this because addr - in_line = 0. */ \
+        found_at = fileperuser_memmem(first_var, len, settings.search_string, needle_len); \
+        DO_##match_type ## _MATCHES(fileperuser_memmem(first_var, len - (addr - first_var), settings.search_string, needle_len)); \
+    }
+#else
+#define DO_CASE_SENSITIVE(first_var, match_type) \
+    found_at = strstr(first_var, settings.search_string); \
+    DO_##match_type ## _MATCHES(strstr(first_var, settings.search_string));
+#endif
+
+/**
  * Shared section between both search macros that will be easier to maintain as
  * a single section of code.
  */
@@ -164,37 +217,7 @@ inline void parse_file(const char * const fpath, const off_t file_size){
 void search_file_multi_match(char * const addr, size_t len, const char * const fpath){
     char *in_line = addr, *found_at;
     const char *last;
-    // Only count file lines if we find a match.
-    // I can also skip the subtraction of the current position from len on this because addr - in_line = 0.
-    if (settings.search_flags & FLAG_NO_CASE){
-	last = addr + len - needle_len + 1;
-	if (needle_len > MIN_JUMP_TABLE_NO_CASE){
-	    found_at = fileperuser_memcasemem_boyer(in_line, last, settings.search_string, needle_len);
-	    DO_MULTI_MATCHES(fileperuser_memcasemem_boyer(in_line, last, settings.search_string, needle_len));
-	}
-	else if (needle_len > 1){
-	    found_at = fileperuser_memcasemem_brute(in_line, last, settings.search_string, needle_len);
-	    DO_MULTI_MATCHES(fileperuser_memcasemem_brute(in_line, last, settings.search_string, needle_len));
-	}
-	else{
-	    found_at = fileperuser_memcasemem_single(in_line, last, *(settings.search_string));
-	    DO_MULTI_MATCHES(fileperuser_memcasemem_single(in_line, last, *(settings.search_string)));
-	}
-    }
-    else{
-#ifdef HAVE_MMAP
-	if (!addr[len - 1]){
-#endif
-	    found_at = strstr(in_line, settings.search_string);
-	    DO_MULTI_MATCHES(strstr(in_line, settings.search_string));
-#ifdef HAVE_MMAP
-	}
-	else{
-	    found_at = fileperuser_memmem(in_line, len, settings.search_string, needle_len);
-	    DO_MULTI_MATCHES(fileperuser_memmem(in_line, len - (addr - in_line), settings.search_string, needle_len));
-	}
-#endif
-    }
+    DETERMINE_SEARCH_FUNC_AND_SEARCH(in_line, MULTI)
 }
 
 /**
@@ -242,36 +265,7 @@ void search_file_multi_match(char * const addr, size_t len, const char * const f
 void search_file_single_match(char * const addr, size_t len, const char * const fpath){
     char *start_line = addr, *found_at;
     const char *last;
-    // Only count file lines if we find a match.
-    if (settings.search_flags & FLAG_NO_CASE){
-	last = addr + len - needle_len + 1;
-	if (needle_len > MIN_JUMP_TABLE_NO_CASE){
-	    found_at = fileperuser_memcasemem_boyer(start_line, last, settings.search_string, needle_len);
-	    DO_SINGLE_MATCHES(fileperuser_memcasemem_boyer(start_line, last, settings.search_string, needle_len));
-	}
-	else if (needle_len > 1){
-	    found_at = fileperuser_memcasemem_brute(start_line, last, settings.search_string, needle_len);
-	    DO_SINGLE_MATCHES(fileperuser_memcasemem_brute(start_line, last, settings.search_string, needle_len));
-	}
-	else{
-	    found_at = fileperuser_memcasemem_single(start_line, last, *(settings.search_string));
-	    DO_SINGLE_MATCHES(fileperuser_memcasemem_single(start_line, last, *(settings.search_string)));
-	}
-    }
-    else{
-#ifdef HAVE_MMAP
-	if (!addr[len - 1]){
-#endif
-	    found_at = strstr(start_line, settings.search_string);
-	    DO_SINGLE_MATCHES(strstr(start_line, settings.search_string));
-#ifdef HAVE_MMAP
-	}
-	else{
-	    found_at = fileperuser_memmem(start_line, len, settings.search_string, needle_len);
-	    DO_SINGLE_MATCHES(fileperuser_memmem(start_line, len - (addr - start_line), settings.search_string, needle_len));
-	}
-#endif
-    }
+    DETERMINE_SEARCH_FUNC_AND_SEARCH(start_line, SINGLE)
 }
 
 /**
