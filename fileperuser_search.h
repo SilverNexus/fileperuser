@@ -16,7 +16,10 @@ char *fileperuser_memcasemem_single(char *haystack, const char * const haystack_
 
 #ifdef HAVE_MMAP
 /* This will only be used if we are using mmap. */
-char *fileperuser_memmem(char *haystack, size_t haystack_len, char *needle, size_t needle_len);
+// Boyer-Moore search
+char *fileperuser_memmem_boyer(char *haystack, size_t haystack_len, char *needle, size_t needle_len);
+// Custom brute-force for small needles
+char *fileperuser_memmem_brute(char *haystack, size_t haystack_len, char *needle, size_t needle_len);
 #endif
 
 #endif

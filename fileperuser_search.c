@@ -141,7 +141,7 @@ char *fileperuser_memcasemem_single(char *haystack, const char * const haystack_
 #ifdef HAVE_MMAP
 /**
  * Finds a substring in a block of memory.
- * 
+ *
  * @param haystack
  * The block of memory to search.
  *
@@ -157,57 +157,73 @@ char *fileperuser_memcasemem_single(char *haystack, const char * const haystack_
  * @return
  * Pointer to the first match of needle in haystack, or 0 if not found.
  */
-char *fileperuser_memmem(char *haystack, size_t haystack_len, char *needle, size_t needle_len){
+char *fileperuser_memmem_boyer(char *haystack, size_t haystack_len, char *needle, size_t needle_len){
     if (haystack_len < needle_len)
 	return 0;
-    if (needle_len > MIN_JUMP_TABLE_CASE){
-	// Boyer-Moore search
-	size_t at = needle_len - 1, c_at, ch;
-	while (at < haystack_len){
-	    if (needle[needle_len - 1] == haystack[at]){
-		// Do a backward search
-		// Unsigned integer abuse
-		for (c_at = at - 1, ch = needle_len - 2; ch < needle_len; --ch, --c_at){
-		    if (needle[ch] != haystack[c_at])
-			break;
-		}
-		// Unsigned integer abuse
-		if (ch > needle_len){
-		    /** - (needle_len - 1) == - needle_len + 1 */
-		    return haystack + at - needle_len + 1;
-		}
-		// Move the jump so it aligns with the next letter in the needle that matches this.
-		// Fall through to the same code as otherwise
-	    }
-	    at += jump_tbl[(unsigned char)haystack[at]];
-	}
-	return 0;
-    }
-    // This is faster than boyer-moore with really small needles (<= ~6 chars), likely because it foregoes the setup time of boyer-moore
-    else if (needle_len > 1){
-	// Find the first place where the first character of needle matches in haystack
-	char *at = haystack;
-	// Make haystack_left be the amount of the haystack needed to be checked in memchr.
-	size_t n_at, haystack_left = haystack_len - needle_len + 1;
-	while ((at = memchr(at, *needle, haystack_left)) != 0){
-	    for (n_at = 1; n_at < needle_len; ++n_at){
-		if (at[n_at] != needle[n_at])
+    // Boyer-Moore search
+    size_t at = needle_len - 1, c_at, ch;
+    while (at < haystack_len){
+        if (needle[needle_len - 1] == haystack[at]){
+	    // Do a backward search
+	    // Unsigned integer abuse
+	    for (c_at = at - 1, ch = needle_len - 2; ch < needle_len; --ch, --c_at){
+		if (needle[ch] != haystack[c_at])
 		    break;
-	    
 	    }
-	    if (n_at == needle_len)
-		return at;
-	    ++at;
-	    haystack_left = haystack_len - (at - haystack) - needle_len + 1;
-	    // If haystack is zero or rolled over, then we're done
-	    if (!haystack_left || haystack_left > haystack_len)
-		break;
-	}
+	    // Unsigned integer abuse
+	    if (ch > needle_len){
+		/** - (needle_len - 1) == - needle_len + 1 */
+		return haystack + at - needle_len + 1;
+	    }
+	    // Move the jump so it aligns with the next letter in the needle that matches this.
+	    // Fall through to the same code as otherwise
+        }
+        at += jump_tbl[(unsigned char)haystack[at]];
+    }
+    return 0;
+}
+
+/**
+ * Finds a substring in a block of memory.
+ *
+ * @param haystack
+ * The block of memory to search.
+ *
+ * @param haystack_len
+ * The length of the block of memory to search.
+ *
+ * @param needle
+ * The string we wish to find in the block of memory.
+ *
+ * @param needle_len
+ * The length of the string we wish to find.
+ *
+ * @return
+ * Pointer to the first match of needle in haystack, or 0 if not found.
+ *
+ * @note
+ * This is faster than boyer-moore with really small needles (<= ~6 chars), likely because it foregoes the setup time of boyer-moore
+ */
+char *fileperuser_memmem_brute(char *haystack, size_t haystack_len, char *needle, size_t needle_len){
+    if (haystack_len < needle_len)
 	return 0;
+    // Find the first place where the first character of needle matches in haystack
+    char *at = haystack;
+    // Make haystack_left be the amount of the haystack needed to be checked in memchr.
+    size_t n_at, haystack_left = haystack_len - needle_len + 1;
+    while ((at = memchr(at, *needle, haystack_left)) != 0){
+        for (n_at = 1; n_at < needle_len; ++n_at){
+	    if (at[n_at] != needle[n_at])
+		break;
+        }
+        if (n_at == needle_len)
+	    return at;
+        ++at;
+        haystack_left = haystack_len - (at - haystack) - needle_len + 1;
+        // If haystack is zero or rolled over, then we're done
+        if (!haystack_left || haystack_left > haystack_len)
+	    break;
     }
-    else{
-	// This is far faster than what I was writing
-	return memchr(haystack, *needle, haystack_len);
-    }
+    return 0;
 }
 #endif
