@@ -41,8 +41,8 @@
  * @param haystack
  * The block of memory to find the substring in.
  *
- * @param haystack_len
- * The length of the block of memory to search.
+ * @param haystack_last
+ * The last character of haystack we need to worry about.
  *
  * @param needle
  * The substring to search for. Must be converted to lowercase before
@@ -54,52 +54,88 @@
  * @return
  * Pointer to the first character in haystack of a match to needle, or 0 if it was not found.
  */
-char *fileperuser_memcasemem(char *haystack, const char * const haystack_last, char *needle, size_t needle_len){
-    if (needle_len > MIN_JUMP_TABLE_NO_CASE){
-	const char needle_last = needle[needle_len - 1];
-	size_t at;
-	while (haystack < haystack_last){
-	    if (tolower(haystack[needle_len - 1]) == needle_last){
-		at = needle_len - 2;
-		// This becomes false at unsigned rollover
-		while (at < needle_len){
-		    if (needle[at] != tolower(haystack[at]))
-			break;
-		    --at;
-		}
-		if (at > needle_len)
-		    return haystack;
+char *fileperuser_memcasemem_boyer(char *haystack, const char * const haystack_last, char *needle, size_t needle_len){
+    const char needle_last = needle[needle_len - 1];
+    size_t at;
+    while (haystack < haystack_last){
+        if (tolower(haystack[needle_len - 1]) == needle_last){
+	    at = needle_len - 2;
+	    // This becomes false at unsigned rollover
+	    while (at < needle_len){
+		if (needle[at] != tolower(haystack[at]))
+		    break;
+		--at;
 	    }
-	    // This already is set up to handle either case, so just drop it in
-	    haystack += jump_tbl[(unsigned char)haystack[needle_len - 1]];
-	}
-	return 0;
-    }
-    else if (needle_len > 1){
-	size_t at;
-	while (haystack < haystack_last){
-	    if (tolower(*haystack) == *needle){
-		at = 1;
-		while (at < needle_len){
-		    if (tolower(haystack[at]) != needle[at])
-			break;
-		    ++at;
-		}
-		if (at == needle_len)
-		    return haystack;
-	    }
-	    ++haystack;
-	}
-	return 0;
-    }
-    else{
-	while (haystack < haystack_last){
-	    if (tolower(*haystack) == *needle)
+	    if (at > needle_len)
 		return haystack;
-	    ++haystack;
-	}
-	return 0;  
+        }
+        // This already is set up to handle either case, so just drop it in
+        haystack += jump_tbl[(unsigned char)haystack[needle_len - 1]];
     }
+    return 0;
+}
+/**
+ * Finds a substring in a block of memory, ignoring case.
+ * Works better than boyer-moore on short needles.
+ *
+ * @param haystack
+ * The block of memory to find the substring in.
+ *
+ * @param haystack_last
+ * The last character of haystack we need to worry about.
+ *
+ * @param needle
+ * The substring to search for. Must be converted to lowercase before
+ * reaching this function.
+ *
+ * @param needle_len
+ * The length of the search string.
+ *
+ * @return
+ * Pointer to the first character in haystack of a match to needle, or 0 if it was not found.
+ */
+char *fileperuser_memcasemem_brute(char *haystack, const char * const haystack_last, char *needle, size_t needle_len){
+    size_t at;
+    while (haystack < haystack_last){
+        if (tolower(*haystack) == *needle){
+	    at = 1;
+	    while (at < needle_len){
+		if (tolower(haystack[at]) != needle[at])
+		    break;
+		++at;
+	    }
+	    if (at == needle_len)
+		return haystack;
+        }
+        ++haystack;
+    }
+    return 0;
+}
+
+/**
+ * Finds a character in a block of memory, ignoring case.
+ * Works only when needle has a length of 1.
+ *
+ * @param haystack
+ * The block of memory to find the substring in.
+ *
+ * @param haystack_last
+ * The last character of haystack we need to worry about.
+ *
+ * @param needle
+ * The character to search for. Must be converted to lowercase before
+ * reaching this function.
+ *
+ * @return
+ * Pointer to the first character in haystack of a match to needle, or 0 if it was not found.
+ */
+char *fileperuser_memcasemem_single(char *haystack, const char * const haystack_last, const char needle){
+    while (haystack < haystack_last){
+        if (tolower(*haystack) == needle)
+	    return haystack;
+        ++haystack;
+    }
+    return 0;
 }
 
 #ifdef HAVE_MMAP

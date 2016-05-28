@@ -168,8 +168,18 @@ void search_file_multi_match(char * const addr, size_t len, const char * const f
     // I can also skip the subtraction of the current position from len on this because addr - in_line = 0.
     if (settings.search_flags & FLAG_NO_CASE){
 	last = addr + len - needle_len + 1;
-	found_at = fileperuser_memcasemem(in_line, last, settings.search_string, needle_len);
-	DO_MULTI_MATCHES(fileperuser_memcasemem(in_line, last, settings.search_string, needle_len));
+	if (needle_len > MIN_JUMP_TABLE_NO_CASE){
+	    found_at = fileperuser_memcasemem_boyer(in_line, last, settings.search_string, needle_len);
+	    DO_MULTI_MATCHES(fileperuser_memcasemem_boyer(in_line, last, settings.search_string, needle_len));
+	}
+	else if (needle_len > 1){
+	    found_at = fileperuser_memcasemem_brute(in_line, last, settings.search_string, needle_len);
+	    DO_MULTI_MATCHES(fileperuser_memcasemem_brute(in_line, last, settings.search_string, needle_len));
+	}
+	else{
+	    found_at = fileperuser_memcasemem_single(in_line, last, *(settings.search_string));
+	    DO_MULTI_MATCHES(fileperuser_memcasemem_single(in_line, last, *(settings.search_string)));
+	}
     }
     else{
 #ifdef HAVE_MMAP
@@ -235,8 +245,18 @@ void search_file_single_match(char * const addr, size_t len, const char * const 
     // Only count file lines if we find a match.
     if (settings.search_flags & FLAG_NO_CASE){
 	last = addr + len - needle_len + 1;
-	found_at = fileperuser_memcasemem(start_line, last, settings.search_string, needle_len);
-	DO_SINGLE_MATCHES(fileperuser_memcasemem(start_line, last, settings.search_string, needle_len));
+	if (needle_len > MIN_JUMP_TABLE_NO_CASE){
+	    found_at = fileperuser_memcasemem_boyer(start_line, last, settings.search_string, needle_len);
+	    DO_SINGLE_MATCHES(fileperuser_memcasemem_boyer(start_line, last, settings.search_string, needle_len));
+	}
+	else if (needle_len > 1){
+	    found_at = fileperuser_memcasemem_brute(start_line, last, settings.search_string, needle_len);
+	    DO_SINGLE_MATCHES(fileperuser_memcasemem_brute(start_line, last, settings.search_string, needle_len));
+	}
+	else{
+	    found_at = fileperuser_memcasemem_single(start_line, last, *(settings.search_string));
+	    DO_SINGLE_MATCHES(fileperuser_memcasemem_single(start_line, last, *(settings.search_string)));
+	}
     }
     else{
 #ifdef HAVE_MMAP
