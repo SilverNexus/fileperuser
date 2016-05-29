@@ -27,6 +27,7 @@
 #include "ErrorLog.h"
 #include "settings.h"
 #include <stdio.h>
+#include <string.h>
 
 void output_matches(){
     if (results.first){
@@ -50,9 +51,16 @@ void output_matches(){
                 settings.search_string, res->line_num, res->col_num, res->file_path);
             res = res->next;
         } while (res);
-        if (results_file != stdout)
+        if (results_file != stdout){
             // This can be to stdout because it only prints when we don't print to stdout.
-            printf("The matches have been stored in %s.\n", settings.output_file);
+            /*
+	     * Even though this is three calls instead of 1, it's computationally
+	     * cheaper than one call to printf().
+	     */
+	    fwrite("The matches have been stored in ", 1, 32, stdout);
+	    fwrite(settings.output_file, 1, strlen(settings.output_file), stdout);
+	    fwrite(".\n", 1, 2, stdout);
+	}
         fclose(results_file);
     }
     else
