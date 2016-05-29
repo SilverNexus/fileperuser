@@ -10,6 +10,7 @@
 	* fileperuser_search.h: Add function prototypes for new split search functions.
 	* test/search_test/*: Add a script to compare current build's search results
 	  with expected results.
+	* ErrorLog.c: Make the strings for month and error severity static.
 
 2016-05-26  SilverNexus
 	* search.c: Define start_line and end_line as const char * in multi-search.

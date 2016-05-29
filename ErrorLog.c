@@ -29,8 +29,8 @@
 #include <stdarg.h>
 #include <stdlib.h>
 
-const char * const ERROR_TYPE_CHARS[] = {"DEBUG", "INFO", "WARNING", "ERROR", "FATAL"};
-const char * const MONTH[12] = {"January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"};
+static const char * const ERROR_TYPE_CHARS[] = {"DEBUG", "INFO", "WARNING", "ERROR", "FATAL"};
+static const char * const MONTH[12] = {"January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"};
 
 /**
  * Logs a message that is printed and, if urgent enough, printed to the log file.
