@@ -96,7 +96,8 @@ int main(int argc, char *argv[]){
         do{
 #if defined HAVE_NFTW
             if (nftw(thisDir->dir, onWalk, 20, FTW_ACTIONRETVAL | FTW_PHYS) == -1)
-                log_event(FATAL, "Directory walk for %s failed!", thisDir->dir);
+		// This is not fatal since we can try on any other folders we were supplied.
+                log_event(ERROR, "Directory walk for %s failed!", thisDir->dir);
 #elif defined HAVE_DIRENT_H
 	    search_folder(thisDir->dir);
 #else

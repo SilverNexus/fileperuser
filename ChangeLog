@@ -11,6 +11,7 @@
 	* test/search_test/*: Add a script to compare current build's search results
 	  with expected results.
 	* ErrorLog.c: Make the strings for month and error severity static.
+	* main.c: Reduce severity of failed directory walk from fatal to error.
 
 2016-05-26  SilverNexus
 	* search.c: Define start_line and end_line as const char * in multi-search.
