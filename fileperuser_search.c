@@ -32,7 +32,6 @@
 #include <ctype.h>
 #include <string.h>
 #include "fileperuser_search.h"
-#include "settings.h"
 #include "jump_table.h"
 
 /**

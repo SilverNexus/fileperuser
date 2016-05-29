@@ -3,6 +3,7 @@
 	  the location of the output file.
 	  Only close the output file when we opened one.
 	* jump_table.c: Removed extraneous include.
+	* fileperuser_search.c: Removed extraneous include.
 
 2016-05-28  SilverNexus
 	* search.c: Extract the needle length checks from the case-insensitive search
