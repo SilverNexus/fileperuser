@@ -7,6 +7,8 @@
 	* fileperuser_search.c: Split fileperuser_memcasemem() into fileperuser_memcasemem_boyer(),
 	  fileperuser_memcasemem_brute(), and fileperuser_memcasemem_single().
 	* fileperuser_search.h: Add function prototypes for new split search functions.
+	* test/search_test/*: Add a script to compare current build's search results
+	  with expected results.
 
 2016-05-26  SilverNexus
 	* search.c: Define start_line and end_line as const char * in multi-search.
