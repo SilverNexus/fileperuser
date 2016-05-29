@@ -60,8 +60,11 @@ void output_matches(){
 	    fwrite("The matches have been stored in ", 1, 32, stdout);
 	    fwrite(settings.output_file, 1, strlen(settings.output_file), stdout);
 	    fwrite(".\n", 1, 2, stdout);
+	    /*
+	     * We didn't explicitly open the file unless we aren't on stdout.
+	     */
+	    fclose(results_file);
 	}
-        fclose(results_file);
     }
     else
         fputs("No matches were found.\n", stderr);
