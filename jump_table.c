@@ -24,7 +24,6 @@
 
 #include "jump_table.h"
 #include <ctype.h>
-#include "ErrorLog.h"
 #include <stdlib.h>
 #include "settings.h"
 
