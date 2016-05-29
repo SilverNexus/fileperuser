@@ -20,9 +20,6 @@
 /**
  * @file search.c
  * The file defines the searching functions.
- *
- * @note optimizations of the search function determination
- * need to be done in four places.
  */
 
 #include "search.h"
