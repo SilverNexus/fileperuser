@@ -129,7 +129,7 @@ char *fileperuser_memcasemem_brute(char *haystack, const char * const haystack_l
  * @return
  * Pointer to the first character in haystack of a match to needle, or 0 if it was not found.
  */
-char *fileperuser_memcasemem_single(char *haystack, const char * const haystack_last, const char needle){
+char *fileperuser_memcasechr(char *haystack, const char * const haystack_last, const char needle){
     while (haystack < haystack_last){
         if (tolower(*haystack) == needle)
 	    return haystack;

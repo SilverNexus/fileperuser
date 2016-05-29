@@ -128,8 +128,8 @@ inline void parse_file(const char * const fpath, const off_t file_size){
 	    DO_##match_type ## _MATCHES(fileperuser_memcasemem_brute(first_var, last, settings.search_string, needle_len)); \
 	} \
 	else{ \
-	    found_at = fileperuser_memcasemem_single(first_var, last, *(settings.search_string)); \
-	    DO_##match_type ## _MATCHES(fileperuser_memcasemem_single(first_var, last, *(settings.search_string))); \
+	    found_at = fileperuser_memcasechr(first_var, last, *(settings.search_string)); \
+	    DO_##match_type ## _MATCHES(fileperuser_memcasechr(first_var, last, *(settings.search_string))); \
 	} \
     } \
     else{ \

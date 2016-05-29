@@ -5,7 +5,7 @@
 	  Make macros out of the search decision groups for maintainability.
 	  Extract needle length checks from case sensitive searches.
 	* fileperuser_search.c: Split fileperuser_memcasemem() into fileperuser_memcasemem_boyer(),
-	  fileperuser_memcasemem_brute(), and fileperuser_memcasemem_single().
+	  fileperuser_memcasemem_brute(), and fileperuser_memcasechr().
 	* fileperuser_search.h: Add function prototypes for new split search functions.
 	* test/search_test/*: Add a script to compare current build's search results
 	  with expected results.
