@@ -5,7 +5,6 @@ PARAM=$1
 # Gather the calls
 valgrind --tool=callgrind --callgrind-out-file=fp_memcasechr.calls ./fp_memcasechr "$PARAM" > fp_memcasechr.out
 valgrind --tool=callgrind --callgrind-out-file=fp_memcasemem_boyer.calls ./fp_memcasemem_boyer "$PARAM" > fp_memcasemem_boyer.out
-valgrind --tool=callgrind --callgrind-out-file=fp_memcasemem_brute.calls ./fp_memcasemem_brute "$PARAM" > fp_memcasemem_brute.out
 valgrind --tool=callgrind --callgrind-out-file=strcasestr.calls ./strcasestr "$PARAM" > strcasestr.out
 valgrind --tool=callgrind --callgrind-out-file=fp_memmem_boyer.calls ./fp_memmem_boyer "$PARAM" > fp_memmem_boyer.out
 valgrind --tool=callgrind --callgrind-out-file=fp_memmem_brute.calls ./fp_memmem_brute "$PARAM" > fp_memmem_brute.out
@@ -17,7 +16,6 @@ valgrind --tool=callgrind --callgrind-out-file=memchr.calls ./memchr "$PARAM" > 
 # Annotate the calls
 callgrind_annotate fp_memcasechr.calls > fp_memcasechr.annotated
 callgrind_annotate fp_memcasemem_boyer.calls > fp_memcasemem_boyer.annotated
-callgrind_annotate fp_memcasemem_brute.calls > fp_memcasemem_brute.annotated
 callgrind_annotate strcasestr.calls > strcasestr.annotated
 callgrind_annotate fp_memmem_boyer.calls > fp_memmem_boyer.annotated
 callgrind_annotate fp_memmem_brute.calls > fp_memmem_brute.annotated
@@ -34,10 +32,6 @@ echo
 echo -n "fp_memcasemem_boyer: "
 cat fp_memcasemem_boyer.annotated | grep "PROGRAM TOTALS" | cut -f 1 -d\ 
 cat fp_memcasemem_boyer.out
-echo
-echo -n "fp_memcasemem_brute: "
-cat fp_memcasemem_brute.annotated | grep "PROGRAM TOTALS" | cut -f 1 -d\ 
-cat fp_memcasemem_brute.out
 echo
 echo -n "strcasestr:          "
 cat strcasestr.annotated | grep "PROGRAM TOTALS" | cut -f 1 -d\ 

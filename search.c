@@ -115,14 +115,10 @@ inline void parse_file(const char * const fpath, const off_t file_size){
 #define DETERMINE_SEARCH_FUNC_AND_SEARCH(first_var, match_type) \
     /* Only count file lines if we find a match. */ \
     if (settings.search_flags & FLAG_NO_CASE){ \
-	last = addr + len - needle_len + 1; \
+        const char *last = addr + len - needle_len + 1; \
 	if (needle_len > MIN_JUMP_TABLE_NO_CASE){ \
 	    found_at = fileperuser_memcasemem_boyer(first_var, last, settings.search_string, needle_len); \
 	    DO_##match_type ## _MATCHES(fileperuser_memcasemem_boyer(first_var, last, settings.search_string, needle_len)); \
-	} \
-	else if (needle_len > 1){ \
-	    found_at = fileperuser_memcasemem_brute(first_var, last, settings.search_string, needle_len); \
-	    DO_##match_type ## _MATCHES(fileperuser_memcasemem_brute(first_var, last, settings.search_string, needle_len)); \
 	} \
 	else{ \
 	    found_at = fileperuser_memcasechr(first_var, last, *(settings.search_string)); \
@@ -223,7 +219,6 @@ inline void parse_file(const char * const fpath, const off_t file_size){
  */
 void search_file_multi_match(char * const addr, size_t len, const char * const fpath){
     char *in_line = addr, *found_at;
-    const char *last;
     DETERMINE_SEARCH_FUNC_AND_SEARCH(in_line, MULTI)
 }
 
@@ -271,7 +266,6 @@ void search_file_multi_match(char * const addr, size_t len, const char * const f
  */
 void search_file_single_match(char * const addr, size_t len, const char * const fpath){
     char *start_line = addr, *found_at;
-    const char *last;
     DETERMINE_SEARCH_FUNC_AND_SEARCH(start_line, SINGLE)
 }
 

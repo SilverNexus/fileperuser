@@ -62,7 +62,6 @@ int main(int argc, char **argv){
     file_data[FILESIZE] = '\0';
     needle_len = strlen(needle);
     #if defined(FP_MEMCASEMEM_BOYER) || \
-	defined(FP_MEMCASEMEM_BRUTE) || \
 	defined(FP_MEMCASECHR)
     // Convert needle to lower case if case insensitive.
     for (size_t i = 0; i < needle_len; ++i){
@@ -124,8 +123,6 @@ int main(int argc, char **argv){
     at = strstr(file_data, needle);
     #elif defined(FP_MEMCASEMEM_BOYER)
     at = fileperuser_memcasemem_boyer(file_data, last, needle, needle_len);
-    #elif defined(FP_MEMCASEMEM_BRUTE)
-    at = fileperuser_memcasemem_brute(file_data, last, needle, needle_len);
     #elif defined(FP_MEMCASECHR)
     at = fileperuser_memcasechr(file_data, last, *needle);
     #elif defined(STRCASESTR)
@@ -151,8 +148,6 @@ int main(int argc, char **argv){
 	at = strstr(at, needle);
 	#elif defined(FP_MEMCASEMEM_BOYER)
 	at = fileperuser_memcasemem_boyer(at, last, needle, needle_len);
-	#elif defined(FP_MEMCASEMEM_BRUTE)
-	at = fileperuser_memcasemem_brute(at, last, needle, needle_len);
 	#elif defined(FP_MEMCASECHR)
 	at = fileperuser_memcasechr(at, last, *needle);
 	#elif defined(STRCASESTR)

@@ -1,3 +1,17 @@
+2016-05-30  SilverNexus
+	* fileperuser_search.c: Remove fileperuser_memcasemem_brute().
+	  Outperformed even on needle length of 2 by fileperuser_memcasemem_boyer().
+	* fileperuser_search.h: Remove prototype for fileperuser_memcasemem_brute().
+	* jump_table.h: Adjust minimum threshold for building a jump table on
+	  case-insensitive searches down to 1.
+	* search.c: Move the declaration of last char* into no_case branch.
+	  Remove branch that called fileperuser_memcasemem_brute().
+	* test/performance_test/Makefile: Remove fp_memcasemem_brute targets.
+	* test/performance_test/main.c: Remove FP_MEMCASEMEM_BRUTE preprocessor checks
+	  and subsequent code sections.
+	* test/performance_test/run_test.sh: Remove fp_memcasemem_brute tests.
+	* test/performance_test/README: Remove reference to fp_memcasemem_brute.
+
 2016-05-29  SilverNexus
 	* output.c: Use fwrite() instead of printf() when telling the user
 	  the location of the output file.

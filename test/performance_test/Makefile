@@ -8,7 +8,7 @@ FP_SEARCH_O = fp_search.o
 
 # Make all the different test cases part of the 'all' target
 all: fp_memmem_boyer fp_memmem_brute memchr strstr strchr memmem \
-	fp_memcasemem_boyer fp_memcasemem_brute fp_memcasechr strcasestr
+	fp_memcasemem_boyer fp_memcasechr strcasestr
 
 # Set up each build target
 
@@ -33,9 +33,6 @@ memmem: memmem.o
 
 fp_memcasemem_boyer: fp_memcasemem_boyer.o $(FP_SEARCH_O)
 	$(CC) -o fp_memcasemem_boyer fp_memcasemem_boyer.o $(FP_SEARCH_O) $(CFLAGS)
-
-fp_memcasemem_brute: fp_memcasemem_brute.o $(FP_SEARCH_O)
-	$(CC) -o fp_memcasemem_brute fp_memcasemem_brute.o $(FP_SEARCH_O) $(CFLAGS)
 
 fp_memcasechr: fp_memcasechr.o $(FP_SEARCH_O)
 	$(CC) -o fp_memcasechr fp_memcasechr.o $(FP_SEARCH_O) $(CFLAGS)
@@ -66,9 +63,6 @@ memmem.o: main.c
 fp_memcasemem_boyer.o: main.c ../../fileperuser_search.h
 	$(CC) -c main.c -o fp_memcasemem_boyer.o -DFP_MEMCASEMEM_BOYER $(CFLAGS)
 
-fp_memcasemem_brute.o: main.c ../../fileperuser_search.h
-	$(CC) -c main.c -o fp_memcasemem_brute.o -DFP_MEMCASEMEM_BRUTE $(CFLAGS)
-
 fp_memcasechr.o: main.c ../../fileperuser_search.h
 	$(CC) -c main.c -o fp_memcasechr.o -DFP_MEMCASECHR $(CFLAGS)
 
@@ -81,5 +75,5 @@ $(FP_SEARCH_O): ../../fileperuser_search.c ../../fileperuser_search.h
 clean:
 	rm fp_memmem_boyer fp_memmem_boyer.o fp_memmem_brute fp_memmem_brute.o \
 	memchr memchr.o strstr strstr.o strchr strchr.o memmem memmem.o \
-	fp_memcasemem_boyer fp_memcasemem_boyer.o fp_memcasemem_brute fp_memcasemem_brute.o \
+	fp_memcasemem_boyer fp_memcasemem_boyer.o \
 	fp_memcasechr fp_memcasechr.o strcasestr strcasestr.o $(FP_SEARCH_O)

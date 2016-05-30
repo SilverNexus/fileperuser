@@ -73,43 +73,6 @@ char *fileperuser_memcasemem_boyer(char *haystack, const char * const haystack_l
     }
     return 0;
 }
-/**
- * Finds a substring in a block of memory, ignoring case.
- * Works better than boyer-moore on short needles.
- *
- * @param haystack
- * The block of memory to find the substring in.
- *
- * @param haystack_last
- * The last character of haystack we need to worry about.
- *
- * @param needle
- * The substring to search for. Must be converted to lowercase before
- * reaching this function.
- *
- * @param needle_len
- * The length of the search string.
- *
- * @return
- * Pointer to the first character in haystack of a match to needle, or 0 if it was not found.
- */
-char *fileperuser_memcasemem_brute(char *haystack, const char * const haystack_last, char *needle, size_t needle_len){
-    size_t at;
-    while (haystack < haystack_last){
-        if (tolower(*haystack) == *needle){
-	    at = 1;
-	    while (at < needle_len){
-		if (tolower(haystack[at]) != needle[at])
-		    break;
-		++at;
-	    }
-	    if (at == needle_len)
-		return haystack;
-        }
-        ++haystack;
-    }
-    return 0;
-}
 
 /**
  * Finds a character in a block of memory, ignoring case.

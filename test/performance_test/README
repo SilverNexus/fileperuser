@@ -14,6 +14,6 @@ the collection of tests.
 
 There are four groups that should share result counts.
 1. fp_memcasechr
-2. fp_memcasemem_boyer fp_memcasemem_brute strcasestr
+2. fp_memcasemem_boyer strcasestr
 3. fp_memmem_boyer fp_memmem_brute memmem strstr
 4. strchr memchr
