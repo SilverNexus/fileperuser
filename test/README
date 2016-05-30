@@ -1,0 +1,12 @@
+This is where various unit tests and metrics are put in order to ensure that the program runs correctly.
+
+All tests in here should be built independently of the main executable.
+That is, nothing in the main executable should require parts of these tests.
+For accuracy, however, these tests may call the main executable or compile specific
+code files of the main program.
+
+The performance test requires valgrind, since it uses the callgrind tool from it to
+measure the performance of each search function.
+
+The search test verifies that the current build of the program returns expected
+results from the search.

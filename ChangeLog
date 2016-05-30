@@ -6,6 +6,7 @@
 	* fileperuser_search.c: Removed extraneous include.
 	* test/performance_test/*: Added performance test to better judge
 	  where the cutoffs for choosing a function should lie.
+	* test/README: Add a readme to explain some rules for the tests.
 
 2016-05-28  SilverNexus
 	* search.c: Extract the needle length checks from the case-insensitive search
