@@ -1,0 +1,19 @@
+The performance test compares the performance of each of fileperuser's search methods
+with the performance of several standard and nonstandard search operations.
+
+The programs will expect that there is a file with a set of good variety test data,
+a search string, and valgrind to evaluate the performance of each type.
+
+The supplied Makefile will perform all the necessary builds.
+If your computer is missing one of the tested nonstandard functions, such as
+memmem(), then you may need to remove it from your Makefile and the subsquent test
+from the test script.
+
+After building the executables (`make` should suffice), run run_test.sh to run
+the collection of tests.
+
+There are four groups that should share result counts.
+1. fp_memcasechr
+2. fp_memcasemem_boyer fp_memcasemem_brute strcasestr
+3. fp_memmem_boyer fp_memmem_brute memmem strstr
+4. strchr memchr
