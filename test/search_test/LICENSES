@@ -1,0 +1,19 @@
+test_file contains:
+
+GNU General Public License, Version 2
+
+fileperuser_search.c; from this project.
+search.c; from this project.
+
+archetypes; from Crossfire RPG Game.
+
+
+
+Crossfire RPG Game is distributed under the GNU Genreal Public License version 2.
+
+If we assume that the test file is a derivate work of that projects,
+this should fall under the license agreement of the GNU General Public License.
+
+Should the maintainers of the project wish, I can remove parts of their program
+from my test data. I have other text I can use for test data, and wouldn't mind
+changing it if necessary.
