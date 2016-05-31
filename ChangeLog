@@ -6,6 +6,8 @@
 	  case-insensitive searches down to 1.
 	* search.c: Move the declaration of last char* into no_case branch.
 	  Remove branch that called fileperuser_memcasemem_brute().
+	  Fix an error that caused the length left to increase as a file was
+	  searched using the case-sensitive functions."
 	* test/performance_test/Makefile: Remove fp_memcasemem_brute targets.
 	* test/performance_test/main.c: Remove FP_MEMCASEMEM_BRUTE preprocessor checks
 	  and subsequent code sections.

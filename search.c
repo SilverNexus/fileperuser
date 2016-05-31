@@ -149,15 +149,15 @@ inline void parse_file(const char * const fpath, const off_t file_size){
 	/* I can also skip the subtraction of the current position from len on this because addr - in_line = 0. */ \
 	if (needle_len > MIN_JUMP_TABLE_CASE){ \
 	    found_at = fileperuser_memmem_boyer(first_var, len, settings.search_string, needle_len); \
-	    DO_##match_type ## _MATCHES(fileperuser_memmem_boyer(first_var, len - (addr - first_var), settings.search_string, needle_len)); \
+	    DO_##match_type ## _MATCHES(fileperuser_memmem_boyer(first_var, len - (first_var - addr), settings.search_string, needle_len)); \
 	} \
 	else if (needle_len > 1) { \
 	    found_at = fileperuser_memmem_brute(first_var, len, settings.search_string, needle_len); \
-	    DO_##match_type ## _MATCHES(fileperuser_memmem_brute(first_var, len - (addr - first_var), settings.search_string, needle_len)); \
+	    DO_##match_type ## _MATCHES(fileperuser_memmem_brute(first_var, len - (first_var - addr), settings.search_string, needle_len)); \
 	} \
 	else { \
 	    found_at = memchr(first_var, *(settings.search_string), len); \
-	    DO_##match_type ## _MATCHES(memchr(first_var, *(settings.search_string), len - (addr - first_var))); \
+	    DO_##match_type ## _MATCHES(memchr(first_var, *(settings.search_string), len - (first_var - addr))); \
 	} \
     }
 #else
