@@ -11,6 +11,8 @@
 	  and subsequent code sections.
 	* test/performance_test/run_test.sh: Remove fp_memcasemem_brute tests.
 	* test/performance_test/README: Remove reference to fp_memcasemem_brute.
+	* test/performance_test/LICENSES: Add a file describing the contents of the
+	  test file and the applicable licenses.
 
 2016-05-29  SilverNexus
 	* output.c: Use fwrite() instead of printf() when telling the user

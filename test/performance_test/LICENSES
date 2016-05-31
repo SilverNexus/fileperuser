@@ -1,0 +1,35 @@
+test_file contains:
+
+GNU General Public License, Version 2
+
+fileperuser_search.c; from this project.
+search.c; from this project.
+
+archetypes; from Crossfire RPG Game.
+
+An old version of the Makefile for these tests.
+A Code::Blocks layout file for a personal project.
+
+Autoconf-generated Makefile for UniversalCodeGrep.
+Autoconf-generated configure script for UniversalCodeGrep.
+
+Crossfire RPG Game Client Changelog.
+Crossfire RPG Game Archetypes Changelog.
+Crossfire RPG Game Maps Changelog.
+Crossfire RPG Game Server Changelog.
+
+An output from this project.
+
+A callgrind output on Crossfire RPG Game Server.
+
+
+
+UniversalCodeGrep and Crossfire RPG Game are both distributed under
+the GNU Genreal Public License; version 3 and 2, respectively.
+
+If we assume that the test file is a derivate work of both those projects,
+this should fall under the license agreement of the GNU General Public License.
+
+Should the maintainers of either project wish, I can remove parts of their program
+from my test data. I have other text I can use for test data, and wouldn't mind
+changing it if necessary.
