@@ -21,6 +21,7 @@
 	  the proper handling of the end of the file.
 	* test/search_test/test_*end: Add the results of the additional test cases
 	  to compare against in the test script.
+	* main.c: Optimize conversion of needle to lowercase on case-insensitive searches.
 
 2016-05-29  SilverNexus
 	* output.c: Use fwrite() instead of printf() when telling the user

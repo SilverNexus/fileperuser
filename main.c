@@ -83,7 +83,10 @@ int main(int argc, char *argv[]){
 	 * needle in the jump table to save time.
 	 */
 	if (settings.search_flags & FLAG_NO_CASE){
-	    for (size_t i = 0; i < needle_len; ++i){
+	    /*
+	     * Go from end to start, since comparison on 0 is cheaper.
+	     */
+	    for (size_t i = needle_len - 1; i; --i){
 		settings.search_string[i] = tolower(settings.search_string[i]);
 	    }
 	}
