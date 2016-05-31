@@ -1,4 +1,5 @@
 #!/bin/sh
+
 # Test the common cases here -- each search function under each type.
 ../../fileperuser -o script_results1 -d test_file "object "
 ../../fileperuser -o script_results2 -d test_file cake
@@ -13,6 +14,38 @@
 ../../fileperuser -o script_single_nocase_results1 -1 -n -d test_file attacks
 ../../fileperuser -o script_single_nocase_results2 -1 -n -d test_file Pi
 ../../fileperuser -o script_single_nocase_results3 -1 -n -d test_file r
+# Make a set of cases designed to catch the failure to search the end of the file.
+
+#
+# IMPORTANT: If the test file changes, these need to be adjusted to match the
+# new end of the test file. That is what they are testing for, anyway.
+#
+
+../../fileperuser -o script_testend -d test_file "end
+"
+../../fileperuser -o script_single_testend -1 -d test_file "end
+"
+../../fileperuser -o script_nocase_testend -n -d test_file "end
+"
+../../fileperuser -o script_single_nocase_testend -1 -n -d test_file "end
+"
+../../fileperuser -o script_shortend -d test_file "
+"
+../../fileperuser -o script_nocase_shortend -n -d test_file "
+"
+../../fileperuser -o script_single_shortend -1 -d test_file "
+"
+../../fileperuser -o script_single_nocase_shortend -1 -n -d test_file "
+"
+# These last couple are for case-sensitive needles to use boyer-moore.
+# We don't need to check case-insensitive since we already got the boyer-moore check.
+../../fileperuser -o script_longend -d test_file "ons
+end
+"
+../../fileperuser -o script_single_longend -1 -d test_file "ons
+end
+"
+
 # Compile the differences between the actual results and the expected results
 diff script_results1 test_results1 > diff_file
 diff script_results2 test_results2 >> diff_file
@@ -27,6 +60,18 @@ diff script_single_results3 test_single_results3 >> diff_file
 diff script_single_nocase_results1 test_single_nocase_results1 >> diff_file
 diff script_single_nocase_results2 test_single_nocase_results2 >> diff_file
 diff script_single_nocase_results3 test_single_nocase_results3 >> diff_file
+# And these for the end case
+diff script_testend test_testend >> diff_file
+diff script_single_testend test_single_testend >> diff_file
+diff script_nocase_testend test_nocase_testend >> diff_file
+diff script_single_nocase_testend test_single_nocase_testend >> diff_file
+diff script_shortend test_shortend >> diff_file
+diff script_single_shortend test_single_shortend >> diff_file
+diff script_nocase_shortend test_nocase_shortend >> diff_file
+diff script_single_nocase_shortend test_single_nocase_shortend >> diff_file
+diff script_longend test_longend >> diff_file
+diff script_single_longend test_single_longend >> diff_file
+
 # Show the differences
 RES=`cat diff_file`
 # Make sure that there was nothing in diff_file
@@ -40,6 +85,8 @@ fi
 rm script_results1 script_results2 script_results3 script_results4 script_nocase_results1 \
 script_nocase_results2 script_nocase_results3 script_single_results1 script_single_results2 \
 script_single_results3 script_single_nocase_results1 script_single_nocase_results2 \
- script_single_nocase_results3 diff_file
+script_single_nocase_results3 script_testend script_single_testend script_nocase_testend \
+script_single_nocase_testend script_shortend script_single_shortend script_nocase_shortend \
+script_single_nocase_shortend script_longend script_single_longend diff_file
 # exit successfully
 exit 0

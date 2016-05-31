@@ -17,6 +17,10 @@
 	  test file and the applicable licenses.
 	* test/search_test/LICENSES: Add a file describing the contents of the
 	  test file and the applicable licenses.
+	* test/search_test/test_search_results.sh: Add additional tests for ensuring
+	  the proper handling of the end of the file.
+	* test/search_test/test_*end: Add the results of the additional test cases
+	  to compare against in the test script.
 
 2016-05-29  SilverNexus
 	* output.c: Use fwrite() instead of printf() when telling the user
