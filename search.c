@@ -139,7 +139,6 @@ inline void parse_file(const char * const fpath, const off_t file_size){
  * Macroed for maintainability.
  */
 #define DETERMINE_SEARCH_FUNC_AND_SEARCH(first_var, match_type) \
-    /* Only count file lines if we find a match. */ \
     if (settings.search_flags & FLAG_NO_CASE){ \
         const char *last = addr + len - needle_len + 1; \
 	if (needle_len > MIN_JUMP_TABLE_NO_CASE){ \
@@ -197,6 +196,7 @@ inline void parse_file(const char * const fpath, const off_t file_size){
  * a single section of code.
  */
 #define FIND_AND_SET_LINE_NUM() \
+    /* Only count file lines if we find a match. */ \
     /* Substitute foundAt to make searching for lines easy */ \
     tmp = *found_at; \
     *found_at = '\0'; \
