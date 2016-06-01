@@ -96,6 +96,30 @@ inline void parse_file(const char * const fpath, const off_t file_size){
     // Make sure the end of the file data is set to a null character.
     addr[in] = '\0';
 #endif
+    // Check to see if we search binary files
+    // If we don't, find the first null character in the file
+    // If it is before the end of the file, we assume it is a binary file.
+    if (!(settings.search_flags & FLAG_BINARY_FILES)){
+	char *nul = memchr(addr, '\0', in);
+	// Make sure to add one here, since we might have changed the last char to a null
+	// on the mmap code setup.
+	// TODO: Refactor to check for binary before we fiddle with the last char.
+	if ((size_t)(nul - addr) + 1 < in){
+#ifdef HAVE_MMAP
+	    munmap(addr, file_size);
+	    close(fd);
+#else
+	    free(addr);
+#endif
+	    return;
+	}
+    }
+    /*
+     * in should be the size of the file when we get here in all cases.
+     * If we skip binary files, there is no reason to search those, leaving
+     * text files for the full length.
+     * If we search binary files, then we will always search the whole file.
+     */
     settings.file_parser(addr, in, fpath);
     
     // Cleanup
@@ -141,7 +165,7 @@ inline void parse_file(const char * const fpath, const off_t file_size){
  */
 #ifdef HAVE_MMAP
 #define DO_CASE_SENSITIVE(first_var, match_type) \
-    if (!addr[len - 1]){ \
+    if (!addr[len - 1] && !(settings.search_flags & FLAG_BINARY_FILES)){ \
         found_at = strstr(first_var, settings.search_string); \
         DO_##match_type ## _MATCHES(strstr(first_var, settings.search_string)); \
     } \

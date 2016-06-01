@@ -138,6 +138,15 @@
     settings.file_parser = search_file_single_match;
 
 /**
+ * Handles the toggle of whether or not we want to search binary files
+ *
+ * Macroed to allow for argument parsing to call it from multiple places without
+ * impacting performance
+ */
+#define HANDLE_SEARCH_BINARY_FILES() \
+    settings.search_flags |= FLAG_BINARY_FILES;
+
+/**
  * Parses flags that alter program behavior
  *
  * @param flagArgs The flag arguments to parse
@@ -189,6 +198,9 @@ int parseArgs(char **flagArgs, int flagCount){
 		case '1':
 		    HANDLE_LINE_MATCHER();
 		    break;
+		case 'b':
+		    HANDLE_SEARCH_BINARY_FILES();
+		    break;
 		case '-':
 		    // Move past the dash, since we don't need to handle it now.
 		    ++cur_flag;
@@ -222,6 +234,9 @@ int parseArgs(char **flagArgs, int flagCount){
 		    }
 		    else if (strcmp(cur_flag, "single-match") == 0){
 			HANDLE_LINE_MATCHER();
+		    }
+		    else if (strcmp(cur_flag, "binary-files") == 0){
+			HANDLE_SEARCH_BINARY_FILES();
 		    }
 		    else{
 			log_event(WARNING, "Invalid flag '%s' detected, skipping.", flagArgs[parseCount]);
@@ -264,5 +279,6 @@ void help_message(){
     puts("  -p --printlevel [level]   Sets the minimum log level to be displayed on-screen. Must be an integer. Default is 2 (WARNING).");
     puts("  -n --no-case              Sets the search to be case insensitive.");
     puts("  -1 --single-match         Match the search string at most once per line.");
+    puts("  -b --binary-files         Search in binary files as well as text files.");
     exit(EXIT_SUCCESS);
 }

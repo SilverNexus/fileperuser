@@ -1,13 +1,13 @@
 .\" Manpage for FilePeruser
 .\" Any corrections should be submitted to silvernexus@users.sourceforge.net
 
-.TH fileperuser 1 "02 May 2016" "0.02-dev" "FilePeruser Manual"
+.TH fileperuser 1 "01 June 2016" "0.02-dev" "FilePeruser Manual"
 
 .SH NAME
 FilePeruser
 
 .SH SYNOPSIS
-fileperuser [-1] [-n] [-h] [-x \fIdir\fR] [-X \fIpath\fR] [-d \fIpath\fR]
+fileperuser [-1] [-n] [-b] [-h] [-x \fIdir\fR] [-X \fIpath\fR] [-d \fIpath\fR]
 [-o \fIfile\fR] [-f \fIfile\fR] [-l \fIlevel\fR] [-p \fIlevel\fR]
 .I search
 
@@ -68,6 +68,10 @@ Search without case-sensitivity.
 .TP
 .B -1 --single-match
 Find only one match per line.
+
+.TP
+.B -b --binary-files
+Search binary files in addition to text files.
 
 .TP
 The levels for logging and printing are as follows:

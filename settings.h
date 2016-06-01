@@ -12,8 +12,9 @@
 #include <stddef.h>
 #include <stdio.h>
 
-#define FLAG_NONE    0x0000
-#define FLAG_NO_CASE 0x0001
+#define FLAG_NONE         0x0000
+#define FLAG_NO_CASE      0x0001
+#define FLAG_BINARY_FILES 0x0002
 
 struct {
     /*
