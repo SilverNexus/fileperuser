@@ -86,7 +86,9 @@ int main(int argc, char *argv[]){
 	    /*
 	     * Go from end to start, since comparison on 0 is cheaper.
 	     */
-	    for (size_t i = needle_len - 1; i; --i){
+	    for (size_t i = needle_len; i; ){
+		// There, now we will fix all characters.
+		--i;
 		settings.search_string[i] = tolower(settings.search_string[i]);
 	    }
 	}
