@@ -100,11 +100,12 @@ inline void parse_file(const char * const fpath, const off_t file_size){
     // If we don't, find the first null character in the file
     // If it is before the end of the file, we assume it is a binary file.
     if (!(settings.search_flags & FLAG_BINARY_FILES)){
-	char *nul = memchr(addr, '\0', in);
-	// Make sure to add one here, since we might have changed the last char to a null
-	// on the mmap code setup.
-	// TODO: Refactor to check for binary before we fiddle with the last char.
-	if ((size_t)(nul - addr) + 1 < in){
+	// Make the last character be null
+	char tmp = addr[in - 1];
+	addr[in - 1] = 0;
+	size_t n_len = strlen(addr);
+	// If our length is too short, then it is a binary file
+	if (n_len + 1 < in){
 #ifdef HAVE_MMAP
 	    munmap(addr, file_size);
 	    close(fd);
@@ -113,6 +114,7 @@ inline void parse_file(const char * const fpath, const off_t file_size){
 #endif
 	    return;
 	}
+	addr[in - 1] = tmp;
     }
     /*
      * in should be the size of the file when we get here in all cases.
