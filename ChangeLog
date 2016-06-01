@@ -5,6 +5,11 @@
 	* search.c: Add Functionality to test for binary files.
 	* README: Updated usage to reflect new binary file search feature.
 	* doc/fileperuser.man: Added usage information for new arguments.
+	* test/search_test/test_search_results.sh: Added tests for new binary
+	  files search option.
+	* test/search_test/test_binary_*: Added new test results.
+	* main.c: Fixed a bug that prevented the first character of needle from
+	  being converted to lowercase on case-insensitive searches.
 
 2016-05-30  SilverNexus
 	* fileperuser_search.c: Remove fileperuser_memcasemem_brute().
