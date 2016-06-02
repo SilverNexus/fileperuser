@@ -273,7 +273,7 @@ void search_file_multi_match(char * const addr, size_t len, const char * const f
 	do{ \
 	    FIND_AND_SET_LINE_NUM() \
 	    /* Go to the start of the next line to continue the search */ \
-	    end_line = strchr(found_at, '\n'); \
+	    end_line = memchr(found_at, '\n', len - (found_at - addr)); \
 	    if (!end_line) \
 		break; \
 	    /* Make sure we account for moving to a new line. */ \
