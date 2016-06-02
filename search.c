@@ -100,9 +100,12 @@ inline void parse_file(const char * const fpath, const off_t file_size){
     // If we don't, find the first null character in the file
     // If it is before the end of the file, we assume it is a binary file.
     if (!(settings.search_flags & FLAG_BINARY_FILES)){
-	// Make the last character be null
+#ifdef HAVE_MMAP
+	// Make the last character be null -- only do this for mmap,
+	// since the other loading method already ensured a null terminator.
 	char tmp = addr[in - 1];
 	addr[in - 1] = 0;
+#endif
 	size_t n_len = strlen(addr);
 	// If our length is too short, then it is a binary file
 	if (n_len + 1 < in){
@@ -114,7 +117,9 @@ inline void parse_file(const char * const fpath, const off_t file_size){
 #endif
 	    return;
 	}
+#ifdef HAVE_MMAP
 	addr[in - 1] = tmp;
+#endif
     }
     /*
      * in should be the size of the file when we get here in all cases.

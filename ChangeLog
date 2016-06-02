@@ -4,6 +4,7 @@
 	* settings.h: Define search flag for binary files.
 	* search.c: Add Functionality to test for binary files.
 	  Optimize line counting to use memchr() instead of strchr().
+	  Conditionally compile mmap file end fix only when we have mmap().
 	* README: Updated usage to reflect new binary file search feature.
 	* doc/fileperuser.man: Added usage information for new arguments.
 	* test/search_test/test_search_results.sh: Added tests for new binary
