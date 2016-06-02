@@ -197,16 +197,14 @@ inline void parse_file(const char * const fpath, const off_t file_size){
  */
 #define FIND_AND_SET_LINE_NUM() \
     /* Only count file lines if we find a match. */ \
-    /* Substitute foundAt to make searching for lines easy */ \
-    tmp = *found_at; \
-    *found_at = '\0'; \
     /* Find the line num. */ \
-    while ((end_line = strchr(start_line, '\n')) != 0){ \
+    /*
+     * memchr seems to be faster than strchr. Since we know there aren't any nulls in this segment
+     * (unless doing a binary file), we can memchr just fine. */ \
+    while ((end_line = memchr(start_line, '\n', found_at - start_line)) != 0){ \
 	++line_num; \
 	start_line = end_line + 1; \
     } \
-    /* Substitute back *foundAt. */ \
-    *found_at = tmp; \
     add_result(line_num, (long)found_at - (long)start_line + 1, fpath);
 
 /**
@@ -218,7 +216,6 @@ inline void parse_file(const char * const fpath, const off_t file_size){
 #define DO_MULTI_MATCHES(func) \
     if (found_at){ \
 	const char *start_line = addr, *end_line; \
-	char tmp; \
 	register int line_num = 1; \
 	do{ \
 	    FIND_AND_SET_LINE_NUM() \
@@ -261,7 +258,6 @@ void search_file_multi_match(char * const addr, size_t len, const char * const f
 #define DO_SINGLE_MATCHES(func) \
     if (found_at){ \
 	char *end_line; \
-	char tmp; \
 	register int line_num = 1; \
 	do{ \
 	    FIND_AND_SET_LINE_NUM() \
