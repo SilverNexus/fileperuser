@@ -87,8 +87,12 @@ inline void parse_file(const char * const fpath, const off_t file_size){
     }
     // Read the file into the malloc'ed space.
     in = fread(addr, sizeof(char), file_size, file);
-    if (in != file_size)
-	log_event(WARNING, "Short read occurred, may produce bogus results.");
+    if (in != file_size){
+	// If we get a short read, there are big problems on the disk. Don't bother with the file.
+	log_event(ERROR, "Short read occurred, may produce bogus results.");
+	fclose(file);
+	return;
+    }
     // Now I can even close this before the call, since we have a copy of the data.
     fclose(file);
     // Make sure the end of the file data is set to a null character.
