@@ -61,6 +61,15 @@ int main(int argc, char *argv[]){
         if (parse_results == -1){
             help_message();
         }
+	/* Get this earlier to reduce processing if no search string */
+	// Get the length of the needle.
+	needle_len = strlen(settings.search_string);
+	// If no needle, we can bail now.
+	if (!needle_len){
+	    log_event(ERROR, "Search string has no length.");
+	    return 1;
+	}
+
         // Root directory defaults to current directory, so set if not set in args
         if (!settings.root_dirs){
             add_root_dir(".");
@@ -70,13 +79,6 @@ int main(int argc, char *argv[]){
 	// but only do that if we are writing to it.
 	if (settings.output_file)
 	    remove(settings.output_file);
-	// Get the length of the needle.
-	needle_len = strlen(settings.search_string);
-	// If no needle, we can bail now.
-	if (!needle_len){
-	    log_event(ERROR, "Search string has no length.");
-	    return 1;
-	}
 	/*
 	 * Convert the needle to lowercase if we are doing a case insensitive search.
 	 * We do this before the jump table so we can make some assumptions about the

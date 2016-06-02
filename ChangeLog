@@ -1,6 +1,8 @@
 2016-06-02  SilverNexus
 	* fileperuser_search.c: Reduce the math required to return a value in fileperuser_memmem_boyer().
 	* search.c: Increase severity of short read on non-mmap file load to ERROR and bail on that file.
+	* main.c: Move search string length check up to reduce unnecessary processing when no search
+	  string is supplied.
 
 2016-06-01  SilverNexus
 	* parseArgs.c: Add arguments -b and --binary to toggle searching binary
