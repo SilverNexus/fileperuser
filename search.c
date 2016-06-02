@@ -73,8 +73,6 @@ inline void parse_file(const char * const fpath, const off_t file_size){
 	return;
     }
     in = file_size;
-    if (addr[file_size - 1] != settings.search_string[needle_len - 1])
-	addr[file_size - 1] = '\0';
 #else
     char * const addr = (char *)malloc(sizeof(char) * (file_size + 1));
     if (!addr){
@@ -118,7 +116,10 @@ inline void parse_file(const char * const fpath, const off_t file_size){
 	    return;
 	}
 #ifdef HAVE_MMAP
-	addr[in - 1] = tmp;
+	// If tmp does not match the end of the needle, then don't bother resetting it.
+	// We only need this when checking for binary files, anyway.
+	if (tmp == settings.search_string[needle_len - 1])
+	    addr[in - 1] = tmp;
 #endif
     }
     /*
