@@ -134,8 +134,13 @@ char *fileperuser_memmem_boyer(char *haystack, size_t haystack_len, char *needle
 	    }
 	    // Unsigned integer abuse
 	    if (ch > needle_len){
-		/** - (needle_len - 1) == - needle_len + 1 */
-		return haystack + at - needle_len + 1;
+		/*
+		 * We can use c_at instead to make this use less math.
+		 * We add 1 since we exit the loop at the unsigned equivalent of -1 relative to
+		 * the start of our seached section.
+		 * This puts us back to the beginning of the searched section.
+		 */
+		return haystack + c_at + 1;
 	    }
 	    // Move the jump so it aligns with the next letter in the needle that matches this.
 	    // Fall through to the same code as otherwise
