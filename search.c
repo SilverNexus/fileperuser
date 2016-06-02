@@ -200,7 +200,8 @@ inline void parse_file(const char * const fpath, const off_t file_size){
     /* Find the line num. */ \
     /*
      * memchr seems to be faster than strchr. Since we know there aren't any nulls in this segment
-     * (unless doing a binary file), we can memchr just fine. */ \
+     * (unless doing a binary file), we can memchr just fine.
+     */ \
     while ((end_line = memchr(start_line, '\n', found_at - start_line)) != 0){ \
 	++line_num; \
 	start_line = end_line + 1; \
