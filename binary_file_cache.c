@@ -240,3 +240,21 @@ void add_new_binary_file(const char * const bin_path){
 
     link_dir_node(node, &new_cache_list);
 }
+
+/**
+ * Check a given path for its presence in the cache as a binary file.
+ *
+ * @param path
+ * The file to check against the cache.
+ *
+ * @retval 1
+ * The file is in the cache.
+ *
+ * @retval 0
+ * The file is not in the cache.
+ */
+int check_path(const char * const path){
+    // Do a binary search on the array of cached files.
+    // Return 1 on a non-zero result.
+    return bsearch(path, binary_file_list, list_length, sizeof(char *), strcmp) ? 1 : 0;
+}

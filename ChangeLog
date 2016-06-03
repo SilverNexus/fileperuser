@@ -4,8 +4,10 @@
 	* load_binary_file_cache.c -> binary_file_cache.c
 	* binary_file_cache.c: Polish the implementation to match use of header file.
 	  Add function to link new detected files into the DIR_LIST for them.
-	* binary_file_cache.h: Make the binary cache functiona ccessible outside the source file.
+	  Add function to search the cache for a given path.
+	* binary_file_cache.h: Make the binary cache function accessible outside the source file.
 	  Add declaration for adding newly detected binary files into a linked list.
+	  Add declaration for searching for a path in the cache.
 
 2016-06-02  SilverNexus
 	* fileperuser_search.c: Reduce the math required to return a value in fileperuser_memmem_boyer().
