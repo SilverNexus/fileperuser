@@ -1,6 +1,7 @@
 2016-06-03  SilverNexus
 	* search.c: Remove unecessary variable in parse_file().
 	* load_binary_file_cache.c: Implement writing of cache to file.
+	* load_binary_file_cache.c -> binary_file_cache.c
 
 2016-06-02  SilverNexus
 	* fileperuser_search.c: Reduce the math required to return a value in fileperuser_memmem_boyer().
