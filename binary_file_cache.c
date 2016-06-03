@@ -29,6 +29,15 @@
 #include "ErrorLog.h"
 #include "dir_list.h"
 #include <stdlib.h>
+#include "binary_file_cache.h"
+
+/*
+ * Define the variables listed as extern in the header file.
+ */
+DIR_LIST *new_cache_list;
+unsigned num_new_files;
+char **binary_file_list;
+unsigned list_length;
 
 /**
  * Loads the binary file list from disk.
@@ -47,7 +56,6 @@ int read_cache_file(const char * const path){
 	return 1;
     }
     // The first thing in the file is the number of entries in the list.
-    unsigned int list_length;
     // To reduce conversions, the file stores the length in a binary format.
     /*
      * We shouldn't have to deal with endianness because this shouldn't be
@@ -62,8 +70,6 @@ int read_cache_file(const char * const path){
     // Skip the newline after that value
     fseek(cache_file, 1, SEEK_CUR);
     // Set up an array of the binary file paths.
-    // TODO: Make this accessible outside the function
-    const char **binary_file_list;
     binary_file_list = malloc(sizeof(char *) * list_length);
     // Check for allocation failure
     if (!binary_file_list){

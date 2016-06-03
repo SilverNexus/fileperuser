@@ -2,6 +2,8 @@
 	* search.c: Remove unecessary variable in parse_file().
 	* load_binary_file_cache.c: Implement writing of cache to file.
 	* load_binary_file_cache.c -> binary_file_cache.c
+	* binary_file_cache.c: Polish the implementation to match use of header file.
+	* binary_file_cache.h: Make the binary cache functiona ccessible outside the source file.
 
 2016-06-02  SilverNexus
 	* fileperuser_search.c: Reduce the math required to return a value in fileperuser_memmem_boyer().
