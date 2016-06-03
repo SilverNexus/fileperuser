@@ -27,6 +27,8 @@
 // TODO: Maybe in the future we try to do more low-level access?
 #include <stdio.h>
 #include "ErrorLog.h"
+#include "dir_list.h"
+#include <stdlib.h>
 
 /**
  * Loads the binary file list from disk.
@@ -94,4 +96,47 @@ void cleanup_cache_list(){
 	free(binary_file_list[i]);
     }
     free(binary_file_list);
+}
+
+/**
+ * Writes the new cache to file, including any new detected binary files.
+ *
+ * @retval 0 Cache written successfully.
+ *
+ * @retval 1 Cache write failed.
+ */
+int save_binary_cache(){
+    // If no new files, skip this step entirely -- the cache should still be there
+    if (num_new_files){
+	/*
+	 * First, count the number of new binary files we found. These are stored in a linked list
+	 * from the program. To ease the process, we will stuff them in an array and sort the array.
+	 */
+	char **new_binary_files = malloc(sizeof(char *) * num_new_files);
+	if (!new_binary_files){
+	    log_event(FATAL, "Could not make an array to sort the new binary files.");
+	}
+	// Get the head of the linked list
+	DIR_LIST *new_files = new_cache_list;
+	// Then we just make pointer assignments to all the paths -- if they made it here, they'll stick around.
+	// We want to stop at the end of the linked list and at the end of our allocated space.
+	// Since we're sorting them later anyway, it matters little what order they start in.
+	for (unsigned i = num_new_files; new_files || i; ){
+	    --i; // Make it an array index.
+	    new_binary_files[i] = new_files->dir;
+	    new_files = new_files->next;
+	}
+	if (i){
+	    log_event(ERROR, "Binary cache was shorter than expected, skipping addition of new entries.");
+	    return 1;
+	}
+	if (new_files){
+	    log_event(ERROR, "Binary cache was longer than expected, skipping addition of new entries.");
+	    return 1;
+	}
+	// Sort them into asciibetical order.
+	qsort(new_binary_files, num_new_files, sizeof(char *), strcmp);
+	// Now we begin to rewrite the cache file.
+	// TODO: Implement
+    }
 }
