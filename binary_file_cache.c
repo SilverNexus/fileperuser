@@ -226,3 +226,17 @@ int save_binary_cache(const char *const path){
 	return 0;
     }
 }
+
+/**
+ * Adds a new binary file to the binary file cache list.
+ *
+ * @param bin_path
+ * The path to the binary file.
+ */
+void add_new_binary_file(const char * const bin_path){
+    // Init_dir_node terminates if allocation fails.
+    // TODO: See if I need to dynamically allocate the path somewhere along the way.
+    DIR_LIST *node = init_dir_node(bin_path);
+
+    link_dir_node(node, &new_cache_list);
+}
