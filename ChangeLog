@@ -7,6 +7,7 @@
 	  Alter detection of next line in single match to use memchr().
 	* main.c: Move search string length check up to reduce unnecessary processing when no search
 	  string is supplied.
+	* load_binary_file_cache.c: Begin to implement a binary file list that persists between executions.
 
 2016-06-01  SilverNexus
 	* parseArgs.c: Add arguments -b and --binary to toggle searching binary
