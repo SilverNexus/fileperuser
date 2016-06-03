@@ -101,11 +101,14 @@ void cleanup_cache_list(){
 /**
  * Writes the new cache to file, including any new detected binary files.
  *
+ * @param path
+ * The path to the cache file.
+ *
  * @retval 0 Cache written successfully.
  *
  * @retval 1 Cache write failed.
  */
-int save_binary_cache(){
+int save_binary_cache(const char *const path){
     // If no new files, skip this step entirely -- the cache should still be there
     if (num_new_files){
 	/*
@@ -118,10 +121,12 @@ int save_binary_cache(){
 	}
 	// Get the head of the linked list
 	DIR_LIST *new_files = new_cache_list;
+	// We will use i again later, so declare it outside the loop
+	unsigned i = num_new_files;
 	// Then we just make pointer assignments to all the paths -- if they made it here, they'll stick around.
 	// We want to stop at the end of the linked list and at the end of our allocated space.
 	// Since we're sorting them later anyway, it matters little what order they start in.
-	for (unsigned i = num_new_files; new_files || i; ){
+	while (new_files || i){
 	    --i; // Make it an array index.
 	    new_binary_files[i] = new_files->dir;
 	    new_files = new_files->next;
@@ -137,6 +142,81 @@ int save_binary_cache(){
 	// Sort them into asciibetical order.
 	qsort(new_binary_files, num_new_files, sizeof(char *), strcmp);
 	// Now we begin to rewrite the cache file.
-	// TODO: Implement
+	// We are not simply appending to the file
+	/*
+	 * It may be worth doing this atomically, but the cache isn't mission critical, so I'll not do that for now.
+	 */
+	FILE *cache_file = fopen(path, "w");
+	if (!cache_file){
+	    log_event(ERROR, "Could not open cache file %s for writing.", path);
+	    return 1;
+	}
+	// Get the total length of the list. It should be the length of the old list plus the length of the additions.
+	size_t total_len = list_length + num_new_files;
+	// First, write the number of entries in binary to the file.
+	size_t written = fwrite(&total_len, sizeof(int), 1, cache_file);
+	if (written < sizeof(int)){
+	    log_event(ERROR, "Short write occurred on cache file write.");
+	    fclose(cache_file);
+	    // We broke the cache file, so get rid of it.
+	    remove(path);
+	    return 1;
+	}
+	// Write a newline afterward to ease readability.
+	fputc('\n', cache_file);
+	/*
+	 * The i from earlier will be the index in the existing cache list, while j is the index in the new list.
+	 */
+	unsigned j = 0;
+	i = 0;
+	// Storage for the result of strcmp
+	int cmp_res;
+	/*
+	 * We start with the section where we have results in both sections.
+	 * We can't use an || here, though, because we'll segfault when one reaches the end and not the other.
+	 */
+	while (i < list_length && j < num_new_files){
+	    cmp_res = strcmp(binary_file_list[i], new_binary_files[j]);
+	    // If binary_file_list has the next path asciibetically, write it to the file and increment i.
+	    if (cmp_res < 0){
+		fputs(binary_file_list[i], cache_file);
+		++i;
+	    }
+	    // If new_binary_files has the next path asciibetically, write it to the file and increment j.
+	    else if (cmp_res > 0){
+		fputs(new_binary_files[j], cache_file);
+		++j;
+	    }
+	    // If they are the same, write the path once and increment both.
+	    else{
+		// Also, we shouldn't have reached this, so log a warning.
+		log_event(WARNING, "New and old file lists had matching path (%s).", binary_file_list[i]);
+		fputs(binary_file_list[i], cache_file);
+		++i;
+		++j;
+	    }
+	    // I don't believe fputs append a newline like puts.
+	    fputc('\n', cache_file);
+	}
+	// Now we handle when one list runs out.
+	if (i == list_length){
+	    while(j < num_new_files){
+		fputs(new_binary_files[j], cache_file);
+		fputc('\n', cache_file);
+		++j;
+	    }
+	}
+	// Check the other list, too.
+	// We can use an else here since j == num_new_files after we reach the end of the first if clause, anyway.
+	else if (j == num_new_files){
+	    while(i < list_length){
+		fputs(binary_file_list[i], cache_file);
+		fputc('\n', cache_file);
+		++i;
+	    }
+	}
+	// And we're done.
+	fclose(cache_file);
+	return 0;
     }
 }
