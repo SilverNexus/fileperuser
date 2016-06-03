@@ -56,7 +56,6 @@
  * The size of the file. Assumed to be greater than zero.
  */
 inline void parse_file(const char * const fpath, const off_t file_size){
-    size_t in;
 #ifdef HAVE_MMAP
     // Open the file and get the file descriptor
     const int fd = open(fpath, O_RDONLY);
@@ -72,7 +71,6 @@ inline void parse_file(const char * const fpath, const off_t file_size){
 	log_event(ERROR, "Failed to map file descriptor %d (%s).", fd, fpath);
 	return;
     }
-    in = file_size;
 #else
     char * const addr = (char *)malloc(sizeof(char) * (file_size + 1));
     if (!addr){
@@ -86,17 +84,16 @@ inline void parse_file(const char * const fpath, const off_t file_size){
 	return;
     }
     // Read the file into the malloc'ed space.
-    in = fread(addr, sizeof(char), file_size, file);
-    if (in != file_size){
+    if (fread(addr, sizeof(char), file_size, file) != file_size){
 	// If we get a short read, there are big problems on the disk. Don't bother with the file.
-	log_event(ERROR, "Short read occurred, may produce bogus results.");
+	log_event(ERROR, "Short read occurred, skipping file.");
 	fclose(file);
 	return;
     }
     // Now I can even close this before the call, since we have a copy of the data.
     fclose(file);
     // Make sure the end of the file data is set to a null character.
-    addr[in] = '\0';
+    addr[file_size] = '\0';
 #endif
     // Check to see if we search binary files
     // If we don't, find the first null character in the file
@@ -105,12 +102,12 @@ inline void parse_file(const char * const fpath, const off_t file_size){
 #ifdef HAVE_MMAP
 	// Make the last character be null -- only do this for mmap,
 	// since the other loading method already ensured a null terminator.
-	char tmp = addr[in - 1];
-	addr[in - 1] = 0;
+	char tmp = addr[file_size - 1];
+	addr[file_size - 1] = 0;
 #endif
 	size_t n_len = strlen(addr);
 	// If our length is too short, then it is a binary file
-	if (n_len + 1 < in){
+	if (n_len + 1 < (size_t)file_size){
 #ifdef HAVE_MMAP
 	    munmap(addr, file_size);
 	    close(fd);
@@ -123,7 +120,7 @@ inline void parse_file(const char * const fpath, const off_t file_size){
 	// If tmp does not match the end of the needle, then don't bother resetting it.
 	// We only need this when checking for binary files, anyway.
 	if (tmp == settings.search_string[needle_len - 1])
-	    addr[in - 1] = tmp;
+	    addr[file_size - 1] = tmp;
 #endif
     }
     /*
@@ -132,7 +129,7 @@ inline void parse_file(const char * const fpath, const off_t file_size){
      * text files for the full length.
      * If we search binary files, then we will always search the whole file.
      */
-    settings.file_parser(addr, in, fpath);
+    settings.file_parser(addr, file_size, fpath);
     
     // Cleanup
 #ifdef HAVE_MMAP
