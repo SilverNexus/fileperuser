@@ -59,6 +59,39 @@ int read_cache_file(const char * const path){
     }
     // Skip the newline after that value
     fseek(cache_file, 1, SEEK_CUR);
-    // TODO: Set up an array of the binary file paths.
+    // Set up an array of the binary file paths.
+    // TODO: Make this accessible outside the function
+    const char **binary_file_list;
+    binary_file_list = malloc(sizeof(char *) * list_length);
+    // Check for allocation failure
+    if (!binary_file_list){
+	// FATAL bails out of the program.
+	log_event(FATAL, "Failed to allocate space for binary file list cache.");
+    }
+    // Now read the file list from the file
     char linebuffer[1000]; // WAY bigger than anything should sensibly be
+
+    // Order matters here -- the output should be sorted for a binary search.
+    for (unsigned i = 0; i < list_length; ++i){
+	fgets(linebuffer, 1000, cache_file);
+	// Set up and copy to the binary file list.
+	binary_file_list[i] = malloc(sizeof(char) * (strlen(linebuffer) + 1));
+	if (!binary_file_list[i]){
+	    log_event(FATAL, "Memory allocation failure for file path #%lu (%s).", i + 1, linebuffer);
+	}
+	// Since we specifically allocated for the result, we can safely use strcpy.
+	strcpy(binary_file_list[i], linebuffer);
+    }
+}
+
+/**
+ * Cleans up the dynamically allocated sections of the cache array.
+ */
+void cleanup_cache_list(){
+    // On cleanup, order does not matter.
+    for (unsigned i = list_length; i; ){
+	--i; // Turn the count into an array index.
+	free(binary_file_list[i]);
+    }
+    free(binary_file_list);
 }
