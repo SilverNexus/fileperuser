@@ -95,8 +95,12 @@ int main(int argc, char *argv[]){
 	    }
 	}
 	if (!(settings.search_flags & FLAG_BINARY_FILES)){
-	    // Initialize and indicate to run cleanup at program termination.
+	    // Initialize
 	    init_binary_cache();
+	    // For now, the cache file is centralized.
+	    // It will likely contain a lot of cruft, but its easier to implement than tossing files everywhere.
+	    read_cache_file(settings.cache_file);
+	    // Tell the program to clean up its mess later.
 	    atexit(cleanup_cache_list);
 	}
 	// Build the jump table.
@@ -119,6 +123,10 @@ int main(int argc, char *argv[]){
             settings.base_search_path_length = 0;
             thisDir = thisDir->next;
         } while (thisDir);
+	// Don't forget to save the cache with its new pieces.
+	if (!(settings.search_flags & FLAG_BINARY_FILES)){
+	    save_cache_file(settings.cache_file);
+	}
         output_matches();
     }
     else{

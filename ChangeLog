@@ -4,6 +4,7 @@
 	  Add a function to initialize the global values.
 	* search.c: Implement the check of the cache.
 	* main.c: Call the initialization of the cache and set up for cleanup at termination.
+	  Set up loading and saving of the cache file.
 	* binary_file_cache.h: Add prototype for cache initialization.
 
 2016-06-03  SilverNexus
