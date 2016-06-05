@@ -8,9 +8,10 @@
 	  Fix improper handling of fread() and fwrite() return values.
 	  Fix improper handling of compare function for qsort.
 	  Handle the newline read in with fgets().
-	  Fix non-ftw directory walk to also check the binary cache.
+	  Fix improper handling of duplicate cache records.
 	* search.c: Implement the check of the cache.
 	  Implement the addition of new entries on detection of a binary file.
+	  Fix non-ftw directory walk to also check the binary cache.
 	* main.c: Call the initialization of the cache and set up for cleanup at termination.
 	  Set up loading and saving of the cache file.
 	* binary_file_cache.h: Add prototype for cache initialization.

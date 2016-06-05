@@ -269,6 +269,8 @@ int save_cache_file(const char *const path){
 		// Also, we shouldn't have reached this, so log a warning.
 		log_event(WARNING, "New and old file lists had matching path (%s).", binary_file_list[i]);
 		fputs(binary_file_list[i], cache_file);
+		// Reduce the size by 1, too.
+		--total_len;
 		++i;
 		++j;
 	    }
@@ -291,6 +293,11 @@ int save_cache_file(const char *const path){
 		fputc('\n', cache_file);
 		++i;
 	    }
+	}
+	// Now, make sure we didn't have duplicates. If we did, update the length.
+	if (list_length + num_new_files > total_len){
+	    fseek(cache_file, 0, SEEK_SET);
+	    fwrite(&total_len, sizeof(int), 1, cache_file);
 	}
 	// And we're done.
 	fclose(cache_file);
