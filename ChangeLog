@@ -6,6 +6,7 @@
 	  Make sure we do a deep copy of the path -- the original pointer gets reused
 	  or deallocated before we end.
 	* search.c: Implement the check of the cache.
+	  Implement the addition of new entries on detection of a binary file.
 	* main.c: Call the initialization of the cache and set up for cleanup at termination.
 	  Set up loading and saving of the cache file.
 	* binary_file_cache.h: Add prototype for cache initialization.

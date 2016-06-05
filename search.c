@@ -114,6 +114,8 @@ inline void parse_file(const char * const fpath, const off_t file_size){
 #else
 	    free(addr);
 #endif
+	    // Add it to the binary file cache
+	    add_new_binary_file(fpath);
 	    return;
 	}
 #ifdef HAVE_MMAP
