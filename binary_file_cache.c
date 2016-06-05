@@ -73,7 +73,7 @@ static int compare_sort(const void *a, const void *b){
  * > 0 if a > b (later asciibetically)
  */
 static int compare_search(const void *a, const void *b){
-    return strcmp((const char *)a, (const char *)b);
+    return strcmp((const char *)a, *((const char **)b));
 }
 
 /**
