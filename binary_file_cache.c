@@ -30,6 +30,7 @@
 #include "dir_list.h"
 #include <stdlib.h>
 #include "binary_file_cache.h"
+#include <string.h>
 
 /*
  * Define the variables listed as extern in the header file.
@@ -38,6 +39,24 @@ DIR_LIST *new_cache_list;
 unsigned num_new_files;
 char **binary_file_list;
 unsigned list_length;
+
+/**
+ * Wrapper for strcmp for use in qsort and bsearch.
+ *
+ * @param a
+ * The first item to compare.
+ *
+ * @param b
+ * The second item to compare.
+ *
+ * @return
+ * < 0 if a < b (earlier asciibetically)
+ * 0 if identical
+ * > 0 if a > b (later asciibetically)
+ */
+static int compare(const void *a, const void *b){
+    return strcmp((const char *)a, (const char *)b);
+}
 
 /**
  * Loads the binary file list from disk.
@@ -146,7 +165,7 @@ int save_binary_cache(const char *const path){
 	    return 1;
 	}
 	// Sort them into asciibetical order.
-	qsort(new_binary_files, num_new_files, sizeof(char *), strcmp);
+	qsort(new_binary_files, num_new_files, sizeof(char *), compare);
 	// Now we begin to rewrite the cache file.
 	// We are not simply appending to the file
 	/*
@@ -256,5 +275,5 @@ void add_new_binary_file(const char * const bin_path){
 int check_path(const char * const path){
     // Do a binary search on the array of cached files.
     // Return 1 on a non-zero result.
-    return bsearch(path, binary_file_list, list_length, sizeof(char *), strcmp) ? 1 : 0;
+    return bsearch(path, binary_file_list, list_length, sizeof(char *), compare) ? 1 : 0;
 }
