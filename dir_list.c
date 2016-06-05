@@ -29,7 +29,9 @@
 /**
  * Initializes an instance of the dir_list structure
  *
- * @param directory The directory this node stores.
+ * @param directory
+ * The directory this node stores.
+ * Should be allocated and cleaned seperately from the DIR_LIST.
  *
  * @return Pointer to the new node. Will terminate if allocation fails,
  * so this will never be null.
