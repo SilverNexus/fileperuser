@@ -137,6 +137,17 @@ void cleanup_cache_list(){
 	free(binary_file_list[i]);
     }
     free(binary_file_list);
+    // We also need to clean up the directory linked list from new files.
+    DIR_LIST *tmp = new_cache_list;
+    // TODO: Do both cleanup part on the dir_list in one pass.
+    // We are handling the cleanup of the dynamically allocated path list.
+    while (tmp){
+	// Free the copied directory path.
+	free(tmp->dir);
+	tmp = tmp->next;
+    }
+    // Then we just do the normal directory list cleanup.
+    free_dir_list(new_cache_list);
 }
 
 /**
@@ -258,6 +269,7 @@ int save_binary_cache(const char *const path){
 	}
 	// And we're done.
 	fclose(cache_file);
+	free(new_binary_files);
     }
     return 0;
 }
