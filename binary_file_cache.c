@@ -96,6 +96,8 @@ int read_cache_file(const char * const path){
     size_t bytes = fread(&list_length, sizeof(int), 1, cache_file);
     if (bytes < sizeof(int)){
 	log_event(ERROR, "Cache file %s is truncated... skipping.", path);
+	fclose(cache_file);
+	return 1;
     }
     // Skip the newline after that value
     fseek(cache_file, 1, SEEK_CUR);
@@ -120,6 +122,9 @@ int read_cache_file(const char * const path){
 	// Since we specifically allocated for the result, we can safely use strcpy.
 	strcpy(binary_file_list[i], linebuffer);
     }
+    // We finished, so close the file and exit
+    fclose(cache_file);
+    return 0;
 }
 
 /**
@@ -253,8 +258,8 @@ int save_binary_cache(const char *const path){
 	}
 	// And we're done.
 	fclose(cache_file);
-	return 0;
     }
+    return 0;
 }
 
 /**

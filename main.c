@@ -38,6 +38,7 @@
 #include "jump_table.h"
 #include <string.h>
 #include <ctype.h>
+#include "binary_file_cache.h"
 
 static void handle_sigint(int sig){
     puts("\nSIGINT Received. Dumping current results to file.");
