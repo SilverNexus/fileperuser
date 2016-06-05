@@ -160,7 +160,7 @@ void cleanup_cache_list(){
  *
  * @retval 1 Cache write failed.
  */
-int save_binary_cache(const char *const path){
+int save_cache_file(const char *const path){
     // If no new files, skip this step entirely -- the cache should still be there
     if (num_new_files){
 	/*

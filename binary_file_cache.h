@@ -20,7 +20,7 @@ extern unsigned list_length;
 void init_binary_cache();
 int read_cache_file(const char *const path);
 void cleanup_cache_list();
-int save_binary_cache(const char *const path);
+int save_cache_file(const char *const path);
 void add_new_binary_file(const char * const bin_path);
 int check_path(const char * const path);
 
