@@ -94,7 +94,7 @@ int read_cache_file(const char * const path){
      * output to, but I should investigate into that more.
      */
     size_t bytes = fread(&list_length, sizeof(int), 1, cache_file);
-    if (bytes < sizeof(int)){
+    if (bytes < 1){
 	log_event(ERROR, "Cache file %s is truncated... skipping.", path);
 	fclose(cache_file);
 	return 1;
@@ -207,7 +207,7 @@ int save_cache_file(const char *const path){
 	size_t total_len = list_length + num_new_files;
 	// First, write the number of entries in binary to the file.
 	size_t written = fwrite(&total_len, sizeof(int), 1, cache_file);
-	if (written < sizeof(int)){
+	if (written < 1){
 	    log_event(ERROR, "Short write occurred on cache file write.");
 	    fclose(cache_file);
 	    // We broke the cache file, so get rid of it.

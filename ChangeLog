@@ -5,6 +5,7 @@
 	  Clean up some unfinished code paths and memory management errors.
 	  Make sure we do a deep copy of the path -- the original pointer gets reused
 	  or deallocated before we end.
+	  Fix improper handling of fread() and fwrite() return values.
 	* search.c: Implement the check of the cache.
 	  Implement the addition of new entries on detection of a binary file.
 	* main.c: Call the initialization of the cache and set up for cleanup at termination.
