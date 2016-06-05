@@ -428,6 +428,12 @@ void search_folder(const char *fpath){
 			// Preprocess this out unless we really need it.
 			log_event(INFO, "Searching for '%s' in %s.", settings.search_string, currentDir);
 #endif
+			if (!(settings.search_flags & FLAG_BINARY_FILES)){
+			    /* Check to see if the file is in the binary file cache. */
+			    if (check_path(currentDir))
+				// If yes, skip it.
+				break;
+			}
 			parse_file(currentDir, sb.st_size);
 		    }
 		    break;
