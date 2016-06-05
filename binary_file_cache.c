@@ -282,10 +282,17 @@ int save_binary_cache(const char *const path){
  */
 void add_new_binary_file(const char * const bin_path){
     // Init_dir_node terminates if allocation fails.
-    // TODO: See if I need to dynamically allocate the path somewhere along the way.
-    DIR_LIST *node = init_dir_node(bin_path);
+    // I need to dynamically allocate the path somewhere along the way.
+    char *path = malloc(sizeof(char) * (strlen(bin_path) + 1));
+    if (!path)
+	log_event(FATAL, "Out of memory to cache path %s as a binary file.", bin_path);
+    // We allocated carefully, so we can use simple strcpy().
+    strcpy(path, bin_path);
+    DIR_LIST *node = init_dir_node(path);
 
     link_dir_node(node, &new_cache_list);
+    // Make sure we keep track of how many elements are in the list.
+    ++num_new_files;
 }
 
 /**

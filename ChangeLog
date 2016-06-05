@@ -3,6 +3,8 @@
 	* binary_file_cache.c: Correct some warnings from sort and search comparisons.
 	  Add a function to initialize the global values.
 	  Clean up some unfinished code paths and memory management errors.
+	  Make sure we do a deep copy of the path -- the original pointer gets reused
+	  or deallocated before we end.
 	* search.c: Implement the check of the cache.
 	* main.c: Call the initialization of the cache and set up for cleanup at termination.
 	  Set up loading and saving of the cache file.
