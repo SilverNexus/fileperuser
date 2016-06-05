@@ -33,6 +33,7 @@
 #include <unistd.h>
 #include "fileperuser_search.h"
 #include "jump_table.h"
+#include "binary_file_cache.h"
 
 #ifdef HAVE_MMAP
 #include <sys/mman.h>
