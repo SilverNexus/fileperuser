@@ -7,6 +7,7 @@
 	  or deallocated before we end.
 	  Fix improper handling of fread() and fwrite() return values.
 	  Fix improper handling of compare function for qsort.
+	  Handle the newline read in with fgets().
 	* search.c: Implement the check of the cache.
 	  Implement the addition of new entries on detection of a binary file.
 	* main.c: Call the initialization of the cache and set up for cleanup at termination.

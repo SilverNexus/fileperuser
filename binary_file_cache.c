@@ -129,11 +129,18 @@ int read_cache_file(const char * const path){
     // Now read the file list from the file
     char linebuffer[1000]; // WAY bigger than anything should sensibly be
 
+    // Reduce calls to strlen.
+    size_t buf_len;
     // Order matters here -- the output should be sorted for a binary search.
     for (unsigned i = 0; i < list_length; ++i){
 	fgets(linebuffer, 1000, cache_file);
+	buf_len = strlen(linebuffer);
+	// Convert the newline at the end into a null terminator
+	linebuffer[buf_len - 1] = '\0';
 	// Set up and copy to the binary file list.
-	binary_file_list[i] = malloc(sizeof(char) * (strlen(linebuffer) + 1));
+	// We don't need to add one for the null terminator because we converted the newline to one,
+	// and didn't update the buffer length.
+	binary_file_list[i] = malloc(sizeof(char) * buf_len);
 	if (!binary_file_list[i]){
 	    log_event(FATAL, "Memory allocation failure for file path #%lu (%s).", i + 1, linebuffer);
 	}
