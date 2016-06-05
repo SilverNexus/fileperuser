@@ -41,7 +41,7 @@ char **binary_file_list;
 unsigned list_length;
 
 /**
- * Wrapper for strcmp for use in qsort and bsearch.
+ * Wrapper for strcmp for use in qsort.
  *
  * @param a
  * The first item to compare.
@@ -54,7 +54,25 @@ unsigned list_length;
  * 0 if identical
  * > 0 if a > b (later asciibetically)
  */
-static int compare(const void *a, const void *b){
+static int compare_sort(const void *a, const void *b){
+    return strcmp(*((const char **)a), *((const char **)b));
+}
+
+/**
+ * Wrapper for strcmp for use in bsearch.
+ *
+ * @param a
+ * The first item to compare.
+ *
+ * @param b
+ * The second item to compare.
+ *
+ * @return
+ * < 0 if a < b (earlier asciibetically)
+ * 0 if identical
+ * > 0 if a > b (later asciibetically)
+ */
+static int compare_search(const void *a, const void *b){
     return strcmp((const char *)a, (const char *)b);
 }
 
@@ -192,7 +210,7 @@ int save_cache_file(const char *const path){
 	    return 1;
 	}
 	// Sort them into asciibetical order.
-	qsort(new_binary_files, num_new_files, sizeof(char *), compare);
+	qsort(new_binary_files, num_new_files, sizeof(char *), compare_sort);
 	// Now we begin to rewrite the cache file.
 	// We are not simply appending to the file
 	/*
@@ -310,5 +328,5 @@ void add_new_binary_file(const char * const bin_path){
 int check_path(const char * const path){
     // Do a binary search on the array of cached files.
     // Return 1 on a non-zero result.
-    return bsearch(path, binary_file_list, list_length, sizeof(char *), compare) ? 1 : 0;
+    return bsearch(path, binary_file_list, list_length, sizeof(char *), compare_search) ? 1 : 0;
 }
