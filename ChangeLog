@@ -6,6 +6,8 @@
 	* main.c: Call the initialization of the cache and set up for cleanup at termination.
 	  Set up loading and saving of the cache file.
 	* binary_file_cache.h: Add prototype for cache initialization.
+	* settings.h: Add a place in the settings structure to hold the cache file path.
+	* settings.c: Give the cache path a default value.
 
 2016-06-03  SilverNexus
 	* search.c: Remove unecessary variable in parse_file().

@@ -40,6 +40,9 @@ struct {
     DIR_LIST *root_dirs;
     char *search_string;
 
+    /* The path to the search cache. Only relevant when not searching binary files. */
+    char *cache_file;
+
     // Keep track of case sensitivity here for easy access.
     short search_flags;
 

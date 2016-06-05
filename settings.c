@@ -46,6 +46,8 @@ void init_settings(){
     settings.file_parser = search_file_multi_match;
     settings.output_file = 0;
     settings.log_file = "fileperuser.log";
+    // Eww... what an ugly default name.
+    settings.cache_file = "~/.fp_binarycache";
     // Only log warning and higher by default
     settings.min_log_level = WARNING;
     settings.min_print_level = WARNING;
