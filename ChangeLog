@@ -1,3 +1,6 @@
+2016-06-05  SilverNexus
+	* Makefile.am: Add binary_file_cache.c to list of sources.
+
 2016-06-03  SilverNexus
 	* search.c: Remove unecessary variable in parse_file().
 	* load_binary_file_cache.c: Implement writing of cache to file.

@@ -16,7 +16,8 @@ fileperuser_SOURCES =\
 	result_list.c \
 	output.c \
 	fileperuser_search.c \
-	jump_table.c
+	jump_table.c \
+	binary_file_cache.c
 
 # Make sure that we generate debugging symbols for debug mode
 # Make sure we optimize otherwise
