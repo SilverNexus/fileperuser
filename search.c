@@ -354,6 +354,12 @@ int onWalk(const char *fpath, const struct stat *sb, int typeflag, struct FTW *f
 	    // Preprocess this out unless we really need it.
 	    log_event(INFO, "Searching for '%s' in %s.", settings.search_string, fpath);
 #endif
+	    if (!(settings.search_flags & FLAG_BINARY_FILES)){
+		/* Check to see if the file is in the binary file cache. */
+		if (check_path(fpath))
+		    // If yes, skip it.
+		    return 0;
+	    }
 	    parse_file(fpath, sb->st_size);
 	}
         return 0;

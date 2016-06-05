@@ -94,6 +94,11 @@ int main(int argc, char *argv[]){
 		settings.search_string[i] = tolower(settings.search_string[i]);
 	    }
 	}
+	if (!(settings.search_flags & FLAG_BINARY_FILES)){
+	    // Initialize and indicate to run cleanup at program termination.
+	    init_binary_cache();
+	    atexit(cleanup_cache_list);
+	}
 	// Build the jump table.
 	setup_jump_table();
         // Begin the search

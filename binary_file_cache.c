@@ -59,6 +59,17 @@ static int compare(const void *a, const void *b){
 }
 
 /**
+ * Initializes the global data for the binary cache.
+ * They are set to zero so I don't have to deal with uninitialized space.
+ */
+void init_binary_cache(){
+    new_cache_list = 0;
+    num_new_files = 0;
+    binary_file_list = 0;
+    list_length = 0;
+}
+
+/**
  * Loads the binary file list from disk.
  *
  * @param path

@@ -17,6 +17,7 @@ extern char **binary_file_list;
 // The length of the existing array
 extern unsigned list_length;
 
+void init_binary_cache();
 int read_cache_file(const char *const path);
 void cleanup_cache_list();
 int save_binary_cache(const char *const path);
