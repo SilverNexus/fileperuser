@@ -135,17 +135,17 @@ int read_cache_file(const char * const path){
     for (unsigned i = 0; i < list_length; ++i){
 	fgets(linebuffer, 1000, cache_file);
 	buf_len = strlen(linebuffer);
-	// Convert the newline at the end into a null terminator
-	linebuffer[buf_len - 1] = '\0';
 	// Set up and copy to the binary file list.
-	// We don't need to add one for the null terminator because we converted the newline to one,
-	// and didn't update the buffer length.
+	// We don't need to add one for the null terminator because we convert the newline to one.
 	binary_file_list[i] = malloc(sizeof(char) * buf_len);
 	if (!binary_file_list[i]){
 	    log_event(FATAL, "Memory allocation failure for file path #%lu (%s).", i + 1, linebuffer);
 	}
-	// Since we specifically allocated for the result, we can safely use strcpy.
-	strcpy(binary_file_list[i], linebuffer);
+	// Recycle the old value buf_len to store the amount we wish to copy.
+	--buf_len;
+	memcpy(binary_file_list[i], linebuffer, buf_len);
+	// Convert the newline at the end into a null terminator
+	binary_file_list[i][buf_len] = '\0';
     }
     // We finished, so close the file and exit
     fclose(cache_file);
