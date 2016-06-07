@@ -107,11 +107,16 @@ inline void parse_file(const char * const fpath, const off_t file_size){
 #endif
 	size_t n_len = strlen(addr);
 	// If our length is too short, then it is a binary file
-	if (n_len + 1 < (size_t)file_size){
 #ifdef HAVE_MMAP
+	if (n_len + 1 < (size_t)file_size){
 	    munmap(addr, file_size);
 	    close(fd);
 #else
+	/*
+	 * On non-mmap paths, we won't have to substitute the last character to ensure a null terminator.
+	 * As such, we don't need to add one to n_len to check its size against the file size.
+	 */
+	if (n_len < (size_t)file_size){
 	    free(addr);
 #endif
 	    return;
