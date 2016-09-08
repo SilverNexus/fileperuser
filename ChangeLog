@@ -1,3 +1,6 @@
+2016-09-08  SilverNexus
+	* search.c: Fix dirent-based search to not return values from a void function.
+
 2016-06-03  SilverNexus
 	* search.c: Remove unecessary variable in parse_file().
 

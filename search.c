@@ -310,16 +310,19 @@ void search_file_single_match(char * const addr, size_t len, const char * const 
  * @param fpath
  * The current path we are searching in.
  *
+ * @param retval
+ * The return value if a match is found.
+ *
  * @todo
  * Make this check smarter so it does some understanding of the excluded paths
  */
-#define CHECK_EXCLUDED_PATHS(fpath) \
+#define CHECK_EXCLUDED_PATHS(fpath, retval) \
     if (settings.excluded_paths){ \
         if (!settings.base_search_path_length) \
             settings.base_search_path_length = strlen(fpath) + 1; \
         for (DIR_LIST *pth = settings.excluded_paths; pth; pth = pth->next){ \
             if (strcmp(pth->dir, fpath + settings.base_search_path_length) == 0) \
-                return FTW_SKIP_SUBTREE; \
+                return retval; \
         } \
     }
 
@@ -337,7 +340,7 @@ void search_file_single_match(char * const addr, size_t len, const char * const 
  * @retval 0 nftw(3) should continue parsing as expected.
  */
 int onWalk(const char *fpath, const struct stat *sb, int typeflag, struct FTW *ftwbuf){
-    CHECK_EXCLUDED_PATHS(fpath);
+    CHECK_EXCLUDED_PATHS(fpath, FTW_SKIP_SUBTREE);
     switch (typeflag){
     case FTW_D:
         // No reason to make this check if no directories have been excluded
@@ -384,7 +387,9 @@ void search_folder(const char *fpath){
         while ((directory = readdir(mapsDirectory))){
             if (strcmp(directory->d_name, ".") == 0 || strcmp(directory->d_name, "..") == 0)
                 continue;
-	    CHECK_EXCLUDED_PATHS(fpath);
+	    // Yes, there is supposed to be nothing after the comma.
+	    // Because this is a void function.
+	    CHECK_EXCLUDED_PATHS(fpath, );
 	    /*
 	     * We add three to the length of the two pieces so we have enough
 	     * for both a null terminator and both slashes if necessary.
