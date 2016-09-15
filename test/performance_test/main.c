@@ -74,14 +74,14 @@ int main(int argc, char **argv){
     size_t i = 256;
     // Initialize
     // Comparing to zero is faster than comparing to 256
-    while (i){
+    do {
 	/*
 	 * Decrement first, then index.
 	 * In this way, we can check on 256 -> 1,
 	 * but affect indexes 255 -> 0.
 	 */
 	jump_tbl[--i] = needle_len;
-    }
+    } while (i);
     // Now adjust for the characters in the needle, except the last one.
     for (i = 0; i < needle_len - 1; ++i){
 	jump_tbl[(unsigned char)needle[i]] = needle_len - i - 1;
@@ -90,14 +90,14 @@ int main(int argc, char **argv){
     size_t i = 256;
     // Initialize
     // Comparing to zero is faster than comparing to 256
-    while (i){
+    do {
 	/*
 	 * Decrement first, then index.
 	 * In this way, we can check on 256 -> 1,
 	 * but affect indexes 255 -> 0.
 	 */
 	jump_tbl[--i] = needle_len;
-    }
+    } while (i);
     // Now adjust for the characters in the needle, except the last one.
     /**
      * By ignoring the last character of needle, we can ensure that a failed match will jump based on
