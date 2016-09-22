@@ -70,15 +70,16 @@ void setup_jump_table(){
 	if (needle_len > MIN_JUMP_TABLE_CASE){
 	    size_t i = 256;
 	    // Initialize
-	    // Comparing to zero is faster than comparing to 256
-	    while (i){
+	    // Comparing to zero is faster than comparing to 256,
+	    // and we know it is not starting at zero.
+	    do {
 		/*
 		 * Decrement first, then index.
 		 * In this way, we can check on 256 -> 1,
 		 * but affect indexes 255 -> 0.
 		 */
 		jump_tbl[--i] = needle_len;
-	    }
+	    } while (i);
 	    // Now adjust for the characters in the needle, except the last one.
 	    for (i = 0; i < needle_len - 1; ++i){
 		jump_tbl[(unsigned char)settings.search_string[i]] = needle_len - i - 1;

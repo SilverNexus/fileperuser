@@ -1,3 +1,10 @@
+2016-09-22  SilverNexus
+	* jump_table.c: Catch a performance refactor of while->do-while I missed last time.
+
+2016-09-15  SilverNexus
+	* jump_table.c: Refactor a while-loop to a do-while loop.
+	* test/performance_test/main.c: Refactor a while-loop to a do-while loop.
+
 2016-09-08  SilverNexus
 	* search.c: Fix dirent-based search to not return values from a void function.
 
