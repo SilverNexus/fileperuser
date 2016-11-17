@@ -3,4 +3,4 @@
 #cmakedefine HAVE_MMAP
 #cmakedefine HAVE_NFTW
 #cmakedefine HAVE_STRDUP
-
+#cmakedefine HAVE_DIRENT_D_TYPE

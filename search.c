@@ -402,7 +402,11 @@ void search_folder(const char *fpath){
             if (currentDir[strlen(fpath) - 1] != '/')
                 strcat(currentDir, "/");
             strcat(currentDir, directory->d_name);
+#ifdef HAVE_DIRENT_D_TYPE
 	    switch (directory->d_type){
+#else
+#error TODO: Implement the other way to get the d_type
+#endif
 		case DT_DIR:
 		    ; // Silences errors about declaring variables within the switch statement.
 		    int skip = 0;

@@ -27,5 +27,9 @@ check_function_exists(strdup HAVE_STRDUP)
 include (CheckIncludeFiles)
 check_include_files(dirent.h HAVE_DIRENT_H)
 
+# We need to check for d_type. Compile different code if we dont have it.
+include (CheckStructHasMember)
+check_struct_has_member("struct dirent" d_type dirent.h HAVE_DIRENT_D_TYPE)
+
 configure_file(config.h.in config.h)
 
