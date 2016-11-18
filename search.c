@@ -402,9 +402,18 @@ void search_folder(const char *fpath){
             if (currentDir[strlen(fpath) - 1] != '/')
                 strcat(currentDir, "/");
             strcat(currentDir, directory->d_name);
+#ifdef HAVE_DIRENT_D_TYPE
 	    switch (directory->d_type){
 		case DT_DIR:
 		    ; // Silences errors about declaring variables within the switch statement.
+#else
+	    struct stat sb;
+	    if (stat(currentDir, &sb) == -1){
+		log_event(ERROR, "Failed to stat file %s.", currentDir);
+	    }
+	    else{
+		if(S_ISDIR(sb.st_mode)){
+#endif
 		    int skip = 0;
 		    for (DIR_LIST *tmp = settings.excluded_directories; tmp; tmp = tmp->next){
 			if (strcmp(tmp->dir, directory->d_name) == 0){
@@ -416,6 +425,7 @@ void search_folder(const char *fpath){
 			strcat(currentDir, "/");
 			search_folder(currentDir);
 		    }
+#ifdef HAVE_DIRENT_D_TYPE
 		    break;
 		case DT_REG:
 		    ; // Again, silencing errors
@@ -424,6 +434,10 @@ void search_folder(const char *fpath){
 			log_event(ERROR, "Could not stat %s.", currentDir);
 			break;
 		    }
+#else
+		}
+		else if (S_ISREG(sb.st_mode)){
+#endif
 		    if (sb.st_size > 0){
 #if 0
 			// Preprocess this out unless we really need it.
@@ -431,10 +445,15 @@ void search_folder(const char *fpath){
 #endif
 			parse_file(currentDir, sb.st_size);
 		    }
+#ifdef HAVE_DIRENT_D_TYPE
 		    break;
 		case DT_LNK:
 		    break;
 		default:
+#else
+		}
+		else if (!S_ISLNK(sb.st_mode))
+#endif
 		    log_event(WARNING, "Unsupported inode type found, skipping.");
             }
 	    // We're done with it, so free it.

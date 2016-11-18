@@ -1,3 +1,11 @@
+2016-11-17  SilverNexus
+	* search.c: Add conditional compilation to allow dirent using non-d_type-enabled variants.
+	* CMakeLists.txt, configure.ac,
+	  Makefile.am, doc/Makefile.am,
+	  config.h.in: Implement CMake build system to improve cross-platform capabilities. Remove autotools build system.
+	* fileperuser_search.c: Remove ugly hack to "improve" performance.
+	* install_manpage.sh: Add a script to install manpages without autotools.
+
 2016-09-22  SilverNexus
 	* jump_table.c: Catch a performance refactor of while->do-while I missed last time.
 
