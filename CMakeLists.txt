@@ -30,6 +30,17 @@ check_struct_has_member("struct dirent" d_type dirent.h HAVE_DIRENT_D_TYPE)
 
 configure_file(config.h.in config.h)
 
+# Since there doesn't appear to be a built-in way to install a manpage, do it the hard way
+# but only do it in linux and bsd
+if (UNIX AND NOT APPLE)
+    # TODO: Should this be its own build target?
+    add_custom_command(
+	TARGET fileperuser
+	POST_BUILD
+	COMMAND sudo sh install_manpage.sh
+    )
+endif()
+
 add_executable(fileperuser dir_list.c ErrorLog.c fileperuser_search.c
 	       jump_table.c main.c output.c parseArgs.c result_list.c
 	       search.c settings.c)

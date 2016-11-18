@@ -4,6 +4,7 @@
 	  Makefile.am,
 	  config.h.in: Implement CMake build system to improve cross-platform capabilities.
 	* fileperuser_search.c: Remove ugly hack to "improve" performance.
+	* install_manpage.sh: Add a script to install manpages without autotools.
 
 2016-09-22  SilverNexus
 	* jump_table.c: Catch a performance refactor of while->do-while I missed last time.
