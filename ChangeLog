@@ -1,3 +1,10 @@
+2016-11-17  SilverNexus
+	* search.c: Add conditional compilation to allow dirent using non-d_type-enabled variants.
+	* CMakeLists.txt,
+	  Makefile.am,
+	  config.h.in: Implement CMake build system to improve cross-platform capabilities.
+	* fileperuser_search.c: Remove ugly hack to "improve" performance.
+
 2016-09-22  SilverNexus
 	* jump_table.c: Catch a performance refactor of while->do-while I missed last time.
 
