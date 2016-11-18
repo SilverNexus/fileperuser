@@ -4,3 +4,4 @@
 #cmakedefine HAVE_NFTW
 #cmakedefine HAVE_STRDUP
 #cmakedefine HAVE_DIRENT_D_TYPE
+#cmakedefine HAVE_DIRENT_S_ISLNK

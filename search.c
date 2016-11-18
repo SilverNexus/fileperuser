@@ -452,7 +452,9 @@ void search_folder(const char *fpath){
 		default:
 #else
 		}
+#ifdef HAVE_DIRENT_S_ISLNK
 		else if (!S_ISLNK(sb.st_mode))
+#endif
 #endif
 		    log_event(WARNING, "Unsupported inode type found, skipping.");
             }

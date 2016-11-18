@@ -28,6 +28,9 @@ check_include_files(dirent.h HAVE_DIRENT_H)
 include (CheckStructHasMember)
 check_struct_has_member("struct dirent" d_type dirent.h HAVE_DIRENT_D_TYPE)
 
+include (CheckSymbolExists)
+check_symbol_exists(S_ISLNK dirent.h;sys/types.h;sys/stat.h HAVE_DIRENT_S_ISLNK)
+
 configure_file(config.h.in config.h)
 
 # Since there doesn't appear to be a built-in way to install a manpage, do it the hard way

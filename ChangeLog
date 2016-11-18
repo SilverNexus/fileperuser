@@ -1,3 +1,8 @@
+2016-11-18  SilverNexus
+	* search.c: Add code to check for existence of S_ISLNK(m). It is not always available.
+	* CMakeLists.txt: Add check for S_ISLNK(m).
+	* config.h.in: Add config define for presence of S_ISLNK(m).
+
 2016-11-17  SilverNexus
 	* search.c: Add conditional compilation to allow dirent using non-d_type-enabled variants.
 	* CMakeLists.txt, configure.ac,
