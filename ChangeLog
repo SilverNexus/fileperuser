@@ -2,6 +2,7 @@
 	* search.c: Add code to check for existence of S_ISLNK(m). It is not always available.
 	* CMakeLists.txt: Add check for S_ISLNK(m).
 	  Expand compiler argument handling to include MinGW and Cygwin.
+	  Add install target to build process.
 	* config.h.in: Add config define for presence of S_ISLNK(m).
 	* INSTALL: Updated to reflect use of new build system.
 	* README: Updated to reflect loosening of requirements with struct dirent.

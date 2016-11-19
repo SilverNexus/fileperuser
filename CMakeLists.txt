@@ -47,3 +47,5 @@ endif()
 add_executable(fileperuser dir_list.c ErrorLog.c fileperuser_search.c
 	       jump_table.c main.c output.c parseArgs.c result_list.c
 	       search.c settings.c)
+
+install(TARGETS fileperuser DESTINATION bin)
