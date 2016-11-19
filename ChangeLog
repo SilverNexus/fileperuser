@@ -3,6 +3,12 @@
 	* CMakeLists.txt: Add check for S_ISLNK(m).
 	  Expand compiler argument handling to include MinGW and Cygwin.
 	* config.h.in: Add config define for presence of S_ISLNK(m).
+	* INSTALL: Updated to reflect use of new build system.
+	* README: Updated to reflect loosening of requirements with struct dirent.
+
+-----------------------------------------------------------------------------------------
+                                      Changes for 0.03
+-----------------------------------------------------------------------------------------
 
 2016-11-17  SilverNexus
 	* search.c: Add conditional compilation to allow dirent using non-d_type-enabled variants.

@@ -5,7 +5,7 @@ FilePeruser Installation Instructions
 1. Verify you meet the requirements in the README.
 2. Follow these steps:
     a. cd to program directory (an "open terminal here" tool works, too)
-    b. run autogen.sh ("sh autogen.sh" should work)
-    c. run configure ("./configure" should work)
-    d. run make ("make" and/or "sudo make install" should work)
+    b. run cmake to configure the program (ccmake or cmake-gui work well for this)
+    c. run `make` (or whatever your system's make executable is called)
+    d. run `sudo make install` (or another form of make install, especially on MS systems).
     e. use the program
