@@ -6,7 +6,7 @@ set (VERSION 0.03)
 option(ENABLE_DEBUG "Enable creation of debugging symbols and reduction of optimization" OFF)
 
 # Add compiler flags to gcc-like compilers
-IF(UNIX)
+IF(UNIX OR MINGW OR CYGWIN)
     add_compile_options(-std=gnu99 -D_XOPEN_SOURCE=600 -D_GNU_SOURCE -Wall -Wextra)
     IF (${ENABLE_DEBUG} STREQUAL ON)
 	add_compile_options(-g -O0)
