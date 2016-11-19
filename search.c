@@ -218,7 +218,7 @@ inline void parse_file(const char * const fpath, const off_t file_size){
 	++line_num; \
 	start_line = end_line + 1; \
     } \
-    add_result(line_num, (long)found_at - (long)start_line + 1, fpath);
+    add_result(line_num, (ptrdiff_t)found_at - (ptrdiff_t)start_line + 1, fpath);
 
 /**
  * Macro to allow for fewer comparisons to determine which search function to use.

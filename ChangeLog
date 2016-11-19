@@ -1,6 +1,7 @@
 2016-11-18  SilverNexus
 	* search.c: Add code to check for existence of S_ISLNK(m). It is not always available.
 	  Fix improper handling of when to display error message.
+	  Fix improper casting of pointer types.
 	* CMakeLists.txt: Add check for S_ISLNK(m).
 	  Expand compiler argument handling to include MinGW and Cygwin.
 	  Add install target to build process.
