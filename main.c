@@ -105,7 +105,7 @@ int main(int argc, char *argv[]){
             if (nftw(thisDir->dir, onWalk, 20, FTW_ACTIONRETVAL | FTW_PHYS) == -1)
 		// This is not fatal since we can try on any other folders we were supplied.
                 log_event(ERROR, "Directory walk for %s failed!", thisDir->dir);
-#elif defined (HAVE_DIRENT_H || HAVE_IO_H)
+#elif defined (HAVE_DIRENT_H) || defined (HAVE_IO_H)
 	    /** Both dirent- and io- based searches have a wrapper function of the same name. */
 	    search_folder(thisDir->dir);
 #else
