@@ -101,6 +101,13 @@ int main(int argc, char *argv[]){
 	// There will be at least one root directory.
 	// We make sure to set to current directory if not specified.
         do{
+	    // Set the base search path length once, and then don't check for it every time.
+	    if (settings.excluded_paths){
+		size_t len = strlen(thisDir->dir);
+		// Only add one if we don't end in a slash.
+		settings.base_search_path_length = len + (thisDir->dir[len - 1] == '/' ? 0 : 1);
+	    }
+	    // Do the file tree walk.
 #if defined HAVE_NFTW
             if (nftw(thisDir->dir, onWalk, 20, FTW_ACTIONRETVAL | FTW_PHYS) == -1)
 		// This is not fatal since we can try on any other folders we were supplied.

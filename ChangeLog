@@ -3,7 +3,9 @@
 	* add_to_system_path.bat: Add script to append fileperuser's path to the system path.
 	* README: Update to reflect new implementation using io.h.
 	* search.c: Refactor the path exclusion check to be an inline function instead of a macro substitution.
+	  Move check for settings.base_search_path_length to before the traversal begins.
 	* main.c: Fix invalid syntax in preprocessor directive.
+	  Add the base search path check before traversal.
 
 2016-11-19  SilverNexus
 	* CMakeLists.txt: Add check for unistd.h in configuration. MSVC does not have it.
