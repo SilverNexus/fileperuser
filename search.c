@@ -30,7 +30,9 @@
 #include "result_list.h"
 #include <sys/stat.h>
 #include <sys/types.h>
+#ifdef HAVE_UNISTD_H
 #include <unistd.h>
+#endif
 #include "fileperuser_search.h"
 #include "jump_table.h"
 
