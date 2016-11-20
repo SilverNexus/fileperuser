@@ -41,7 +41,7 @@ FilePeruser User Guide
        -X and --exclude-path can also be used to exclude specific files from the search.
 
 2. Requirements:
-       - A C99 compiler with ftw.h or dirent.h.
+       - A C99 compiler with ftw.h, dirent.h, or io.h.
        Note:
            I do not know any more of the system requirements for this program.
            If any more are discovered, add them here.
