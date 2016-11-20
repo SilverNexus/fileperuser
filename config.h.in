@@ -1,5 +1,6 @@
 /* Defines for cmake to ensure builds are correct for the features present. */
 #cmakedefine HAVE_DIRENT_H
+#cmakedefine HAVE_UNISTD_H
 #cmakedefine HAVE_MMAP
 #cmakedefine HAVE_NFTW
 #cmakedefine HAVE_STRDUP
