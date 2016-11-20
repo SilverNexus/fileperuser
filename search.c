@@ -320,10 +320,13 @@ void search_file_single_match(char * const addr, size_t len, const char * const 
  */
 inline int check_excluded_paths(const char * const fpath){
     if (settings.excluded_paths){
-        for (DIR_LIST *pth = settings.excluded_paths; pth; pth = pth->next){
+	DIR_LIST *pth = settings.excluded_paths;
+	// Since we only do this comparison if settings.excluded_paths is nonzero, we will have a first element.
+        do {
             if (strcmp(pth->dir, fpath + settings.base_search_path_length) == 0)
                 return 1;
-        }
+	    pth = pth->next;
+        } while (pth);
     }
     return 0;
 }
