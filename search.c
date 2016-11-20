@@ -327,6 +327,7 @@ inline int check_excluded_paths(const char * const fpath){
                 return 1;
         }
     }
+    return 0;
 }
 
 #if defined HAVE_NFTW
