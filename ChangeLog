@@ -1,6 +1,8 @@
 2016-11-19  SilverNexus
 	* CMakeLists.txt: Add check for unistd.h in configuration. MSVC does not have it.
 	* config.h.in: Add define for presence of unistd.h.
+	* search.c: Add use of unistd check to ensure unistd.h is only included when present.
+	* search.h: Begin to implement MSVC directory traversal functionality.
 
 2016-11-18  SilverNexus
 	* search.c: Add code to check for existence of S_ISLNK(m). It is not always available.

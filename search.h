@@ -18,6 +18,10 @@ int onWalk(const char *fpath, const struct stat *sb, int typeflag, struct FTW *f
 #include <sys/types.h>
 
 void search_folder(const char *dir_path);
+#elif defined HAVE_IO_H
+#include <io.h>
+
+void search_folder(const char *dir_path);
 #else
 #error We do not have a directory traversal for your system at this time.
 #endif
