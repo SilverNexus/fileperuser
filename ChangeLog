@@ -1,3 +1,7 @@
+2016-11-20  SilverNexus
+	* CMakeLists.txt: Add condition where we add fileperuser to the system path in Windows.
+	* add_to_system_path.bat: Add script to append fileperuser's path to the system path.
+
 2016-11-19  SilverNexus
 	* CMakeLists.txt: Add check for unistd.h in configuration. MSVC does not have it.
 	  Add check for io.h, too.

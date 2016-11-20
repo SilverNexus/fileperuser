@@ -44,6 +44,13 @@ if (UNIX AND NOT APPLE)
 	POST_BUILD
 	COMMAND sudo sh install_manpage.sh
     )
+elseif(WIN32)
+    #Add the directory to the system path.
+    add_custom_command(
+	TARGET fileperuser
+	POST_BUILD
+	COMMAND cmd add_to_system_path.bat "${CMAKE_INSTALL_PREFIX}/bin"
+    )
 endif()
 
 add_executable(fileperuser dir_list.c ErrorLog.c fileperuser_search.c
