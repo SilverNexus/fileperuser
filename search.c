@@ -469,6 +469,72 @@ void search_folder(const char *fpath){
         log_event(ERROR, "Could not open directory %s.", fpath);
     closedir(mapsDirectory);
 }
+#elif defined HAVE_IO_H
+void search_folder(const char *fpath){
+    intptr_t handle_ptr;
+    struct _finddata_t *fileinfo;
+    char *currentDir;
+    // Make sure we don't want to skip this function already.
+    CHECK_EXCLUDED_PATHS(fpath, );
+    // Now we enter the search itself.
+    handle_ptr = _findfirst(fpath, fileinfo);
+    // Check for a failure condition -- This will only happen on first try, so don't put it in the loop.
+    if (handle_ptr == -1){
+	// ENOENT means no matches were found.
+	if (errno != ENOENT){
+	    log_event(ERROR, "Failed to read filesystem at %s.", fpath);
+	}
+	else{
+	    log_event(ERROR, "No path '%s' could be found.", fpath);
+	}
+	return;
+    }
+    do{
+	// Okay, so we succeeded. Now we see what we got from the first element.
+	// We start by getting the file name.
+	// Dynamic allocation here needs to have enough room for slashes if need be.
+	currentDir = malloc((strlen(fpath) + strlen(fileinfo->name) + 3) * sizeof(char));
+	strcpy(currentDir, fpath);
+	// TODO: This might be the other slash in Windows.
+	if (currentDir[strlen(fpath)] != '/')
+	    strcat(currentDir, "/");
+	// Because we dynamically allocated currentDir for the size of the other pieces, we should be good on room.
+	strcat(currentDir, fileinfo->name);
+	switch(fileinfo->attrib){
+	    // Search through hidden and non-hidden files
+	    case _A_HIDDEN:
+	    case _A_NORMAL:
+	    case _A_RDONLY:
+		// Don't bother with opening 0-length files.
+		if (fileinfo->size > 0){
+		    parse_file(currentDir, fileinfo->size);
+		}
+		break;
+	    case _A_SUBDIR:
+		// Make sure we don't specifically exclude this directory from the search.
+		int skip = 0;
+		for (DIR_LIST *tmp = settings.excluded_directories; tmp; tmp = tmp->next){
+		    if (strcmp(tmp->dir, directory->d_name) == 0){
+			skip = 1;
+			break;
+		    }
+		}
+		if (!skip){
+		    strcat(currentDir, "/");
+		    search_folder(currentDir);
+		}
+		break;
+	    default:
+		log_event(WARNING, "Unsupported inode type found, skipping.");
+	}
+	free(currentDir);
+    } while (_findnext(handle_ptr, fileinfo) != -1);
+    // If we reach the end with a status that isn't the normal completion of the nodes in the directory, then log an error message.
+    if (errno != ENOENT){
+	log_event(ERROR, "Directory traversal for path %s failed with status %i.", fpath, errno);
+    }
+    _findclose(handle_ptr);
+}
 #else
 #error Implementation for a folder walk on your system is currently lacking.
 #endif

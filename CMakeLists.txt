@@ -24,6 +24,7 @@ check_function_exists(strdup HAVE_STRDUP)
 include (CheckIncludeFiles)
 check_include_files(dirent.h HAVE_DIRENT_H)
 check_include_files(unistd.h HAVE_UNISTD_H)
+check_include_files(io.h HAVE_IO_H)
 
 # We need to check for d_type. Compile different code if we dont have it.
 include (CheckStructHasMember)
