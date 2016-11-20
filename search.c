@@ -312,16 +312,13 @@ void search_file_single_match(char * const addr, size_t len, const char * const 
  * @param fpath
  * The current path we are searching in.
  *
- * @param retval
- * The return value if a match is found.
- *
  * @return
  * 1 if found the path, 0 if not.
  *
  * @todo
  * Make this check smarter so it does some understanding of the excluded paths
  */
-inline int check_excluded_paths(fpath){
+inline int check_excluded_paths(const char * const fpath){
     if (settings.excluded_paths){
         if (!settings.base_search_path_length)
             settings.base_search_path_length = strlen(fpath) + 1;
