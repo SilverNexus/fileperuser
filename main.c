@@ -105,7 +105,11 @@ int main(int argc, char *argv[]){
 	    if (settings.excluded_paths){
 		size_t len = strlen(thisDir->dir);
 		// Only add one if we don't end in a slash.
+#ifdef HAVE_IO_H
+		settings.base_search_path_length = len + (thisDir->dir[len - 1] == '\\' ? 0 : 1);
+#else
 		settings.base_search_path_length = len + (thisDir->dir[len - 1] == '/' ? 0 : 1);
+#endif
 	    }
 	    // Do the file tree walk.
 #if defined HAVE_NFTW

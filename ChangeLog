@@ -12,6 +12,7 @@
 	  Fix improper declaration of fileinfo for directory traversal.
 	* main.c: Fix invalid syntax in preprocessor directive.
 	  Add the base search path check before traversal.
+	  Fix compilation directives to handle Windows paths, too.
 
 2016-11-19  SilverNexus
 	* CMakeLists.txt: Add check for unistd.h in configuration. MSVC does not have it.
