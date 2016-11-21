@@ -15,12 +15,12 @@ IF(UNIX OR MINGW OR CYGWIN)
     ENDIF()
 ELSEIF(MSVC)
     # Add compiler flags for MSVC projects.
-    add_compile_options(/GS- /TC /W3 /sdl-)
+    add_compile_options(/TC /W3)
     IF(${ENABLE_DEBUG} STREQUAL ON)
 	add_compile_options(/Od /Zi)
     ELSE()
 	# Currently conflicts with /RTC1 -- need to refactor debugging to use built-in CMake one.
-	#add_compile_options(/Ox /Ot /Ob2)
+	#add_compile_options(/Ox /Ot /Ob2 /GS- /sdl-)
     ENDIF()
 ENDIF()
 #Otherwise, use defaults.
