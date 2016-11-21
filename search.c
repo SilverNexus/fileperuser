@@ -512,38 +512,33 @@ void search_folder(const char *fpath){
 	// Dynamic allocation here needs to have enough room for slashes if need be.
 	currentDir = malloc((strlen(fpath) + strlen(fileinfo.name) + 3) * sizeof(char));
 	strcpy(currentDir, fpath);
-	// TODO: This might be the other slash in Windows.
-	if (currentDir[strlen(fpath)] != '/')
-	    strcat(currentDir, "/");
+	if (currentDir[strlen(fpath)] != '\\')
+	    strcat(currentDir, "\\");
 	// Because we dynamically allocated currentDir for the size of the other pieces, we should be good on room.
 	strcat(currentDir, fileinfo.name);
-	switch(fileinfo.attrib){
+	if (fileinfo.attrib & _A_SUBDIR){
+	    // Make sure we don't specifically exclude this directory from the search.
+	    int skip = 0;
+	    for (DIR_LIST *tmp = settings.excluded_directories; tmp; tmp = tmp->next){
+		if (strcmp(tmp->dir, fileinfo.name) == 0){
+		    skip = 1;
+		    break;
+		}
+	    }
+	    if (!skip){
+		strcat(currentDir, "\\");
+		search_folder(currentDir);
+	    }
+	}
+	else if(fileinfo.attrib & (_A_HIDDEN | _A_NORMAL | _A_RDONLY)){
 	    // Search through hidden and non-hidden files
-	    case _A_HIDDEN:
-	    case _A_NORMAL:
-	    case _A_RDONLY:
-		// Don't bother with opening 0-length files.
-		if (fileinfo.size > 0){
-		    parse_file(currentDir, fileinfo.size);
-		}
-		break;
-	    case _A_SUBDIR:
-		; // Silence an error for declarations in a switch statement.
-		// Make sure we don't specifically exclude this directory from the search.
-		int skip = 0;
-		for (DIR_LIST *tmp = settings.excluded_directories; tmp; tmp = tmp->next){
-		    if (strcmp(tmp->dir, fileinfo.name) == 0){
-			skip = 1;
-			break;
-		    }
-		}
-		if (!skip){
-		    strcat(currentDir, "/");
-		    search_folder(currentDir);
-		}
-		break;
-	    default:
-		log_event(WARNING, "Unsupported inode type found, skipping.");
+	    // Don't bother with opening 0-length files.
+	    if (fileinfo.size > 0){
+		parse_file(currentDir, fileinfo.size);
+	    }
+	}
+	else{
+	    log_event(WARNING, "Unsupported inode type found, skipping.");
 	}
 	free(currentDir);
     } while (_findnext(handle_ptr, &fileinfo) != -1);
