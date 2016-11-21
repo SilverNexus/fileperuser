@@ -61,7 +61,12 @@
  * @param file_size
  * The size of the file. Assumed to be greater than zero.
  */
+#ifdef HAVE_IO_H
+// For some reason, I'm getting errors when trying to inline functions using MSVC
+void parse_file(const char * const fpath, const off_t file_size){
+#else
 inline void parse_file(const char * const fpath, const off_t file_size){
+#endif
 #ifdef HAVE_MMAP
     // Open the file and get the file descriptor
     const int fd = open(fpath, O_RDONLY);
@@ -322,7 +327,11 @@ void search_file_single_match(char * const addr, size_t len, const char * const 
  * @todo
  * Make this check smarter so it does some understanding of the excluded paths
  */
+#ifdef HAVE_IO_H
+int check_excluded_paths(const char * const fpath){
+#else
 inline int check_excluded_paths(const char * const fpath){
+#endif
     if (settings.excluded_paths){
 	DIR_LIST *pth = settings.excluded_paths;
 	// Since we only do this comparison if settings.excluded_paths is nonzero, we will have a first element.
@@ -519,6 +528,7 @@ void search_folder(const char *fpath){
 		}
 		break;
 	    case _A_SUBDIR:
+		; // Silence an error for declarations in a switch statement.
 		// Make sure we don't specifically exclude this directory from the search.
 		int skip = 0;
 		for (DIR_LIST *tmp = settings.excluded_directories; tmp; tmp = tmp->next){
