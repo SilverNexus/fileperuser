@@ -488,13 +488,13 @@ void search_folder(const char *fpath){
 #elif defined HAVE_IO_H
 void search_folder(const char *fpath){
     intptr_t handle_ptr;
-    struct _finddata_t *fileinfo;
+    struct _finddata_t fileinfo;
     char *currentDir;
     // Make sure we don't want to skip this folder already.
     if (check_excluded_paths(fpath) == 1)
 	return;
     // Now we enter the search itself.
-    handle_ptr = _findfirst(fpath, fileinfo);
+    handle_ptr = _findfirst(fpath, &fileinfo);
     // Check for a failure condition -- This will only happen on first try, so don't put it in the loop.
     if (handle_ptr == -1){
 	// ENOENT means no matches were found.
@@ -510,21 +510,21 @@ void search_folder(const char *fpath){
 	// Okay, so we succeeded. Now we see what we got from the first element.
 	// We start by getting the file name.
 	// Dynamic allocation here needs to have enough room for slashes if need be.
-	currentDir = malloc((strlen(fpath) + strlen(fileinfo->name) + 3) * sizeof(char));
+	currentDir = malloc((strlen(fpath) + strlen(fileinfo.name) + 3) * sizeof(char));
 	strcpy(currentDir, fpath);
 	// TODO: This might be the other slash in Windows.
 	if (currentDir[strlen(fpath)] != '/')
 	    strcat(currentDir, "/");
 	// Because we dynamically allocated currentDir for the size of the other pieces, we should be good on room.
-	strcat(currentDir, fileinfo->name);
-	switch(fileinfo->attrib){
+	strcat(currentDir, fileinfo.name);
+	switch(fileinfo.attrib){
 	    // Search through hidden and non-hidden files
 	    case _A_HIDDEN:
 	    case _A_NORMAL:
 	    case _A_RDONLY:
 		// Don't bother with opening 0-length files.
-		if (fileinfo->size > 0){
-		    parse_file(currentDir, fileinfo->size);
+		if (fileinfo.size > 0){
+		    parse_file(currentDir, fileinfo.size);
 		}
 		break;
 	    case _A_SUBDIR:
@@ -532,7 +532,7 @@ void search_folder(const char *fpath){
 		// Make sure we don't specifically exclude this directory from the search.
 		int skip = 0;
 		for (DIR_LIST *tmp = settings.excluded_directories; tmp; tmp = tmp->next){
-		    if (strcmp(tmp->dir, fileinfo->name) == 0){
+		    if (strcmp(tmp->dir, fileinfo.name) == 0){
 			skip = 1;
 			break;
 		    }
@@ -546,7 +546,7 @@ void search_folder(const char *fpath){
 		log_event(WARNING, "Unsupported inode type found, skipping.");
 	}
 	free(currentDir);
-    } while (_findnext(handle_ptr, fileinfo) != -1);
+    } while (_findnext(handle_ptr, &fileinfo) != -1);
     // If we reach the end with a status that isn't the normal completion of the nodes in the directory, then log an error message.
     if (errno != ENOENT){
 	log_event(ERROR, "Directory traversal for path %s failed with status %i.", fpath, errno);

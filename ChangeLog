@@ -9,6 +9,7 @@
 	  Move check for settings.base_search_path_length to before the traversal begins.
 	  Fix invalid reference to directory->d_name in io.h directory walk.
 	  Add conditional include when errno.h exists.
+	  Fix improper declaration of fileinfo for directory traversal.
 	* main.c: Fix invalid syntax in preprocessor directive.
 	  Add the base search path check before traversal.
 
