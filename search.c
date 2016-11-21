@@ -486,6 +486,7 @@ void search_folder(const char *fpath){
     closedir(mapsDirectory);
 }
 #elif defined HAVE_IO_H
+// TODO: Fix. I need to interpret the type of the result of findfirst, then use that to determine the behavior afterward.
 void search_folder(const char *fpath){
     intptr_t handle_ptr;
     struct _finddata_t fileinfo;
