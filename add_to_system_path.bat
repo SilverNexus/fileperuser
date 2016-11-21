@@ -1,3 +1,3 @@
 @echo off
 
-setx PATH %PATH%;%* /m
+setx PATH "%PATH%;%*" /M
