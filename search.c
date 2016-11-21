@@ -33,6 +33,10 @@
 #ifdef HAVE_UNISTD_H
 #include <unistd.h>
 #endif
+// Some handling in the Windows section needs this.
+#ifdef HAVE_ERRNO_H
+#include <errno.h>
+#endif
 #include "fileperuser_search.h"
 #include "jump_table.h"
 

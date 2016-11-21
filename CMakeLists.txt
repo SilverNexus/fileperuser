@@ -15,11 +15,12 @@ IF(UNIX OR MINGW OR CYGWIN)
     ENDIF()
 ELSEIF(MSVC)
     # Add compiler flags for MSVC projects.
-    add_compile_options(/Gs- /TC /Ob2 /Wall /sdl-)
+    add_compile_options(/GS- /TC /Ob2 /W3 /sdl-)
     IF(${ENABLE_DEBUG} STREQUAL ON)
 	add_compile_options(/Od /Zi)
     ELSE()
-	add_compile_options(/Ox /Ot)
+	# Currently conflicts with /RTC1 -- need to refactor debugging to use built-in CMake one.
+	#add_compile_options(/Ox /Ot)
     ENDIF()
 ENDIF()
 #Otherwise, use defaults.
@@ -33,6 +34,7 @@ include (CheckIncludeFiles)
 check_include_files(dirent.h HAVE_DIRENT_H)
 check_include_files(unistd.h HAVE_UNISTD_H)
 check_include_files(io.h HAVE_IO_H)
+check_include_files(errno.h HAVE_ERRNO_H)
 
 # We need to check for d_type. Compile different code if we dont have it.
 include (CheckStructHasMember)

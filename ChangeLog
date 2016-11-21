@@ -1,11 +1,14 @@
 2016-11-20  SilverNexus
 	* CMakeLists.txt: Add condition where we add fileperuser to the system path in Windows.
 	  Add compiler flags to set up compilation on MSVC compilers.
+	  Add check for errno.h
+	* config.h.in: Add define for errno.h presence.
 	* add_to_system_path.bat: Add script to append fileperuser's path to the system path.
 	* README: Update to reflect new implementation using io.h.
 	* search.c: Refactor the path exclusion check to be an inline function instead of a macro substitution.
 	  Move check for settings.base_search_path_length to before the traversal begins.
 	  Fix invalid reference to directory->d_name in io.h directory walk.
+	  Add conditional include when errno.h exists.
 	* main.c: Fix invalid syntax in preprocessor directive.
 	  Add the base search path check before traversal.
 
