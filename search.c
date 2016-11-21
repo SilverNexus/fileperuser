@@ -518,7 +518,7 @@ void search_folder(const char *fpath){
 		// Make sure we don't specifically exclude this directory from the search.
 		int skip = 0;
 		for (DIR_LIST *tmp = settings.excluded_directories; tmp; tmp = tmp->next){
-		    if (strcmp(tmp->dir, directory->d_name) == 0){
+		    if (strcmp(tmp->dir, fileinfo->name) == 0){
 			skip = 1;
 			break;
 		    }

@@ -13,6 +13,14 @@ IF(UNIX OR MINGW OR CYGWIN)
     ELSE()
 	add_compile_options(-s -Ofast)
     ENDIF()
+ELSEIF(MSVC)
+    # Add compiler flags for MSVC projects.
+    add_compile_options(/Gs- /TC /Ob2 /Wall /sdl-)
+    IF(${ENABLE_DEBUG} STREQUAL ON)
+	add_compile_options(/Od /Zi)
+    ELSE()
+	add_compile_options(/Ox /Ot)
+    ENDIF()
 ENDIF()
 #Otherwise, use defaults.
 
