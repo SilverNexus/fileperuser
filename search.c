@@ -487,10 +487,79 @@ void search_folder(const char *fpath){
 }
 #elif defined HAVE_IO_H
 // TODO: Fix. I need to interpret the type of the result of findfirst, then use that to determine the behavior afterward.
+
+
+/**
+ * Recurses through the subdirectory, searching for the files in the directory tree.
+ *
+ * @param fpath
+ * The folder to search in, with an extra \* to tell findfirst/next to do the directory.
+ */
+void do_subfolder(const char * const fpath){
+    intptr_t handle;
+    struct _finddata_t fileinfo;
+    // First, we get the first item from the directory tree.
+    handle = _findfirst(fpath, &fileinfo);
+    if (handle == -1){
+	// ENOENT means no matches were found.
+	if (errno != ENOENT){
+	    log_event(ERROR, "Failed to read filesystem at %s.", fpath);
+	}
+	else{
+	    log_event(ERROR, "No path '%s' could be found.", fpath);
+	}
+	return;
+    }
+    // First, we find the length of the path that is the parent folders.
+    const char * end_parents = strrchr(fpath, "\\");
+    intptr_t parent_len = (intptr_t)end_parents - (intptr_t)fpath);
+    // Now we make room for any path string in here.
+    // Its a little extra memory, but reduces the allocations tremendously.
+    // fileinfo.name is declared as an array of size _MAX_SIZE, so make sure we can it what we need.
+    // Since we might append a \* if its a folder, ensure we have enough room for that.
+    const char *currentDir = malloc((parent_len + _MAX_SIZE + 3) * sizeof(char));
+    // Copy the entire string from fpath, since we only will overwrite the * at the end.
+    strcpy(currentDir, fpath);
+    do{
+	// Because we dynamically allocated currentDir for the size of the other pieces, we should be good on room.
+	// Copy starting at the place in the string that is our current level in the tree.
+	strcpy(currentDir + parent_len, fileinfo.name);
+	if (fileinfo.attrib & _A_SUBDIR){
+	    // Make sure we don't specifically exclude this directory from the search.
+	    int skip = 0;
+	    for (DIR_LIST *tmp = settings.excluded_directories; tmp; tmp = tmp->next){
+		if (strcmp(tmp->dir, fileinfo.name) == 0){
+		    skip = 1;
+		    break;
+		}
+	    }
+	    if (!skip){
+		strcat(currentDir, "\\*");
+		do_subfolder(currentDir);
+	    }
+	}
+	else{
+	    // Search through hidden and non-hidden files
+	    // Don't bother with opening 0-length files.
+	    if (fileinfo.size > 0){
+		parse_file(currentDir, fileinfo.size);
+	    }
+	}
+	else{
+	    log_event(WARNING, "Unsupported inode type found, skipping.");
+	}
+    } while (_findnext(handle_ptr, &fileinfo) != -1);
+    free(currentDir);
+    // If we reach the end with a status that isn't the normal completion of the nodes in the directory, then log an error message.
+    if (errno != ENOENT){
+	log_event(ERROR, "Directory traversal for path %s failed with status %i.", fpath, errno);
+    }
+    _findclose(handle_ptr);
+}
+
 void search_folder(const char *fpath){
     intptr_t handle_ptr;
     struct _finddata_t fileinfo;
-    char *currentDir;
     // Make sure we don't want to skip this folder already.
     if (check_excluded_paths(fpath) == 1)
 	return;
@@ -507,45 +576,29 @@ void search_folder(const char *fpath){
 	}
 	return;
     }
-    do{
-	// Okay, so we succeeded. Now we see what we got from the first element.
-	// We start by getting the file name.
-	// Dynamic allocation here needs to have enough room for slashes if need be.
-	currentDir = malloc((strlen(fpath) + strlen(fileinfo.name) + 3) * sizeof(char));
-	strcpy(currentDir, fpath);
-	if (currentDir[strlen(fpath)] != '\\')
-	    strcat(currentDir, "\\");
-	// Because we dynamically allocated currentDir for the size of the other pieces, we should be good on room.
-	strcat(currentDir, fileinfo.name);
+    else{
 	if (fileinfo.attrib & _A_SUBDIR){
-	    // Make sure we don't specifically exclude this directory from the search.
-	    int skip = 0;
-	    for (DIR_LIST *tmp = settings.excluded_directories; tmp; tmp = tmp->next){
-		if (strcmp(tmp->dir, fileinfo.name) == 0){
-		    skip = 1;
-		    break;
-		}
-	    }
-	    if (!skip){
-		strcat(currentDir, "\\");
-		search_folder(currentDir);
-	    }
+	    // Concatenate a * to a copy of the path string and enter into the folder.
+	    char *current_path = malloc(sizeof(char) * (strlen(fpath) + 2));
+	    if (!current_path)
+		log_event(FATAL, "Insufficient memory to produce path string for folder %s.", fpath);
+	    strcpy(current_path, fpath);
+	    // Append a backslash if we do not already have one.
+	    if (fpath[strlen(fpath) - 1] != '\\')
+		strat(current_path, "\\*");
+	    else
+		strcat(current_path, "*");
+	    //We're now ready to go into the folder we specified at the beginning.
+	    do_subfolder(current_path);
+
+	    free(current_path);
 	}
-	else if(fileinfo.attrib & (_A_HIDDEN | _A_NORMAL | _A_RDONLY | _A_ARCH)){
-	    // Search through hidden and non-hidden files
-	    // Don't bother with opening 0-length files.
+	else{
+	    // Read the initial entry as a file
 	    if (fileinfo.size > 0){
 		parse_file(currentDir, fileinfo.size);
 	    }
 	}
-	else{
-	    log_event(WARNING, "Unsupported inode type found, skipping.");
-	}
-	free(currentDir);
-    } while (_findnext(handle_ptr, &fileinfo) != -1);
-    // If we reach the end with a status that isn't the normal completion of the nodes in the directory, then log an error message.
-    if (errno != ENOENT){
-	log_event(ERROR, "Directory traversal for path %s failed with status %i.", fpath, errno);
     }
     _findclose(handle_ptr);
 }

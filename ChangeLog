@@ -1,3 +1,6 @@
+2016-11-21  SilverNexus
+	* search.c: Refactor io.h-based directory traversal to handle the way findfirst/next function.
+
 2016-11-20  SilverNexus
 	* CMakeLists.txt: Add condition where we add fileperuser to the system path in Windows.
 	  Add compiler flags to set up compilation on MSVC compilers.
