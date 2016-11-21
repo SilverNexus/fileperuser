@@ -530,7 +530,7 @@ void search_folder(const char *fpath){
 		search_folder(currentDir);
 	    }
 	}
-	else if(fileinfo.attrib & (_A_HIDDEN | _A_NORMAL | _A_RDONLY)){
+	else if(fileinfo.attrib & (_A_HIDDEN | _A_NORMAL | _A_RDONLY | _A_ARCH)){
 	    // Search through hidden and non-hidden files
 	    // Don't bother with opening 0-length files.
 	    if (fileinfo.size > 0){
