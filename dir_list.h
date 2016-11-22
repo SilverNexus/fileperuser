@@ -7,11 +7,11 @@
 #define DIR_LIST_H
 
 typedef struct dir_list{
-    char *dir;
+    const char *dir;
     struct dir_list *next;
 } DIR_LIST;
 
-DIR_LIST *init_dir_node(char *);
+DIR_LIST *init_dir_node(const char *);
 int link_dir_node(DIR_LIST *, DIR_LIST **);
 void free_dir_list(DIR_LIST *);
 

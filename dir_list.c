@@ -34,7 +34,7 @@
  * @return Pointer to the new node. Will terminate if allocation fails,
  * so this will never be null.
  */
-DIR_LIST *init_dir_node(char *directory){
+DIR_LIST *init_dir_node(const char *directory){
     DIR_LIST *new_node = (DIR_LIST *)malloc(sizeof(DIR_LIST));
     if (!new_node){
         log_event(FATAL, "Could not allocate space for directory %s", directory);
