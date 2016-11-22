@@ -62,16 +62,13 @@ char *fileperuser_memcasemem_boyer(char *haystack, const char * const haystack_l
 	    // This becomes false at unsigned rollover
 	    while (at < needle_len){
 		if (needle[at] != tolower(haystack[at]))
-		    /* SUPER UGLY!
-		     * But it means I don't have to compare for a return check
-		     * when I fail to find a match.
-		     */
-		    goto not_match;
+		    break;
 		--at;
 	    }
-	    return haystack;
+	    // Insigned integer abuse
+	    if (at > needle_len)
+		return haystack;
         }
-not_match:
         // This already is set up to handle either case, so just drop it in
         haystack += jump_tbl[(unsigned char)haystack[needle_len - 1]];
     }
@@ -134,23 +131,20 @@ char *fileperuser_memmem_boyer(char *haystack, size_t haystack_len, char *needle
 	    // Unsigned integer abuse
 	    for (c_at = at - 1, ch = needle_len - 2; ch < needle_len; --ch, --c_at){
 		if (needle[ch] != haystack[c_at])
-		    /* SUPER UGLY!
-		     * But it means I don't have to compare for a return check
-		     * when I fail to find a match.
-		     */
-		    goto not_match;
+		    break;
 	    }
-	    /*
-	     * We can use c_at instead to make this use less math.
-	     * We add 1 since we exit the loop at the unsigned equivalent of -1 relative to
-	     * the start of our seached section.
-	     * This puts us back to the beginning of the searched section.
-	     */
-	    return haystack + c_at + 1;
+	    // Abuse unsigned integers.
+	    if (ch > needle_len)
+		/*
+		 * We can use c_at instead to make this use less math.
+		 * We add 1 since we exit the loop at the unsigned equivalent of -1 relative to
+		 * the start of our seached section.
+		 * This puts us back to the beginning of the searched section.
+		 */
+		return haystack + c_at + 1;
 	    // Move the jump so it aligns with the next letter in the needle that matches this.
 	    // Fall through to the same code as otherwise
         }
-not_match:
         at += jump_tbl[(unsigned char)haystack[at]];
     }
     return 0;

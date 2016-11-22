@@ -2,6 +2,9 @@
 	* search.c: Factor out code to search for excluded directories.
 	  Refactor conditional compilation of inline qualifiers to be MSVC-specific.
 	* CMakeLists.txt: Add define for MSVC compilation.
+	* dir_list.h: Add const qualifier for strings stored in DIR_LIST structure.
+	* dir_list.c: Add const qualifier to function creating a DIR_LIST node.
+	* fileperuser_search.c: Fix use of goto in fileperuser search functions.
 
 2016-11-21  SilverNexus
 	* search.c: Refactor io.h-based directory traversal to handle the way findfirst/next function.
