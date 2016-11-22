@@ -511,19 +511,22 @@ void do_subfolder(const char * const fpath){
 	return;
     }
     // First, we find the length of the path that is the parent folders.
-    const char * end_parents = strrchr(fpath, "\\");
-    intptr_t parent_len = (intptr_t)end_parents - (intptr_t)fpath);
+    const char * end_parents = strrchr(fpath, '\\');
+    intptr_t parent_len = (intptr_t)end_parents - (intptr_t)fpath;
     // Now we make room for any path string in here.
     // Its a little extra memory, but reduces the allocations tremendously.
-    // fileinfo.name is declared as an array of size _MAX_SIZE, so make sure we can it what we need.
+    // fileinfo.name is declared as an array of size _MAX_PATH, so make sure we can it what we need.
     // Since we might append a \* if its a folder, ensure we have enough room for that.
-    const char *currentDir = malloc((parent_len + _MAX_SIZE + 3) * sizeof(char));
+    const char *currentDir = malloc((parent_len + _MAX_PATH + 4) * sizeof(char));
     // Copy the entire string from fpath, since we only will overwrite the * at the end.
     strcpy(currentDir, fpath);
     do{
+	// Skip . and ..
+	if (strcmp(fileinfo.name, ".") == 0 || strcmp(fileinfo.name, "..") == 0)
+	    continue;
 	// Because we dynamically allocated currentDir for the size of the other pieces, we should be good on room.
 	// Copy starting at the place in the string that is our current level in the tree.
-	strcpy(currentDir + parent_len, fileinfo.name);
+	strcpy(currentDir + parent_len + 1, fileinfo.name);
 	if (fileinfo.attrib & _A_SUBDIR){
 	    // Make sure we don't specifically exclude this directory from the search.
 	    int skip = 0;
@@ -545,16 +548,13 @@ void do_subfolder(const char * const fpath){
 		parse_file(currentDir, fileinfo.size);
 	    }
 	}
-	else{
-	    log_event(WARNING, "Unsupported inode type found, skipping.");
-	}
-    } while (_findnext(handle_ptr, &fileinfo) != -1);
+    } while (_findnext(handle, &fileinfo) != -1);
     free(currentDir);
     // If we reach the end with a status that isn't the normal completion of the nodes in the directory, then log an error message.
     if (errno != ENOENT){
 	log_event(ERROR, "Directory traversal for path %s failed with status %i.", fpath, errno);
     }
-    _findclose(handle_ptr);
+    _findclose(handle);
 }
 
 void search_folder(const char *fpath){
@@ -579,13 +579,13 @@ void search_folder(const char *fpath){
     else{
 	if (fileinfo.attrib & _A_SUBDIR){
 	    // Concatenate a * to a copy of the path string and enter into the folder.
-	    char *current_path = malloc(sizeof(char) * (strlen(fpath) + 2));
+	    char *current_path = malloc(sizeof(char) * (strlen(fpath) + 3));
 	    if (!current_path)
 		log_event(FATAL, "Insufficient memory to produce path string for folder %s.", fpath);
 	    strcpy(current_path, fpath);
 	    // Append a backslash if we do not already have one.
 	    if (fpath[strlen(fpath) - 1] != '\\')
-		strat(current_path, "\\*");
+		strcat(current_path, "\\*");
 	    else
 		strcat(current_path, "*");
 	    //We're now ready to go into the folder we specified at the beginning.
@@ -596,7 +596,7 @@ void search_folder(const char *fpath){
 	else{
 	    // Read the initial entry as a file
 	    if (fileinfo.size > 0){
-		parse_file(currentDir, fileinfo.size);
+		parse_file(fpath, fileinfo.size);
 	    }
 	}
     }
