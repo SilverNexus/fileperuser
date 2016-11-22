@@ -343,6 +343,30 @@ inline int check_excluded_paths(const char * const fpath){
     }
     return 0;
 }
+/**
+ * Check for excluded directory names to ignore in the tree.
+ *
+ * @param dir_name
+ * The directory name we will check for
+ *
+ * @return
+ * 1 if found, 0 if not found
+ *
+ * @todo
+ * Make into a binary tree? Searches would be more efficient.
+ */
+inline int check_excluded_dirs(const char * const dir_name){
+    if (settings.excluded_directories){
+	DIR_LIST *excl = settings.excluded_directories;
+	// We can assert that we are nonzero on first iteration, so use a do-while loop.
+	do{
+	    if (strcmp(excl->dir, dir_name) == 0)
+		return 1;
+	    excl = excl->next;
+	} while (excl);
+    }
+    return 0;
+}
 
 #if defined HAVE_NFTW
 /**
@@ -362,18 +386,11 @@ int onWalk(const char *fpath, const struct stat *sb, int typeflag, struct FTW *f
 	return FTW_SKIP_SUBTREE;
     switch (typeflag){
     case FTW_D:
-        // No reason to make this check if no directories have been excluded
-        if (settings.excluded_directories){
-	    // ftwbuf->base holds the start of this section of the path
-	    // This includes everything past the last slash.
-	    const char * const path = fpath + ftwbuf->base;
-	    // TODO: Make the list sorted and make this a binary search.
-	    for (DIR_LIST *tmp = settings.excluded_directories; tmp; tmp = tmp->next){
-		if (strcmp(tmp->dir, path) == 0){
-		    return FTW_SKIP_SUBTREE;
-		}
-	    }
-        }
+        // ftwbuf->base holds the start of this section of the path
+        // This includes everything past the last slash.
+	// NOTE: Even though the check is redundant, its more efficient than adding fpath and ftw->base every time.
+        if (settings.excluded_directories && check_excluded_dirs(fpath + ftwbuf->base) == 1)
+	    return FTW_SKIP_SUBTREE;
         return 0;
     case FTW_F:
 	if (sb->st_size > 0){
@@ -423,7 +440,6 @@ void search_folder(const char *fpath){
 #ifdef HAVE_DIRENT_D_TYPE
 	    switch (directory->d_type){
 		case DT_DIR:
-		    ; // Silences errors about declaring variables within the switch statement.
 #else
 	    struct stat sb;
 	    if (stat(currentDir, &sb) == -1){
@@ -432,14 +448,7 @@ void search_folder(const char *fpath){
 	    else{
 		if(S_ISDIR(sb.st_mode)){
 #endif
-		    int skip = 0;
-		    for (DIR_LIST *tmp = settings.excluded_directories; tmp; tmp = tmp->next){
-			if (strcmp(tmp->dir, directory->d_name) == 0){
-			    skip = 1;
-			    break;
-			}
-		    }
-		    if (!skip){
+		    if (check_excluded_dirs(directory->d_name) == 0){
 			strcat(currentDir, "/");
 			search_folder(currentDir);
 		    }
@@ -529,14 +538,7 @@ void do_subfolder(const char * const fpath){
 	strcpy(currentDir + parent_len + 1, fileinfo.name);
 	if (fileinfo.attrib & _A_SUBDIR){
 	    // Make sure we don't specifically exclude this directory from the search.
-	    int skip = 0;
-	    for (DIR_LIST *tmp = settings.excluded_directories; tmp; tmp = tmp->next){
-		if (strcmp(tmp->dir, fileinfo.name) == 0){
-		    skip = 1;
-		    break;
-		}
-	    }
-	    if (!skip){
+	    if (check_excluded_dirs(fileinfo.name) == 0){
 		strcat(currentDir, "\\*");
 		do_subfolder(currentDir);
 	    }
