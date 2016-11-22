@@ -1,5 +1,7 @@
 2016-11-22  SilverNexus
 	* search.c: Factor out code to search for excluded directories.
+	  Refactor conditional compilation of inline qualifiers to be MSVC-specific.
+	* CMakeLists.txt: Add define for MSVC compilation.
 
 2016-11-21  SilverNexus
 	* search.c: Refactor io.h-based directory traversal to handle the way findfirst/next function.

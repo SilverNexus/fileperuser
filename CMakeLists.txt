@@ -22,6 +22,8 @@ ELSEIF(MSVC)
 	# Currently conflicts with /RTC1 -- need to refactor debugging to use built-in CMake one.
 	#add_compile_options(/Ox /Ot /Ob2 /GS- /sdl-)
     ENDIF()
+    # Add define for conditional compilation of MSVC-specific fixes.
+    add_definitions(/DMSVC)
 ENDIF()
 #Otherwise, use defaults.
 

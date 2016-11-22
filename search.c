@@ -61,12 +61,12 @@
  * @param file_size
  * The size of the file. Assumed to be greater than zero.
  */
-#ifdef HAVE_IO_H
-// For some reason, I'm getting errors when trying to inline functions using MSVC
-void parse_file(const char * const fpath, const off_t file_size){
-#else
-inline void parse_file(const char * const fpath, const off_t file_size){
+#ifndef MSVC
+// For some reason, inline functions didn't want to work for me in MSVC.
+inline
 #endif
+void parse_file(const char * const fpath, const off_t file_size){
+
 #ifdef HAVE_MMAP
     // Open the file and get the file descriptor
     const int fd = open(fpath, O_RDONLY);
@@ -327,11 +327,10 @@ void search_file_single_match(char * const addr, size_t len, const char * const 
  * @todo
  * Make this check smarter so it does some understanding of the excluded paths
  */
-#ifdef HAVE_IO_H
-int check_excluded_paths(const char * const fpath){
-#else
-inline int check_excluded_paths(const char * const fpath){
+#ifndef MSVC
+inline
 #endif
+int check_excluded_paths(const char * const fpath){
     if (settings.excluded_paths){
 	DIR_LIST *pth = settings.excluded_paths;
 	// Since we only do this comparison if settings.excluded_paths is nonzero, we will have a first element.
@@ -355,7 +354,10 @@ inline int check_excluded_paths(const char * const fpath){
  * @todo
  * Make into a binary tree? Searches would be more efficient.
  */
-inline int check_excluded_dirs(const char * const dir_name){
+#ifndef MSVC
+inline
+#endif
+int check_excluded_dirs(const char * const dir_name){
     if (settings.excluded_directories){
 	DIR_LIST *excl = settings.excluded_directories;
 	// We can assert that we are nonzero on first iteration, so use a do-while loop.
