@@ -521,7 +521,7 @@ void do_subfolder(const char * const fpath){
     }
     // First, we find the length of the path that is the parent folders.
     const char * end_parents = strrchr(fpath, '\\');
-    intptr_t parent_len = (intptr_t)end_parents - (intptr_t)fpath;
+    const intptr_t parent_len = (intptr_t)end_parents - (intptr_t)fpath;
     // Now we make room for any path string in here.
     // Its a little extra memory, but reduces the allocations tremendously.
     // fileinfo.name is declared as an array of size _MAX_PATH, so make sure we can it what we need.
