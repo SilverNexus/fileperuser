@@ -1,6 +1,7 @@
 2016-11-22  SilverNexus
 	* search.c: Factor out code to search for excluded directories.
 	  Refactor conditional compilation of inline qualifiers to be MSVC-specific.
+	  Make exclusion check functions static in addition to inline.
 	* CMakeLists.txt: Add define for MSVC compilation.
 	* dir_list.h: Add const qualifier for strings stored in DIR_LIST structure.
 	* dir_list.c: Add const qualifier to function creating a DIR_LIST node.

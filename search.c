@@ -330,7 +330,7 @@ void search_file_single_match(char * const addr, size_t len, const char * const 
 #ifndef MSVC
 inline
 #endif
-int check_excluded_paths(const char * const fpath){
+static int check_excluded_paths(const char * const fpath){
     if (settings.excluded_paths){
 	DIR_LIST *pth = settings.excluded_paths;
 	// Since we only do this comparison if settings.excluded_paths is nonzero, we will have a first element.
@@ -357,7 +357,7 @@ int check_excluded_paths(const char * const fpath){
 #ifndef MSVC
 inline
 #endif
-int check_excluded_dirs(const char * const dir_name){
+static int check_excluded_dirs(const char * const dir_name){
     if (settings.excluded_directories){
 	DIR_LIST *excl = settings.excluded_directories;
 	// We can assert that we are nonzero on first iteration, so use a do-while loop.
