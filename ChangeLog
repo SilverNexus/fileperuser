@@ -1,6 +1,7 @@
 2016-11-25  SilverNexus
 	* CMakeLists.txt: Fix a target being referenced before it is defined.
 	  Compact the project and version definitions into one command.
+	  Fix minimum version to correctly handle current implementation.
 
 2016-11-22  SilverNexus
 	* search.c: Factor out code to search for excluded directories.
