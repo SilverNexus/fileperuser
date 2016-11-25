@@ -47,6 +47,10 @@ check_symbol_exists(S_ISLNK dirent.h;sys/types.h;sys/stat.h HAVE_DIRENT_S_ISLNK)
 
 configure_file(config.h.in config.h)
 
+add_executable(fileperuser dir_list.c ErrorLog.c fileperuser_search.c
+	       jump_table.c main.c output.c parseArgs.c result_list.c
+	       search.c settings.c)
+
 # Since there doesn't appear to be a built-in way to install a manpage, do it the hard way
 # but only do it in linux and bsd
 if (UNIX AND NOT APPLE)
@@ -61,12 +65,8 @@ elseif(WIN32)
     add_custom_command(
 	TARGET fileperuser
 	POST_BUILD
-	COMMAND cmd add_to_system_path.bat "${CMAKE_INSTALL_PREFIX}/bin"
+	COMMAND cmd add_to_system_path.bat "${CMAKE_INSTALL_PREFIX}\bin"
     )
 endif()
-
-add_executable(fileperuser dir_list.c ErrorLog.c fileperuser_search.c
-	       jump_table.c main.c output.c parseArgs.c result_list.c
-	       search.c settings.c)
 
 install(TARGETS fileperuser DESTINATION bin)
