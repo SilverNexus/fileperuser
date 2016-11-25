@@ -1,6 +1,5 @@
 cmake_minimum_required(VERSION 2.8)
-project( fileperuser )
-set (VERSION 0.03)
+project(fileperuser VERSION 0.03)
 
 # Allow easy toggle of debugging vs. performance builds.
 option(ENABLE_DEBUG "Enable creation of debugging symbols and reduction of optimization" OFF)
