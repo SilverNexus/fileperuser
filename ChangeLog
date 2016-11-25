@@ -1,3 +1,7 @@
+2016-11-25  SilverNexus
+	* CMakeLists.txt: Fix a target being referenced before it is defined.
+	  Compact the project and version definitions into one command.
+
 2016-11-22  SilverNexus
 	* search.c: Factor out code to search for excluded directories.
 	  Refactor conditional compilation of inline qualifiers to be MSVC-specific.
