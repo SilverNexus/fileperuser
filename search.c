@@ -65,7 +65,7 @@
 // For some reason, inline functions didn't want to work for me in MSVC.
 inline
 #endif
-void parse_file(const char * const fpath, const off_t file_size){
+static void parse_file(const char * const fpath, const off_t file_size){
 
 #ifdef HAVE_MMAP
     // Open the file and get the file descriptor
