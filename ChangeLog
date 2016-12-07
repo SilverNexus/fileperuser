@@ -1,3 +1,10 @@
+2016-12-06  SilverNexus
+	* search.c: Make parse_file be static.
+	* result_list.c: Reduce string copy operations by making each result item
+	  hold a list of found locations.
+	* result_list.h: Add definitions for the new result location structure.
+	* output.c: Handle output of new format of results.
+
 2016-11-25  SilverNexus
 	* CMakeLists.txt: Fix a target being referenced before it is defined.
 	  Compact the project and version definitions into one command.

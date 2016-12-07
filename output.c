@@ -45,10 +45,17 @@ void output_matches(){
 	else
 	    results_file = stdout;
         RESULT_ITEM *res = results.first;
+	RESULT_LOC *loc;
         // We already know there's at least one: that's how we got here
         do{
-            fprintf(results_file, "Found '%s' in line %d, col %d of %s.\n",
-                settings.search_string, res->line_num, res->col_num, res->file_path);
+	    // Get each location in the result.
+	    loc = res->locations;
+	    // We can assert that a result existant at the file level will have at least one result location
+	    do{
+		fprintf(results_file, "Found '%s' in line %d, col %d of %s.\n",
+		    settings.search_string, loc->line_num, loc->col_num, res->file_path);
+		loc = loc->next;
+	    } while (loc);
             res = res->next;
         } while (res);
         if (results_file != stdout){

@@ -39,6 +39,30 @@ void init_results(){
 }
 
 /**
+ * Create a new result_loc struct
+ *
+ * @param line
+ * The line the match was found on.
+ *
+ * @param col
+ * The column number of the match.
+ *
+ * @return
+ * The address of the new RESULT_LOC object.
+ */
+inline static RESULT_LOC *new_result_loc(const int line, const int col){
+    RESULT_LOC *res = malloc(sizeof(RESULT_LOC));
+    if (!res){
+	log_event(FATAL, "No memory available to record a result location.");
+    }
+    res->line_num = line;
+    res->col_num = col;
+    // Ensure it is not linking to nowhere.
+    res->next = 0;
+    return res;
+}
+
+/**
  * Adds a result to the end of the result list.
  * Updates the list pointers to point to the front and
  * end of the list.
@@ -51,26 +75,37 @@ void init_results(){
  *
  */
 void add_result(int line, int col, const char *file){
-    RESULT_ITEM *item = (RESULT_ITEM *)malloc(sizeof(RESULT_ITEM));
-    if (!item)
-        log_event(FATAL, "No memory to allocate result in file %s, line %d, col %d.", file, line, col);
-#ifdef HAVE_STRDUP
-    item->file_path = strdup(file);
-#else
-    item->file_path = (char *)malloc(sizeof(char) * (strlen(file) + 1));
-    if (!item->file_path)
-        log_event(FATAL, "No memory to allocate file name in result for file %s, line %d, col %d.", file, line, col);
-    strcpy(item->file_path, file);
-#endif
-    item->line_num = line;
-    item->col_num = col;
-    item->next = 0;
-    // Append to the end of the list
-    if (!results.last)
-        results.last = results.first = item;
+    // Set up our location -- we need it in both cases.
+    RESULT_LOC *res = new_result_loc(line, col);
+    // Check to see whether this is a new file we got a result from
+    if (results.last && strcmp(results.last->file_path, file) == 0){
+	// Add the result to the list
+	results.last->locations_last->next = res;
+	results.last->locations_last = res;
+    }
     else{
-        results.last->next = item;
-        results.last = item;
+	RESULT_ITEM *item = (RESULT_ITEM *)malloc(sizeof(RESULT_ITEM));
+	if (!item)
+	    log_event(FATAL, "No memory to allocate result in file %s, line %d, col %d.", file, line, col);
+#ifdef HAVE_STRDUP
+	item->file_path = strdup(file);
+#else
+	item->file_path = (char *)malloc(sizeof(char) * (strlen(file) + 1));
+	if (!item->file_path)
+	    log_event(FATAL, "No memory to allocate file name in result for file %s, line %d, col %d.", file, line, col);
+	strcpy(item->file_path, file);
+#endif
+	// Link the result into the list.
+	item->locations = res;
+	item->locations_last = res;
+	item->next = 0;
+	// Append to the end of the list
+	if (!results.last)
+	    results.last = results.first = item;
+	else{
+	    results.last->next = item;
+	    results.last = item;
+	}
     }
 }
 
@@ -83,8 +118,18 @@ void add_result(int line, int col, const char *file){
 void clear_results(){
     RESULT_ITEM *res = results.first;
     RESULT_ITEM *tmp;
+    // Define two temporary locations for freeing the result locations
+    RESULT_LOC *tmploc, *tmploc2;
     while (res){
         free(res->file_path);
+	// Free the locations, too
+	tmploc = res->locations;
+	// There will always be at least one result
+	do {
+	    tmploc2 = tmploc;
+	    tmploc = tmploc->next;
+	    free(tmploc2);
+	} while(tmploc);
         tmp = res;
         res = res->next;
         free(tmp);
