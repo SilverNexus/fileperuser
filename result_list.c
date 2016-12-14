@@ -27,6 +27,7 @@
 #include "ErrorLog.h"
 #include <string.h>
 #include "config.h"
+#include <assert.h>
 
 /**
  * Initializes the results list to an empty list.
@@ -79,6 +80,7 @@ void add_result(int line, int col, const char *file){
     RESULT_LOC *res = new_result_loc(line, col);
     // Check to see whether this is a new file we got a result from
     if (results.last && strcmp(results.last->file_path, file) == 0){
+	assert(results.last->locations_last); // We should have a location when we link this in.
 	// Add the result to the list
 	results.last->locations_last->next = res;
 	results.last->locations_last = res;

@@ -1,6 +1,7 @@
 2016-12-13  SilverNexus
 	* CMakeLists.txt: Refactor to use the built-in build configurations.
 	  This should fix Windows builds, too.
+	* result_list.c: Add an assertion to the result list addition.
 
 2016-12-06  SilverNexus
 	* search.c: Make parse_file be static.
