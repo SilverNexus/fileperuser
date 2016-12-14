@@ -1,26 +1,26 @@
 cmake_minimum_required(VERSION 3.0)
 project(fileperuser VERSION 0.03 LANGUAGES C)
 
-# Allow easy toggle of debugging vs. performance builds.
-option(ENABLE_DEBUG "Enable creation of debugging symbols and reduction of optimization" OFF)
+# Make sure we have a list of build types.
+IF(CMAKE_CONFIGURATION_TYPES)
+    # Reduce the number of build options we have.
+    set(CMAKE_CONFIGURATION_TYPES Debug Release)
+    # Send it to the cache
+    set(CMAKE_CONFIGURATION_TYPES "${CMAKE_CONFIGURATION_TYPES}" CACHE STRING "Reduce build options" FORCE)
+ENDIF()
 
 # Add compiler flags to gcc-like compilers
 IF(UNIX OR MINGW OR CYGWIN)
     add_compile_options(-std=gnu99 -D_XOPEN_SOURCE=600 -D_GNU_SOURCE -Wall -Wextra)
-    IF (${ENABLE_DEBUG} STREQUAL ON)
-	add_compile_options(-g -O0)
-    ELSE()
-	add_compile_options(-s -Ofast)
-    ENDIF()
+    # Set debug nd release flags
+    set(CMAKE_C_FLAGS_DEBUG "-g -O0" CACHE STRING "Have debugging information for debug" FORCE)
+    set(CMAKE_C_FLAGS_RELEASE "-s -Ofast" CACHE STRING "Optimize for release" FORCE)
 ELSEIF(MSVC)
     # Add compiler flags for MSVC projects.
     add_compile_options(/TC /W3)
-    IF(${ENABLE_DEBUG} STREQUAL ON)
-	add_compile_options(/Od /Zi)
-    ELSE()
-	# Currently conflicts with /RTC1 -- need to refactor debugging to use built-in CMake one.
-	#add_compile_options(/Ox /Ot /Ob2 /GS- /sdl-)
-    ENDIF()
+    # Set debug nd release flags
+    set(CMAKE_C_FLAGS_DEBUG "/Od /Zi" CACHE STRING "Have debugging information for debug" FORCE)
+    set(CMAKE_C_FLAGS_RELEASE "/Ox /Ot /Ob2 /GS- /sdl-" CACHE STRING "Optimize for release" FORCE)
     # Add define for conditional compilation of MSVC-specific fixes.
     add_definitions(/DMSVC)
 ENDIF()
