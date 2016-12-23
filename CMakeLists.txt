@@ -64,7 +64,7 @@ elseif(WIN32)
     add_custom_command(
 	TARGET fileperuser
 	POST_BUILD
-	COMMAND cmd add_to_system_path.bat "${CMAKE_INSTALL_PREFIX}\bin"
+	COMMAND cmd add_to_system_path.bat "${CMAKE_INSTALL_PREFIX}\\bin"
     )
 endif()
 
