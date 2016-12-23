@@ -51,7 +51,10 @@ void init_results(){
  * @return
  * The address of the new RESULT_LOC object.
  */
-inline static RESULT_LOC *new_result_loc(const int line, const int col){
+#ifndef MSVC
+inline
+#endif
+static RESULT_LOC *new_result_loc(const int line, const int col){
     RESULT_LOC *res = malloc(sizeof(RESULT_LOC));
     if (!res){
 	log_event(FATAL, "No memory available to record a result location.");
