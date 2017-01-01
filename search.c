@@ -405,8 +405,11 @@ int onWalk(const char *fpath, const struct stat *sb, int typeflag, struct FTW *f
         return 0;
     case FTW_SL:
         return 0;
+    case FTW_DNR:
+	log_event(ERROR, "Failed to open subdirectory %s.", fpath);
+	return 0;
     default:
-        log_event(WARNING, "Unsupported inode type found, skipping.");
+        log_event(WARNING, "Unsupported inode type found at %s, skipping.", fpath);
         return 0;
     }
 }

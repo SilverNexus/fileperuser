@@ -1,3 +1,7 @@
+2017-01-01  SilverNexus
+	* search.c: Add more descriptive default handler to ftw search.
+	  Also, have a distinct error message for directories that failed to open.
+
 2016-12-22  SilverNexus
 	* CMakeLists.txt: Fix syntax error in Windows build.
 	* result_list.c: Make inline compilation occur only when not using MSVC.
