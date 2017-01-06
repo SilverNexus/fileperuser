@@ -489,7 +489,7 @@ void search_folder(const char *fpath){
 			if (!S_ISLNK(sb.st_mode))
 #endif //HAVE_DIRENT_S_ISLNK
 #endif //HAVE_DIRENT_D_TYPE
-				log_event(WARNING, "Unsupported inode type found, skipping.");
+				log_event(WARNING, "Unsupported inode type found at %s, skipping.", currentDir);
             }
 	    // We're done with it, so free it.
 	    free(currentDir);
