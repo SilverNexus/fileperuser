@@ -1,3 +1,7 @@
+2017-01-07  SilverNexus
+	* fileperuser_search.c: Refactor a redundant while-loop check to make
+	  a do-while loop. Saves a couple instructions per call of the function.
+
 2017-01-05  SilverNexus
 	* search.c: Improve unhandled inode type message on dirent-based search.
 

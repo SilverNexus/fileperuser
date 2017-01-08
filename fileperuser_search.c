@@ -125,7 +125,12 @@ char *fileperuser_memmem_boyer(char *haystack, size_t haystack_len, char *needle
 	return 0;
     // Boyer-Moore search
     size_t at = needle_len - 1, c_at, ch;
-    while (at < haystack_len){
+    /*
+     * Since at < needle_len on the first run, and
+     * haystack_len >= needle_len, checking on the first loop
+     * is superfluous.
+     */
+    do {
         if (needle[needle_len - 1] == haystack[at]){
 	    // Do a backward search
 	    // Unsigned integer abuse
@@ -146,7 +151,7 @@ char *fileperuser_memmem_boyer(char *haystack, size_t haystack_len, char *needle
 	    // Fall through to the same code as otherwise
         }
         at += jump_tbl[(unsigned char)haystack[at]];
-    }
+    } while (at < haystack_len);
     return 0;
 }
 
