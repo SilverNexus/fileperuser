@@ -426,7 +426,7 @@ int onWalk(const char *fpath, const struct stat *sb, int typeflag, struct FTW *f
  * @return
  * 1 if file name is . or .., 0 otherwise
  */
-inline static unsigned is_search_file(const char * const filename){
+inline static unsigned is_dir_tree_file(const char * const filename){
     if (filename[0] == '.'){
 	if (filename[1] == '\0')
 	    return 1;
@@ -449,7 +449,7 @@ void search_folder(const char *fpath){
     if (mapsDirectory){
         struct dirent *directory;
         while ((directory = readdir(mapsDirectory))){
-            if (is_search_file(directory->d_name) == 1)
+            if (is_dir_tree_file(directory->d_name) == 1)
                 continue;
 	    /*
 	     * We add three to the length of the two pieces so we have enough
