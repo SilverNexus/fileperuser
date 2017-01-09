@@ -415,6 +415,27 @@ int onWalk(const char *fpath, const struct stat *sb, int typeflag, struct FTW *f
 }
 #elif defined HAVE_DIRENT_H
 
+// MSVC does not have dirent, so I can safely avoid checking for it on this inline.
+/**
+ * Checks the current directory name for . and ..
+ * since we want to skip both of those.
+ *
+ * @param filename
+ * The filename to check.
+ *
+ * @return
+ * 1 if file name is . or .., 0 otherwise
+ */
+inline static unsigned is_search_file(const char * const filename){
+    if (filename[0] == '.'){
+	if (filename[1] == '\0')
+	    return 1;
+	if (filename[1] == '.' && filename[2] == '\0')
+	    return 1;
+    }
+    return 0;
+}
+
 /**
  * Traverses through the directory tree of the designated root directory of the search.
  * Opens files to search along the way and searches them for the desired search string.
@@ -422,14 +443,14 @@ int onWalk(const char *fpath, const struct stat *sb, int typeflag, struct FTW *f
  * @param fpath The directory being searched.
  */
 void search_folder(const char *fpath){
+    if (check_excluded_paths(fpath) == 1)
+	return;
     DIR *mapsDirectory = opendir(fpath);
     if (mapsDirectory){
         struct dirent *directory;
         while ((directory = readdir(mapsDirectory))){
-            if (strcmp(directory->d_name, ".") == 0 || strcmp(directory->d_name, "..") == 0)
+            if (is_search_file(directory->d_name) == 1)
                 continue;
-	    if (check_excluded_paths(fpath) == 1)
-		return;
 	    /*
 	     * We add three to the length of the two pieces so we have enough
 	     * for both a null terminator and both slashes if necessary.
@@ -454,7 +475,6 @@ void search_folder(const char *fpath){
 		if(S_ISDIR(sb.st_mode)){
 #endif
 		    if (check_excluded_dirs(directory->d_name) == 0){
-			strcat(currentDir, "/");
 			search_folder(currentDir);
 		    }
 #ifdef HAVE_DIRENT_D_TYPE
