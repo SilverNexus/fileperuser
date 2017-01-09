@@ -448,6 +448,7 @@ void search_folder(const char *fpath){
     DIR *mapsDirectory = opendir(fpath);
     if (mapsDirectory){
         struct dirent *directory;
+	const size_t fpath_len = strlen(fpath);
         while ((directory = readdir(mapsDirectory))){
             if (is_dir_tree_file(directory->d_name) == 1)
                 continue;
@@ -457,10 +458,10 @@ void search_folder(const char *fpath){
 	     *
 	     * The second slash is concatenated if we have a dir.
 	     */
-            char *currentDir = malloc(sizeof(char) * (strlen(fpath) + strlen(directory->d_name) + 3));
+            char *currentDir = malloc(sizeof(char) * (fpath_len + strlen(directory->d_name) + 3));
             strcpy(currentDir, fpath);
             // If there wasn't already a "/" at the end, add it here.
-            if (currentDir[strlen(fpath) - 1] != '/')
+            if (currentDir[fpath_len - 1] != '/')
                 strcat(currentDir, "/");
             strcat(currentDir, directory->d_name);
 #ifdef HAVE_DIRENT_D_TYPE
