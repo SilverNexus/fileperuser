@@ -1,7 +1,13 @@
 2017-01-08  SilverNexus
 	* search.c: Fixed dirent-based search and optimized it a bit.
+	  Removed nftw walk, since dirent-based implementation performs
+	  better and is more ubiquitous.
 	* settings.c: Remove a degree of freedom in the root node ending.
 	  A trailing slash in the arg is truncated to provide consistency.
+	* main.c: Removed implementation of nftw walk, as it was outperformed.
+	* CMakeLists.txt: Removed check for nftw.
+	* search.h: Removed code for nftw.
+	* config.h.in: Removed define for nftw presence.
 
 2017-01-07  SilverNexus
 	* fileperuser_search.c: Refactor a redundant while-loop check to make

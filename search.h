@@ -9,11 +9,7 @@
 #include "config.h"
 
 // Implement different functions if we have different tools available.
-#if defined HAVE_NFTW
-#include <ftw.h>
-
-int onWalk(const char *fpath, const struct stat *sb, int typeflag, struct FTW *ftwbuf);
-#elif defined HAVE_DIRENT_H
+#if defined HAVE_DIRENT_H
 #include <dirent.h>
 #include <sys/types.h>
 

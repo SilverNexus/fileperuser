@@ -27,7 +27,6 @@ ENDIF()
 #Otherwise, use defaults.
 
 include(CheckFunctionExists)
-check_function_exists(nftw HAVE_NFTW)
 check_function_exists(mmap HAVE_MMAP)
 check_function_exists(strdup HAVE_STRDUP)
 

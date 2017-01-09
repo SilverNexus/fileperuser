@@ -47,9 +47,7 @@
 #include <stdio.h>
 #endif
 
-#if !defined (HAVE_MMAP) || !defined (HAVE_NFTW)
 #include <stdlib.h>
-#endif
 
 /**
  * Parses a file for a search string, calling the appropriate matching
@@ -370,50 +368,7 @@ static int check_excluded_dirs(const char * const dir_name){
     return 0;
 }
 
-#if defined HAVE_NFTW
-/**
- * Checks each encountered inode so that it is handled correctly. Called from nftw(3)
- * Opens files to search along the way and searches them for the desired search string.
- *
- * @param fpath The directory being searched.
- * @param sb Contains information about the current inode.
- * @param typeflag The type of inode.
- * @param ftwbuf Contains more info, but I'm not sure. Its needed for nftw(3) to work.
- *
- * @retval FTW_SKIP_SUBTREE nftw(3) should skip this folder.
- * @retval 0 nftw(3) should continue parsing as expected.
- */
-int onWalk(const char *fpath, const struct stat *sb, int typeflag, struct FTW *ftwbuf){
-    if (check_excluded_paths(fpath) == 1)
-	return FTW_SKIP_SUBTREE;
-    switch (typeflag){
-    case FTW_D:
-        // ftwbuf->base holds the start of this section of the path
-        // This includes everything past the last slash.
-	// NOTE: Even though the check is redundant, its more efficient than adding fpath and ftw->base every time.
-        if (settings.excluded_directories && check_excluded_dirs(fpath + ftwbuf->base) == 1)
-	    return FTW_SKIP_SUBTREE;
-        return 0;
-    case FTW_F:
-	if (sb->st_size > 0){
-#if 0
-	    // Preprocess this out unless we really need it.
-	    log_event(INFO, "Searching for '%s' in %s.", settings.search_string, fpath);
-#endif
-	    parse_file(fpath, sb->st_size);
-	}
-        return 0;
-    case FTW_SL:
-        return 0;
-    case FTW_DNR:
-	log_event(ERROR, "Failed to open subdirectory %s.", fpath);
-	return 0;
-    default:
-        log_event(WARNING, "Unsupported inode type found at %s, skipping.", fpath);
-        return 0;
-    }
-}
-#elif defined HAVE_DIRENT_H
+#if defined HAVE_DIRENT_H
 
 // MSVC does not have dirent, so I can safely avoid checking for it on this inline.
 /**
