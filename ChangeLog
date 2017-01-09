@@ -8,6 +8,7 @@
 	* CMakeLists.txt: Removed check for nftw.
 	* search.h: Removed code for nftw.
 	* config.h.in: Removed define for nftw presence.
+	* README: Update to reflect the lack of nftw.
 
 2017-01-07  SilverNexus
 	* fileperuser_search.c: Refactor a redundant while-loop check to make
