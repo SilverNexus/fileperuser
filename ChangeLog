@@ -1,5 +1,7 @@
 2017-01-08  SilverNexus
 	* search.c: Fixed dirent-based search and optimized it a bit.
+	* settings.c: Remove a degree of freedom in the root node ending.
+	  A trailing slash in the arg is truncated to provide consistency.
 
 2017-01-07  SilverNexus
 	* fileperuser_search.c: Refactor a redundant while-loop check to make

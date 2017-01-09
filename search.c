@@ -449,20 +449,20 @@ void search_folder(const char *fpath){
     if (mapsDirectory){
         struct dirent *directory;
 	const size_t fpath_len = strlen(fpath);
+	/*
+	 * Create a buffer that will hold any d_name from dirent.
+	 * We reduce calls to malloc this way.
+	 * The +2 at the end is to hold the slash and the null terminator.
+	 */
+	char *currentDir = malloc(sizeof(char) * (fpath_len + NAME_MAX + 2));
+	if (!currentDir)
+	    log_event(FATAL, "Could not make memory for a directory name at %s.", fpath);
+	strcpy(currentDir, fpath);
+	strcat(currentDir, "/");
+
         while ((directory = readdir(mapsDirectory))){
             if (is_dir_tree_file(directory->d_name) == 1)
                 continue;
-	    /*
-	     * We add three to the length of the two pieces so we have enough
-	     * for both a null terminator and both slashes if necessary.
-	     *
-	     * The second slash is concatenated if we have a dir.
-	     */
-            char *currentDir = malloc(sizeof(char) * (fpath_len + strlen(directory->d_name) + 3));
-            strcpy(currentDir, fpath);
-            // If there wasn't already a "/" at the end, add it here.
-            if (currentDir[fpath_len - 1] != '/')
-                strcat(currentDir, "/");
             strcat(currentDir, directory->d_name);
 #ifdef HAVE_DIRENT_D_TYPE
 	    switch (directory->d_type){
@@ -512,9 +512,11 @@ void search_folder(const char *fpath){
 #endif //HAVE_DIRENT_D_TYPE
 				log_event(WARNING, "Unsupported inode type found at %s, skipping.", currentDir);
             }
-	    // We're done with it, so free it.
-	    free(currentDir);
+	    // Now we drop the inode from the tree, so we can get the next from the same folder.
+	    currentDir[fpath_len + 1] = '\0';
         }
+        // We're done with it, so free it.
+        free(currentDir);
     }
     else
         log_event(ERROR, "Could not open directory %s.", fpath);

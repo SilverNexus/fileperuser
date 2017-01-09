@@ -99,6 +99,11 @@ void add_exclude_path(char *newDir){
  * @note cannot fail, so don't return a success value.
  */
 void add_root_dir(char *newDir){
+    size_t len = strlen(newDir);
+    // Assure ourselves that we do not end with a slash.
+    // This allows for better optimization in the traversal code.
+    if (newDir[len - 1] == '/')
+	newDir[len - 1] = '\0';
     DIR_LIST *newRoot = init_dir_node(newDir);
     /*
      * init_dir_node() cannot return null, so don't check for it.
