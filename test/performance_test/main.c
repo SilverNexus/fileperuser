@@ -19,6 +19,11 @@
 #include "../../fileperuser_search.h"
 #endif
 
+#if defined(FP_MEMMEM_BOYER) || \
+    defined(FP_MEMCASEMEM_BOYER)
+#define BOYER_MOORE
+#endif
+
 // Define the test file name in a macro to make it easier to maintain
 #define FILENAME "test_file"
 // Our test file isn't changing -- just use this value.
@@ -69,23 +74,7 @@ int main(int argc, char **argv){
     // These are also only used for fp_memcasemem derivatives.
     const char * const last = file_data + FILESIZE - needle_len + 1;
     #endif
-    #if defined(FP_MEMMEM_BOYER)
-    size_t i = 256;
-    // Initialize
-    // Comparing to zero is faster than comparing to 256
-    do {
-	/*
-	 * Decrement first, then index.
-	 * In this way, we can check on 256 -> 1,
-	 * but affect indexes 255 -> 0.
-	 */
-	jump_tbl[--i] = needle_len;
-    } while (i);
-    // Now adjust for the characters in the needle, except the last one.
-    for (i = 0; i < needle_len - 1; ++i){
-	jump_tbl[(unsigned char)needle[i]] = needle_len - i - 1;
-    }
-    #elif defined(FP_MEMCASEMEM_BOYER)
+    #ifdef BOYER_MOORE
     size_t i = 256;
     // Initialize
     // Comparing to zero is faster than comparing to 256
@@ -104,7 +93,9 @@ int main(int argc, char **argv){
      */
     for (i = 0; i < needle_len - 1; ++i){
 	jump_tbl[(unsigned char)needle[i]] = needle_len - i - 1;
+	#ifdef FP_MEMCASEMEM_BOYER
 	jump_tbl[toupper(needle[i])] = needle_len - i - 1;
+	#endif
     }
     #endif
     char *at;

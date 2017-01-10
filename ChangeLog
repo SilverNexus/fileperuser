@@ -1,3 +1,6 @@
+2017-01-10  SilverNexus
+	* test/performance_test/main.c: Consolidate boyer-moore code for readability
+
 2017-01-09  SilverNexus
 	* test/performance_test/main.c: Remove check for define of removed function.
 
