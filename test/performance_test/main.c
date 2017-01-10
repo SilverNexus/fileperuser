@@ -15,7 +15,6 @@
 #if defined(FP_MEMMEM_BOYER) || \
     defined(FP_MEMMEM_BRUTE) || \
     defined(FP_MEMCASEMEM_BOYER) || \
-    defined(FP_MEMCASEMEM_BRUTE) || \
     defined(FP_MEMCASECHR)
 #include "../../fileperuser_search.h"
 #endif

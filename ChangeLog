@@ -1,3 +1,6 @@
+2017-01-09  SilverNexus
+	* test/performance_test/main.c: Remove check for define of removed function.
+
 2017-01-08  SilverNexus
 	* search.c: Fixed dirent-based search and optimized it a bit.
 	  Removed nftw walk, since dirent-based implementation performs
