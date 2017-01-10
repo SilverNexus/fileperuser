@@ -83,12 +83,15 @@ int main(int argc, char *argv[]){
 	if (settings.search_flags & FLAG_NO_CASE){
 	    /*
 	     * Go from end to start, since comparison on 0 is cheaper.
+	     *
+	     * We also can skip a comparison on i, since we can assert that i > 0.
 	     */
-	    for (size_t i = needle_len; i; ){
+	    size_t i = needle_len;
+	    do {
 		// There, now we will fix all characters.
 		--i;
 		settings.search_string[i] = tolower(settings.search_string[i]);
-	    }
+	    } while (i);
 	}
 	// Build the jump table.
 	setup_jump_table();
