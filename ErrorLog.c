@@ -1,20 +1,20 @@
 /*
-    FilePeruser, a recursive file search utility.
-    Copyright (C) 2014-2016  SilverNexus
+	FilePeruser, a recursive file search utility.
+	Copyright (C) 2014-2016  SilverNexus
 
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 2 of the License, or
-    (at your option) any later version.
+	This program is free software; you can redistribute it and/or modify
+	it under the terms of the GNU General Public License as published by
+	the Free Software Foundation; either version 2 of the License, or
+	(at your option) any later version.
 
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
+	This program is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU General Public License for more details.
 
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, write to the Free Software
-    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+	You should have received a copy of the GNU General Public License
+	along with this program; if not, write to the Free Software
+	Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
 /**
@@ -46,38 +46,38 @@ static const char * const MONTH[12] = {"January", "February", "March", "April", 
  * @warning If errorType err is FATAL, will exit the program.
  */
 void log_event(enum errorType err, const char *msg, ...){
-       // If message is too low of importance to print or log, just skip it all
-       if (err < settings.min_log_level && err < settings.min_print_level)
-           return;
-       va_list ap;
-       if (err >= settings.min_print_level){
-           // Print the message
-	   fprintf(stderr, "%s: ", ERROR_TYPE_CHARS[err]);
-	   va_start(ap, msg);
-	   vfprintf(stderr, msg, ap);
-	   va_end(ap);
-	   fputs("\n", stderr);
-       }
-       // If major enough, log to the file
-       if (err >= settings.min_log_level){
-           time_t theTime = time(0);
-           struct tm *date = localtime(&theTime);
-           // Create output file stream object
-           FILE *ErrorFile = fopen(settings.log_file, "a");
-           if (ErrorFile){
-		fprintf(ErrorFile, "%2i %s %4i %02i:%02i:%02i: %s: ", date->tm_mday, MONTH[date->tm_mon], date->tm_year+1900, date->tm_hour, date->tm_min, date->tm_sec, ERROR_TYPE_CHARS[err]);
-		va_start(ap, msg);
-		vfprintf(ErrorFile, msg, ap);
-		va_end(ap);
-		fputs("\n", ErrorFile);
+	   // If message is too low of importance to print or log, just skip it all
+	   if (err < settings.min_log_level && err < settings.min_print_level)
+		   return;
+	   va_list ap;
+	   if (err >= settings.min_print_level){
+		   // Print the message
+		   fprintf(stderr, "%s: ", ERROR_TYPE_CHARS[err]);
+		   va_start(ap, msg);
+		   vfprintf(stderr, msg, ap);
+		   va_end(ap);
+		   fputs("\n", stderr);
 	   }
-           else{
-                fputs("ERROR: Could not open log file. Errors will not be logged.\n", stderr);
-                return;
-           }
-           fclose(ErrorFile);
-       }
-       if (err == FATAL)
-           exit(EXIT_FAILURE);
-       return;
+	   // If major enough, log to the file
+	   if (err >= settings.min_log_level){
+		   time_t theTime = time(0);
+		   struct tm *date = localtime(&theTime);
+		   // Create output file stream object
+		   FILE *ErrorFile = fopen(settings.log_file, "a");
+		   if (ErrorFile){
+				fprintf(ErrorFile, "%2i %s %4i %02i:%02i:%02i: %s: ", date->tm_mday, MONTH[date->tm_mon], date->tm_year+1900, date->tm_hour, date->tm_min, date->tm_sec, ERROR_TYPE_CHARS[err]);
+				va_start(ap, msg);
+				vfprintf(ErrorFile, msg, ap);
+				va_end(ap);
+				fputs("\n", ErrorFile);
+		   }
+		   else{
+				fputs("ERROR: Could not open log file. Errors will not be logged.\n", stderr);
+				return;
+		   }
+		   fclose(ErrorFile);
+	   }
+	   if (err == FATAL)
+		   exit(EXIT_FAILURE);
+	   return;
 }

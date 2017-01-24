@@ -7,8 +7,8 @@
 #define DIR_LIST_H
 
 typedef struct dir_list{
-    const char *dir;
-    struct dir_list *next;
+	const char *dir;
+	struct dir_list *next;
 } DIR_LIST;
 
 DIR_LIST *init_dir_node(const char *);

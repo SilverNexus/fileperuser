@@ -17,43 +17,43 @@
 #define FLAG_BINARY_FILES 0x0002
 
 struct {
-    /*
-     * List of directory names to skip.
-     * Example: excluding ".svn" here would skip
-     * all instances of ".svn" in the searched
-     * directory tree.
-     */
-    DIR_LIST *excluded_directories;
+	/*
+	 * List of directory names to skip.
+	 * Example: excluding ".svn" here would skip
+	 * all instances of ".svn" in the searched
+	 * directory tree.
+	 */
+	DIR_LIST *excluded_directories;
 
-    /*
-     * List of paths in the search tree to skip.
-     * Example: excluding ".svn" here would skip
-     * ".svn" in the root of the searched
-     * directory tree.
-     */
-    DIR_LIST *excluded_paths;
-    /*
-     * Also, store the index of the length of the base search path.
-     */
-    short base_search_path_length;
+	/*
+	 * List of paths in the search tree to skip.
+	 * Example: excluding ".svn" here would skip
+	 * ".svn" in the root of the searched
+	 * directory tree.
+	 */
+	DIR_LIST *excluded_paths;
+	/*
+	 * Also, store the index of the length of the base search path.
+	 */
+	short base_search_path_length;
 
-    DIR_LIST *root_dirs;
-    char *search_string;
+	DIR_LIST *root_dirs;
+	char *search_string;
 
-    // Keep track of case sensitivity here for easy access.
-    short search_flags;
+	// Keep track of case sensitivity here for easy access.
+	short search_flags;
 
-    /*
-     * Pointer to the file parsing function
-     * one multi-matches, the other single-matches
-     */
-    void (*file_parser)(char * const, size_t, const char * const);
+	/*
+	 * Pointer to the file parsing function
+	 * one multi-matches, the other single-matches
+	 */
+	void (*file_parser)(char * const, size_t, const char * const);
 
-    char *output_file;
+	char *output_file;
 
-    char *log_file;
-    enum errorType min_log_level;
-    enum errorType min_print_level;
+	char *log_file;
+	enum errorType min_log_level;
+	enum errorType min_print_level;
 } settings;
 
 void init_settings();

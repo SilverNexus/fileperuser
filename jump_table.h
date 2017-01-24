@@ -9,7 +9,7 @@
 
 #include <stddef.h>
 
-#define MIN_JUMP_TABLE_CASE    6
+#define MIN_JUMP_TABLE_CASE	6
 #define MIN_JUMP_TABLE_NO_CASE 1
 
 extern size_t jump_tbl[];
