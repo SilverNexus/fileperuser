@@ -1,3 +1,9 @@
+2017-01-11  SilverNexus
+	* ErrorLog.c,
+	  ErrorLog.h,
+	  main.c,
+	  search.h: Remove executable permissions from the files.
+
 2017-01-10  SilverNexus
 	* test/performance_test/main.c: Consolidate boyer-moore code for readability
 	* main.c: Loop optimization on case insensitive searches.
