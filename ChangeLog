@@ -2,6 +2,7 @@
 	* result_list.c: Use non-strdup string duplication, as it is faster.
 	* config.h.in: Remove unused define HAVE_STRDUP
 	* CMakeLists.txt: Remove check for unused method strdup.
+	* settings.c: Some slight code reformatting to help unoptimized builds.
 
 2017-01-11  SilverNexus
 	* ErrorLog.c,
