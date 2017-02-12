@@ -82,6 +82,8 @@ void add_result(int line, int col, const char *file){
 	// Set up our location -- we need it in both cases.
 	RESULT_LOC *res = new_result_loc(line, col);
 	// Check to see whether this is a new file we got a result from
+	// We don't have to loop because we go through files sequentially
+	// -- if the file changed, the other is done.
 	if (results.last && strcmp(results.last->file_path, file) == 0){
 		assert(results.last->locations_last); // We should have a location when we link this in.
 		// Add the result to the list
@@ -92,14 +94,13 @@ void add_result(int line, int col, const char *file){
 		RESULT_ITEM *item = (RESULT_ITEM *)malloc(sizeof(RESULT_ITEM));
 		if (!item)
 			log_event(FATAL, "No memory to allocate result in file %s, line %d, col %d.", file, line, col);
-#ifdef HAVE_STRDUP
-		item->file_path = strdup(file);
-#else
+
+		// Duplicate the file string -- the pointer we have is not safe outside this function.
 		item->file_path = (char *)malloc(sizeof(char) * (strlen(file) + 1));
 		if (!item->file_path)
 			log_event(FATAL, "No memory to allocate file name in result for file %s, line %d, col %d.", file, line, col);
 		strcpy(item->file_path, file);
-#endif
+
 		// Link the result into the list.
 		item->locations = res;
 		item->locations_last = res;
