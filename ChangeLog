@@ -3,6 +3,7 @@
 	* config.h.in: Remove unused define HAVE_STRDUP
 	* CMakeLists.txt: Remove check for unused method strdup.
 	* settings.c: Some slight code reformatting to help unoptimized builds.
+	* search.c: Some slight code reformatting to help unoptimized builds.
 
 2017-01-11  SilverNexus
 	* ErrorLog.c,

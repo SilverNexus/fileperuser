@@ -403,13 +403,15 @@ void search_folder(const char *fpath){
 	DIR *mapsDirectory = opendir(fpath);
 	if (mapsDirectory){
 		struct dirent *directory;
-		const size_t fpath_len = strlen(fpath);
+		// Holds the length of the file path plus a space for the trailing slash
+		// for handling dirent names without reallocating for every file.
+		const size_t fpath_len = strlen(fpath) + 1;
 		/*
 		 * Create a buffer that will hold any d_name from dirent.
 		 * We reduce calls to malloc this way.
-		 * The +2 at the end is to hold the slash and the null terminator.
+		 * The +1 at the end is to hold the null terminator.
 		 */
-		char *currentDir = malloc(sizeof(char) * (fpath_len + NAME_MAX + 2));
+		char *currentDir = malloc(sizeof(char) * (fpath_len + NAME_MAX + 1));
 		if (!currentDir)
 			log_event(FATAL, "Could not make memory for a directory name at %s.", fpath);
 		strcpy(currentDir, fpath);
@@ -468,7 +470,7 @@ void search_folder(const char *fpath){
 								log_event(WARNING, "Unsupported inode type found at %s, skipping.", currentDir);
 			}
 			// Now we drop the inode from the tree, so we can get the next from the same folder.
-			currentDir[fpath_len + 1] = '\0';
+			currentDir[fpath_len] = '\0';
 		}
 		// We're done with it, so free it.
 		free(currentDir);
