@@ -28,7 +28,6 @@ ENDIF()
 
 include(CheckFunctionExists)
 check_function_exists(mmap HAVE_MMAP)
-check_function_exists(strdup HAVE_STRDUP)
 
 include (CheckIncludeFiles)
 check_include_files(dirent.h HAVE_DIRENT_H)
