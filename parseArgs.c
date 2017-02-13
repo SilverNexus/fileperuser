@@ -269,16 +269,16 @@ void help_message(){
 	puts("Usage:");
 	puts("  fileperuser <flags> <search phrase>\n");
 	puts("Valid Flags:");
-	puts("  -h --help				 Prints this help message.");
-	puts("  -d --dir [directory]	  Sets root directory of the search.");
-	puts("  -x --exclude [directory]  Excludes [directory] from the search.");
-	puts("  -X --exclude-path [path]  Excludes [path] from the search. Can be a specific file.");
-	puts("  -o --output [filename]	Sets the name (and path) of the output file. Default prints to stdout.");
-	puts("  -f --log-file [filename]  Sets the name (and path) of the log file. Default is fileperuser.log.");
-	puts("  -l --loglevel [level]	 Sets the minimum log level to be recorded to file. Must be an integer. Default is 2 (WARNING).");
-	puts("  -p --printlevel [level]   Sets the minimum log level to be displayed on-screen. Must be an integer. Default is 2 (WARNING).");
-	puts("  -n --no-case			  Sets the search to be case insensitive.");
-	puts("  -1 --single-match		 Match the search string at most once per line.");
-	puts("  -b --binary-files		 Search in binary files as well as text files.");
+	puts("  -h --help                Prints this help message.");
+	puts("  -d --dir [directory]     Sets root directory of the search.");
+	puts("  -x --exclude [directory] Excludes [directory] from the search.");
+	puts("  -X --exclude-path [path] Excludes [path] from the search. Can be a specific file.");
+	puts("  -o --output [filename]   Sets the name (and path) of the output file. Default prints to stdout.");
+	puts("  -f --log-file [filename] Sets the name (and path) of the log file. Default is fileperuser.log.");
+	puts("  -l --loglevel [level]    Sets the minimum log level to be recorded to file. Must be an integer. Default is 2 (WARNING).");
+	puts("  -p --printlevel [level]  Sets the minimum log level to be displayed on-screen. Must be an integer. Default is 2 (WARNING).");
+	puts("  -n --no-case             Sets the search to be case insensitive.");
+	puts("  -1 --single-match        Match the search string at most once per line.");
+	puts("  -b --binary-files        Search in binary files as well as text files.");
 	exit(EXIT_SUCCESS);
 }
