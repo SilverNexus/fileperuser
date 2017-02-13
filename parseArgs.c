@@ -124,18 +124,26 @@
 /**
  * Handles the argument parsing for case sensitivity.
  *
- * Macroed in order to allow for smarter argument parsing.
+ * Inlined to allow smarter parsing, but didn't need to be a macro.
  */
-#define HANDLE_NO_CASE() \
+#ifndef MSVC
+inline
+#endif
+static void handle_no_case(){
 	settings.search_flags |= FLAG_NO_CASE;
+}
 
 /**
  * Handles the argument parsing for line matching.
  *
- * Macroed in order to allow for smarter argument parsing.
+ * Inlined in order to allow for smarter argument parsing.
  */
-#define HANDLE_LINE_MATCHER() \
+#ifndef MSVC
+inline
+#endif
+static void handle_line_matcher(){
 	settings.file_parser = search_file_single_match;
+}
 
 /**
  * Handles the toggle of whether or not we want to search binary files
@@ -193,10 +201,10 @@ int parseArgs(char **flagArgs, int flagCount){
 					HANDLE_PRINT_LEVEL();
 					break;
 				case 'n':
-					HANDLE_NO_CASE();
+					handle_no_case();
 					break;
 				case '1':
-					HANDLE_LINE_MATCHER();
+					handle_line_matcher();
 					break;
 				case 'b':
 					HANDLE_SEARCH_BINARY_FILES();
@@ -230,10 +238,10 @@ int parseArgs(char **flagArgs, int flagCount){
 						HANDLE_PRINT_LEVEL();
 					}
 					else if (strcmp(cur_flag, "no-case") == 0){
-						HANDLE_NO_CASE();
+						handle_no_case();
 					}
 					else if (strcmp(cur_flag, "single-match") == 0){
-						HANDLE_LINE_MATCHER();
+						handle_line_matcher();
 					}
 					else if (strcmp(cur_flag, "binary-files") == 0){
 						HANDLE_SEARCH_BINARY_FILES();

@@ -4,6 +4,8 @@
 	* CMakeLists.txt: Remove check for unused method strdup.
 	* settings.c: Some slight code reformatting to help unoptimized builds.
 	* search.c: Some slight code reformatting to help unoptimized builds.
+	* parseArgs.c: Refactor some code to use static inline functions over macro
+	  substitutions.
 
 2017-01-11  SilverNexus
 	* ErrorLog.c,
