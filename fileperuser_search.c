@@ -65,7 +65,7 @@ char *fileperuser_memcasemem_boyer(char *haystack, const char * const haystack_l
 					break;
 				--at;
 			}
-			// Insigned integer abuse
+			// Unsigned integer abuse
 			if (at > needle_len)
 				return haystack;
 		}
