@@ -162,9 +162,8 @@ static void handle_line_matcher(){
  * @param flagCount The number of flags to parse.
  * Includes variables for specific flags in the count.
  *
- * @retval 0 Flags are correct and intend execution.
- *
- * @retval -1 Invalid flags detected.
+ * @return
+ * 0 if search string was provided, -1 if not.
  */
 int parseArgs(char **flagArgs, int flagCount){
 	char *cur_flag;
