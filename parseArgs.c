@@ -148,11 +148,15 @@ static void handle_line_matcher(){
 /**
  * Handles the toggle of whether or not we want to search binary files
  *
- * Macroed to allow for argument parsing to call it from multiple places without
+ * Inlined to allow for argument parsing to call it from multiple places without
  * impacting performance
  */
-#define HANDLE_SEARCH_BINARY_FILES() \
+#ifndef MSVC
+inline
+#endif
+static void handle_search_binary_files(){
 	settings.search_flags |= FLAG_BINARY_FILES;
+}
 
 /**
  * Parses flags that alter program behavior
