@@ -210,7 +210,7 @@ int parseArgs(char **flagArgs, int flagCount){
 					handle_line_matcher();
 					break;
 				case 'b':
-					HANDLE_SEARCH_BINARY_FILES();
+					handle_search_binary_files();
 					break;
 				case '-':
 					// Move past the dash, since we don't need to handle it now.
@@ -247,7 +247,7 @@ int parseArgs(char **flagArgs, int flagCount){
 						handle_line_matcher();
 					}
 					else if (strcmp(cur_flag, "binary-files") == 0){
-						HANDLE_SEARCH_BINARY_FILES();
+						handle_search_binary_files();
 					}
 					else{
 						log_event(WARNING, "Invalid flag '%s' detected, skipping.", flagArgs[parseCount]);
