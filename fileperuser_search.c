@@ -184,11 +184,13 @@ char *fileperuser_memmem_brute(char *haystack, size_t haystack_len, char *needle
 	// Make haystack_left be the amount of the haystack needed to be checked in memchr.
 	size_t n_at, haystack_left = haystack_len - needle_len + 1;
 	while ((at = memchr(at, *needle, haystack_left)) != 0){
-		for (n_at = 1; n_at < needle_len; ++n_at){
+		// Comparison on zero is cheaper
+		// Also, since memchr told us that the first character matches, we don't have to check again.
+		for (n_at = needle_len - 1; n_at > 0; --n_at){
 			if (at[n_at] != needle[n_at])
 				break;
 		}
-		if (n_at == needle_len)
+		if (n_at == 0)
 			return at;
 		++at;
 		haystack_left = haystack_len - (at - haystack) - needle_len + 1;

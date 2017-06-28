@@ -47,7 +47,7 @@ DIR_LIST *init_dir_node(const char *directory){
 /**
  * Links a node to another node, making a list.
  *
- * @param toLink The node being added to the list.
+ * @param toLink The node being added to the list. Must be a non-null pointer.
  *
  * @param current_list Address of the list variable being added to.
  *        The address of list is the first node in the list,
@@ -57,11 +57,11 @@ DIR_LIST *init_dir_node(const char *directory){
  * @retval 0 The operation succeeded.
  * @retval -1 The operation failed.
  */
-int link_dir_node(DIR_LIST *toLink, DIR_LIST **current_list){
-	if (!toLink){
-		log_event(ERROR, "Trying to link nonexistent directory node to current list.");
-		return -1;
-	}
+int link_dir_node(DIR_LIST toLink[static 1], DIR_LIST **current_list){
+	// Assume the programmer read the function doc and didn't give null for toLink.
+	// The compiler should give a warning from static 1 array in params.
+
+	// *current_list could be null, but doesn't matter with how it is linked.
 	toLink->next = *current_list;
 	*current_list = toLink;
 	return 0;
