@@ -11,7 +11,7 @@ ENDIF()
 
 # Add compiler flags to gcc-like compilers
 IF(UNIX OR MINGW OR CYGWIN)
-    add_compile_options(-std=gnu99 -D_XOPEN_SOURCE=600 -D_GNU_SOURCE -Wall -Wextra)
+    add_compile_options(-std=gnu99 -Wall -Wextra)
     # Set debug nd release flags
     set(CMAKE_C_FLAGS_DEBUG "-g -O0" CACHE STRING "Have debugging information for debug" FORCE)
     set(CMAKE_C_FLAGS_RELEASE "-s -Ofast" CACHE STRING "Optimize for release" FORCE)

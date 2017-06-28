@@ -1,3 +1,7 @@
+2017-06-28	SilverNexus
+	* CMakeLists.txt: Remove defines for allowing use of nftw, since we don't
+	  need it anymore.
+
 2017-02-12	SilverNexus
 	* result_list.c: Use non-strdup string duplication, as it is faster.
 	* config.h.in: Remove unused define HAVE_STRDUP
