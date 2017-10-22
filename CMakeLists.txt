@@ -51,12 +51,30 @@ add_executable(fileperuser dir_list.c ErrorLog.c fileperuser_search.c
 # Since there doesn't appear to be a built-in way to install a manpage, do it the hard way
 # but only do it in linux and bsd
 if (UNIX AND NOT APPLE)
-    # TODO: Should this be its own build target?
-    add_custom_command(
-	TARGET fileperuser
-	POST_BUILD
-	COMMAND sudo sh install_manpage.sh
-    )
+    # Allow for choice of man directory.
+    set(MAN_INSTALL_DIR /usr/local/man/en_US CACHE STRING "Manual Directory")
+    mark_as_advanced(MAN_INSTALL_DIR)
+
+    # Make a list of manpages and set them up to install on installation.
+    # Gleaned from https://cmake.org/pipermail/cmake/2010-September/039781.html
+    set(MAN_NAMES fileperuser.1)
+    set(MAN_FILES)
+    foreach(m IN LISTS MAN_NAMES)
+        set(mf ${CMAKE_BINARY_DIR}/doc/${m})
+        set(ms ${CMAKE_SOURCE_DIR}/doc/${m}.txt)
+        # Since this whole section is contingent on Unix-like OSes, cp should exist.
+        add_custom_command(OUTPUT ${mf}
+            COMMAND cp ${ms} ${mf}
+            DEPENDS ${ms}
+            WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
+            COMMENT "Building manpage ${mf}"
+            VERBATIM)
+        list(APPEND MAN_FILES ${mf})
+    endforeach()
+    # Then we make a build target
+    add_custom_target(man ALL DEPENDS ${MAN_FILES})
+    # Set up the man install directory.
+    install(FILES ${mf} DESTINATION ${MAN_INSTALL_DIR}/man1/)
 elseif(WIN32)
     #Add the directory to the system path.
     add_custom_command(

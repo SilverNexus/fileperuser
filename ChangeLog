@@ -1,3 +1,8 @@
+2017-10-22  SilverNexus
+    * CMakeLists.txt: Improve manpage generation
+    * install_manpage.sh: Remove, since this is handled by CMake now.
+    * doc/fileperuser.man: Rename to doc/fileperuser.1.txt.
+
 2017-06-28	SilverNexus
 	* dir_list.c: Optimize declaration to assume non-null pointer passed.
 	* dir_list.h: Declaration tweak to expose tweak in dir_list.c
